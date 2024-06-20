@@ -44,6 +44,8 @@ class Window:
         self.bool_2 = tk.BooleanVar(value=False)
         self.bool_3 = tk.BooleanVar(value=False)
         self.bool_4 = tk.BooleanVar(value=False)
+        self.bool_5 = tk.BooleanVar(value=False)
+        self.bool_6 = tk.BooleanVar(value=False)
         self.rb = tk.IntVar(value=1)
         self.dannye = []
         self.not_use = None
@@ -111,13 +113,11 @@ class Window:
 
         self.panel_2.columnconfigure(index=0, weight=1)
         self.panel_2.columnconfigure(index=1, weight=1)
-        self.panel_2.rowconfigure(index=0, weight=1)
-        self.panel_2.rowconfigure(index=1, weight=1)
-        self.panel_2.rowconfigure(index=2, weight=1)
+        self.panel_2.rowconfigure(index=0, weight=2)
+        self.panel_2.rowconfigure(index=1, weight=2)
+        self.panel_2.rowconfigure(index=2, weight=2)
         self.panel_2.rowconfigure(index=3, weight=1)
         self.panel_2.rowconfigure(index=4, weight=1)
-        self.panel_2.rowconfigure(index=5, weight=1)
-        self.panel_2.rowconfigure(index=6, weight=1)
 
         # Создание выпадающего списка стандартных изделий
         ttk.Label(self.panel_1, text="Стандартное изделие:").grid(
@@ -231,42 +231,59 @@ class Window:
             variable=self.bool_1
         )
         self.chk_1.grid(row=0, column=0, padx=2, pady=10, sticky="nsew")
+
         self.chk_2 = ttk.Checkbutton(
             self.panel_2,
             text='Распаковка/Запаковка',
             variable=self.bool_2
         )
-        self.chk_2.grid(row=1, column=0, padx=2, pady=10, sticky="nsew")
+        self.chk_2.grid(row=0, column=1, padx=2, pady=10, sticky="nsew")
+
         self.chk_3 = ttk.Checkbutton(
             self.panel_2,
             text='Гравировка термовлиянием',
             variable=self.bool_3
         )
-        self.chk_3.grid(row=2, column=0, padx=2, pady=10, sticky="nsew")
+        self.chk_3.grid(row=1, column=0, padx=2, pady=10, sticky="nsew")
+
         self.chk_4 = ttk.Checkbutton(
             self.panel_2,
             text='Негабаритное изделие',
             variable=self.bool_4
         )
-        self.chk_4.grid(row=3, column=0, padx=2, pady=10, sticky="nsew")
+        self.chk_4.grid(row=1, column=1, padx=2, pady=10, sticky="nsew")
+
+        self.chk_5 = ttk.Checkbutton(
+            self.panel_2,
+            text='Разные макеты/счетчик',
+            variable=self.bool_5
+        )
+        self.chk_5.grid(row=2, column=0, padx=2, pady=10, sticky="nsew")
+
+        self.chk_6 = ttk.Checkbutton(
+            self.panel_2,
+            text='Оплата с НДС',
+            variable=self.bool_6
+        )
+        self.chk_6.grid(row=2, column=1, padx=2, pady=10, sticky="nsew")
 
         # Переключатель сложности установки
         ttk.Label(self.panel_2, text='Сложность установки').grid(
-            row=4, column=0, padx=0, pady=10, sticky='ns'
+            row=3, column=0, padx=(10,0), pady=10, sticky='nsew'
         )
         self.spin_hard = ttk.Spinbox(self.panel_2, from_=1, to=5)
         self.spin_hard.insert(0, '1')
         self.spin_hard.grid(
-            row=4, column=1, padx=0, pady=5, sticky='nsew'
+            row=3, column=1, padx=0, pady=5, sticky='nsew'
         )
         # Переключатель глубины гравировки
         ttk.Label(self.panel_2, text='Глубина гравировки').grid(
-            row=5, column=0, padx=0, pady=10, sticky='ns'
+            row=4, column=0, padx=(10,0), pady=10, sticky='nsew'
         )
         self.spin_deep = ttk.Spinbox(self.panel_2, from_=1, to=3)
         self.spin_deep.insert(0, '1')
         self.spin_deep.grid(
-            row=5, column=1, padx=0, pady=5, sticky='nsew'
+            row=4, column=1, padx=0, pady=5, sticky='nsew'
         )
         # Создание ползунка изменения размера
         self.sizegrip = ttk.Sizegrip(self.root)
@@ -297,6 +314,7 @@ class Window:
 
         # Конфигурация формы для вывода результатов
         self.panel_2_2.columnconfigure(index=0, weight=1)
+        self.panel_2_2.columnconfigure(index=1, weight=1)
         self.panel_2_2.rowconfigure(index=0, weight=1)
         self.panel_2_2.rowconfigure(index=1, weight=1)
         self.panel_2_2.rowconfigure(index=2, weight=1)
@@ -365,7 +383,7 @@ class Window:
                  f"  {0:.0f}  руб."
         )
         self.lbl_result_1.grid(
-            row=0, column=0, padx=(40, 10), pady=(10, 0), sticky='nsew'
+            row=3, column=0, padx=(40, 10), pady=(0,20), sticky='nsew'
         )
 
         # Виджет -Себестоимость партии-
@@ -375,7 +393,7 @@ class Window:
                  f"  {0:.0f}  руб."
         )
         self.lbl_result_2.grid(
-            row=1, column=0, padx=(40, 10), pady=0, sticky='nsew'
+            row=3, column=1, padx=(40, 10), pady=(0,20), sticky='nsew'
         )
 
         # Виджет -Количество изделий с одного листа-
@@ -385,17 +403,42 @@ class Window:
                  f"  {0:.0f}  шт."
         )
         self.lbl_result_3.grid(
-            row=2, column=0, padx=(40, 10), pady=0, sticky='nsew'
+            row=1, column=0, padx=(40, 10), pady=0, sticky='nsew'
         )
 
         # Виджет -Количество листов на партию-
         self.lbl_result_4 = ttk.Label(
             self.panel_2_2,
-            text=f"Количество листов на партию:"
+            text=f"Минимальное количество листов на партию:"
                  f"  {0:.0f}  шт."
         )
         self.lbl_result_4.grid(
-            row=3, column=0, padx=(40, 10), pady=(0, 20), sticky='nsew'
+            row=1, column=1, padx=(40, 10), pady=0, sticky='nsew'
+        )
+
+        # Виджет -Стоимость одного изделия партии-
+        self.lbl_result_5 = ttk.Label(
+            self.panel_2_2,
+            text=f"Стоимость изделия:"
+                 f"  {0:.0f}  руб."
+        )
+        self.lbl_result_5.grid(
+            row=0, column=0, padx=(40, 10), pady=0, sticky='nsew'
+        )
+
+        # Виджет -Стоимость партии-
+        self.lbl_result_6 = ttk.Label(
+            self.panel_2_2,
+            text=f"Стоимость партии:"
+                 f"  {0:.0f}  руб."
+        )
+        self.lbl_result_6.grid(
+            row=0, column=1, padx=(40, 10), pady=0, sticky='nsew'
+        )
+
+        # Разделительная черта
+        ttk.Separator(self.panel_2_2).grid(
+            row=2, column=0, columnspan=2, pady=0, sticky='ew'
         )
 
         # Кнопка обновления списка материалов
