@@ -11,6 +11,7 @@ from child_materials_window import ChildMaterials
 from child_power_set_window import ChildPowerSet
 from materials import Materials, Calculation
 from child_config_window import ChildConfigSet
+from child_config_window import ConfigSet
 from math import ceil
 
 
@@ -38,6 +39,7 @@ class Window:
         self.style.theme_use(self.theme)
 
         # Создание переменных
+        self.main_settings = ConfigSet().config
         self.bool_rotation = tk.BooleanVar(value=False)
         self.bool_different = tk.BooleanVar(value=False)
         self.bool_1 = tk.BooleanVar(value=False)
@@ -47,8 +49,17 @@ class Window:
         self.bool_5 = tk.BooleanVar(value=False)
         self.bool_6 = tk.BooleanVar(value=False)
         self.rb = tk.IntVar(value=1)
-        self.dannye = []
         self.not_use = None
+        # Создание словаря для связи списка со стоимостями
+        self.standard_items = {
+            "Жетон/Брелок": "badge",
+            "Кольцо": "ring",
+            "Ручка": "pen",
+            "Нож": "knife",
+            "Термокружка/Термос": "thermos",
+            "Клавиатура": "keyboard",
+            "Клавиатура с пробелом": "personal_keyboard"
+        }
 
         # Создание основных вкладок
         self.tabs_control = ttk.Notebook(self.root)
@@ -69,7 +80,7 @@ class Window:
 
         # Добавление вкладок в набор
         self.tabs_control.add(self.tab_1, text='Расчет')
-        self.tabs_control.add(self.tab_2, text='Дополнительные расчеты')
+        self.tabs_control.add(self.tab_2, text='Листовой материал')
         # Упаковка вкладок
         self.tabs_control.pack(fill='both', expand=True)
 
@@ -123,17 +134,21 @@ class Window:
         ttk.Label(self.panel_1, text="Стандартное изделие:").grid(
             row=0, column=0, padx=10, pady=(5, 10), sticky='ns')
         self.combo_list = [
+            "Нет",
             "Жетон/Брелок",
-            "Кольцо внутри",
-            "Кольцо снаружи",
+            "Кольцо",
             "Ручка",
             "Термокружка/Термос",
+            "Нож",
+            "Клавиатура",
+            "Клавиатура с пробелом"
         ]
         self.combo_products = ttk.Combobox(
             self.panel_1,
             values=self.combo_list,
             width=20
         )
+        self.combo_products.current(0)
         self.combo_products.grid(row=0, column=1, padx=5, pady=(5, 10),
                                  sticky="nsew", columnspan=1)
 
@@ -177,13 +192,14 @@ class Window:
         )
 
         # Переключатель вращателя/плоскости
-        self.switch = ttk.Checkbutton(
+        self.switch_rotation = ttk.Checkbutton(
             self.panel_1,
             text="Гравировка на вращателе",
             variable=self.bool_rotation,
             style="Switch"
         )
-        self.switch.grid(row=5, column=0, padx=5, pady=20, sticky="ns")
+        self.switch_rotation.grid(
+            row=5, column=0, padx=5, pady=20, sticky="ns")
 
         # Переключатель -Разные макеты-
         self.chk_different = ttk.Checkbutton(
@@ -255,7 +271,7 @@ class Window:
 
         self.chk_5 = ttk.Checkbutton(
             self.panel_2,
-            text='Разные макеты/счетчик',
+            text='Счетчик',
             variable=self.bool_5
         )
         self.chk_5.grid(row=2, column=0, padx=2, pady=10, sticky="nsew")
@@ -269,7 +285,7 @@ class Window:
 
         # Переключатель сложности установки
         ttk.Label(self.panel_2, text='Сложность установки').grid(
-            row=3, column=0, padx=(10,0), pady=10, sticky='nsew'
+            row=3, column=0, padx=(10, 0), pady=10, sticky='nsew'
         )
         self.spin_hard = ttk.Spinbox(self.panel_2, from_=1, to=5)
         self.spin_hard.insert(0, '1')
@@ -278,7 +294,7 @@ class Window:
         )
         # Переключатель глубины гравировки
         ttk.Label(self.panel_2, text='Глубина гравировки').grid(
-            row=4, column=0, padx=(10,0), pady=10, sticky='nsew'
+            row=4, column=0, padx=(10, 0), pady=10, sticky='nsew'
         )
         self.spin_deep = ttk.Spinbox(self.panel_2, from_=1, to=3)
         self.spin_deep.insert(0, '1')
@@ -289,7 +305,13 @@ class Window:
         self.sizegrip = ttk.Sizegrip(self.root)
         self.sizegrip.place(relx=0.972, rely=0.965)
 
-        # ______________ПРОДОЛЖЕНИЕ 1 ВКЛАДКИ______________
+        # Виджет вывода результатов расчета
+        self.lbl_result_0 = ttk.Label(
+            self.panel_3,
+            text=f"Стоимость работы:"
+            f"  {0:.0f}  руб."
+        )
+        self.lbl_result_0.grid(row=0, column=1, padx=(10, 10), sticky="nsew")
 
         # ____________________2 ВКЛАДКА____________________
         # Создание формы для виджетов
@@ -383,7 +405,7 @@ class Window:
                  f"  {0:.0f}  руб."
         )
         self.lbl_result_1.grid(
-            row=3, column=0, padx=(40, 10), pady=(0,20), sticky='nsew'
+            row=3, column=0, padx=(40, 10), pady=(0, 20), sticky='nsew'
         )
 
         # Виджет -Себестоимость партии-
@@ -393,7 +415,7 @@ class Window:
                  f"  {0:.0f}  руб."
         )
         self.lbl_result_2.grid(
-            row=3, column=1, padx=(40, 10), pady=(0,20), sticky='nsew'
+            row=3, column=1, padx=(40, 10), pady=(0, 20), sticky='nsew'
         )
 
         # Виджет -Количество изделий с одного листа-
@@ -450,18 +472,6 @@ class Window:
         )
         self.btn_update.grid(
             row=0, column=3, padx=10, pady=10, columnspan=3, sticky='nsew'
-        )
-
-    def draw_widgets(self):  # Метод упаковки и прорисовки виджетов
-        # Прорисовка меню
-        self.draw_menu()
-
-        # Виджеты вывода результатов
-        ttk.Label(self.panel_3, text="руб.").grid(
-            row=0,
-            column=1,
-            padx=(10, 10),
-            sticky="nsew"
         )
 
     def draw_menu(self):  # Метод прорисовки вкладок основного меню
@@ -549,8 +559,121 @@ class Window:
             self.style.theme_use(self.theme)
         self.root.update()
 
-    def get_calc(self):
-        pass
+    def get_calc(self):  # Метод основного и углубленного расчета
+
+        # Формирование начальной стоимости
+        if self.combo_products.get() == "Нет":  # Если не выбрано изделие
+            cost = int(self.main_settings["MAIN"]["min_cost"])
+        else:  # Если выбрано стандартное изделие
+            cost = int(
+                self.main_settings["STANDARD"][
+                    self.standard_items[self.combo_products.get()]]
+            )
+        # Формирование значений коэффициентов
+        """
+        !!На будущее!! Здесь везде идет присвоение, а значит можно было 
+        использовать тернарный IF, но это сильно усложняет читаемость.
+        Вот пример:
+        
+        # Коэффициент ratio_laser __Тип лазера__
+        ratio_laser = float(self.main_settings["RATIO_SETTINGS"][
+                                "ratio_laser_gas"]) if (self.rb.get() == 2) \
+            else float(self.main_settings["RATIO_SETTINGS"][
+                           "ratio_laser_diode"])
+
+        # Коэффициент ratio_rotation __Вращатель__
+        ratio_rotation = float(self.main_settings["RATIO_SETTINGS"][
+                                   "ratio_rotation"]) if (
+            self.bool_rotation.get()) else 1
+        """
+        # Коэффициент ratio_laser __Тип лазера__
+        if self.rb.get() == 2:  # Если газовый лазер
+            ratio_laser = float(self.main_settings[
+                "RATIO_SETTINGS"]["ratio_laser_gas"])
+        else:  # Если твердотельный лазер
+            ratio_laser = float(self.main_settings[
+                "RATIO_SETTINGS"]["ratio_laser_diode"])
+
+        # Коэффициент ratio_rotation __Вращатель__
+        if self.bool_rotation.get():  # Если гравировка с вращением
+            ratio_rotation = float(self.main_settings[
+                "RATIO_SETTINGS"]["ratio_rotation"])
+        else:  # Если гравировка без вращения
+            ratio_rotation = 1
+
+        # Коэффициент ratio_different_layouts __Разные макеты__
+        if self.bool_different.get() and (
+                int(self.spin_number.get()) > 1):  # Если разные макеты
+            ratio_different_layouts = float(
+                self.main_settings["RATIO_SETTINGS"][
+                    "ratio_different_layouts"])
+        else:  # Если один макет
+            ratio_different_layouts = 1
+
+        # Коэффициент ratio_timing __Срочность__
+        if self.bool_1.get():
+            ratio_timing = float(self.main_settings["RATIO_SETTINGS"][
+                "ratio_timing"])
+        else:
+            ratio_timing = 1
+
+        # Коэффициент ratio_packing __Распаковка/Запаковка__
+        if self.bool_2.get():
+            ratio_packing = float(self.main_settings["RATIO_SETTINGS"][
+                "ratio_packing"])
+        else:
+            ratio_packing = 1
+
+        # Коэффициент ratio_thermal_graving __Гравировка термовлиянием__
+        if self.bool_3.get():
+            ratio_thermal_graving = float(self.main_settings["RATIO_SETTINGS"][
+                "ratio_thermal_graving"])
+        else:
+            ratio_thermal_graving = 1
+
+        # Коэффициент ratio_oversize __Негабаритное изделие__
+        if self.bool_4.get():
+            ratio_oversize = float(self.main_settings["RATIO_SETTINGS"][
+                "ratio_oversize"])
+        else:
+            ratio_oversize = 1
+
+        # Коэффициент ratio_numbering __Счетчик__
+        if self.bool_5.get() and (int(self.spin_number.get()) > 1):
+            ratio_numbering = float(self.main_settings["RATIO_SETTINGS"][
+                "ratio_numbering"])
+        else:
+            ratio_numbering = 1
+
+        # Коэффициент ratio_taxation __Оплата с НДС__
+        if self.bool_6.get():
+            ratio_taxation = float(self.main_settings["RATIO_SETTINGS"][
+                "ratio_taxation"])
+        else:
+            ratio_taxation = 1
+
+        # Дополнительная стоимость за количество установок
+        if int(self.spin_aim.get()) > 1:
+            additional_cost = (
+                (int(self.spin_aim.get()) - 1) *
+                int(self.main_settings["MAIN"]["additional_cost"]))
+        else:
+            additional_cost = 0
+
+        # Коэффициент зависимости от количества изделий
+        ratio_many_items = int(self.spin_number.get()) ** (-0.5)
+
+        # Расчет основной стоимости
+        main_cost = ((additional_cost + (cost * (
+                ratio_laser * ratio_rotation * ratio_different_layouts *
+                ratio_timing * ratio_packing * ratio_thermal_graving *
+                ratio_oversize * ratio_numbering))) * ratio_taxation *
+                     ratio_many_items)
+
+        self.lbl_result_0.config(
+            text=f"Стоимость работы:"
+            f"  {main_cost:.0f}  руб."
+        )
 
     def get_calc_mat(self):  # Метод расчета себестоимости изделий
 
@@ -615,7 +738,7 @@ class Window:
         self.tab_2.update()
         self.root.update()
 
-    def add_bind(self):  # Установка фонового текста в полях ввода
+    def add_bind(self):  # Установка фонового текста в полях ввода (binds)
         self.to_add_entry()
         self.to_add_entry1()
         self.to_add_entry2()
@@ -700,7 +823,7 @@ class Window:
 
         # Прорисовка виджетов и окна
         self.add_bind()
-        self.draw_widgets()
+        self.draw_menu()
         self.root.mainloop()
 
     def destroy(self):  # Метод, реализующий закрытие программы
