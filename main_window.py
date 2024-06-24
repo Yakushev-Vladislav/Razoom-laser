@@ -534,8 +534,9 @@ class Window:
     def run_config_window(self):
         self.root.CHILD = ChildConfigSet(
             self.root,
-            600,
+            820,
             500,
+            standard=self.standard_items,
             theme=self.theme,
             icon="resources/Company_logo.ico"
         )

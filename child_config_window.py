@@ -4,9 +4,8 @@ import configparser
 
 
 class ChildConfigSet:
-    def __init__(self, parent, width, height, theme, title='Предварительная '
-                                                           'настройка '
-                                                           'программы',
+    def __init__(self, parent, width, height, theme, standard,
+                 title='Предварительная настройка программы',
                  resizable=(False, False), icon=None):
 
         """
@@ -17,6 +16,7 @@ class ChildConfigSet:
         :param width: Ширина окна
         :param height: Высота окна
         :param theme: Тема, используемая в родительском классе
+        :param standard: Словарь стандартных изделий и их конфигураций
         :param title: Название окна
         :param resizable: Изменяемость окна. По умолчанию: (False, False)
         :param icon: Иконка окна. По умолчанию: None
@@ -34,10 +34,122 @@ class ChildConfigSet:
         self.style_child.theme_use(theme)
 
         # Объявление переменных
-        self.standard_costs = None
+        self.standard_names = standard
 
-    def get_standard_costs(self):
-        pass
+        # Создание вкладок окна
+        self.child_tabs_control = ttk.Notebook(self.child_root)
+        self.tab_1 = ttk.Frame(self.child_tabs_control)
+        self.tab_2 = ttk.Frame(self.child_tabs_control)
+
+        # Конфигурация отзывчивости вкладок окна
+        self.tab_1.columnconfigure(index=0, weight=1)
+        self.tab_1.columnconfigure(index=1, weight=1)
+        self.tab_1.rowconfigure(index=0, weight=1)
+        self.tab_1.rowconfigure(index=1, weight=1)
+        self.tab_1.rowconfigure(index=2, weight=1)
+        self.tab_1.rowconfigure(index=3, weight=1)
+        self.tab_1.rowconfigure(index=4, weight=1)
+        self.tab_1.rowconfigure(index=5, weight=1)
+        self.tab_1.rowconfigure(index=6, weight=1)
+
+        self.tab_2.columnconfigure(index=0, weight=1)
+        self.tab_2.columnconfigure(index=1, weight=50)
+        self.tab_2.columnconfigure(index=2, weight=1)
+        self.tab_2.rowconfigure(index=0, weight=1)
+        self.tab_2.rowconfigure(index=1, weight=2)
+
+        # Конфигурация форм вкладок
+        self.tab_2_panel_1 = ttk.Frame(self.tab_2, padding=(0, 0, 0, 0))
+        self.tab_2_panel_1.grid(row=0, column=0, padx=0, pady=(0, 0),
+                                sticky="nsew")
+        self.tab_2_panel_2 = ttk.Frame(self.tab_2, padding=(0, 0, 0, 0))
+        self.tab_2_panel_2.grid(row=1, column=0, padx=0, pady=(0, 0),
+                                sticky="nsew", columnspan=3)
+
+        # Конфигурация отзывчивости форм
+        self.tab_2_panel_2.columnconfigure(index=0, weight=1)
+        self.tab_2_panel_2.columnconfigure(index=1, weight=1)
+        self.tab_2_panel_2.columnconfigure(index=2, weight=1)
+        self.tab_2_panel_2.columnconfigure(index=3, weight=1)
+        self.tab_2_panel_2.rowconfigure(index=0, weight=1)
+        self.tab_2_panel_2.rowconfigure(index=1, weight=1)
+        self.tab_2_panel_2.rowconfigure(index=2, weight=1)
+        self.tab_2_panel_2.rowconfigure(index=3, weight=1)
+
+        # Добавление вкладок в набор
+        self.child_tabs_control.add(self.tab_1, text='Основные настройки')
+        self.child_tabs_control.add(self.tab_2, text='Стандартные изделия')
+        # Упаковка вкладок
+        self.child_tabs_control.pack(fill='both', expand=True)
+
+        # ___ Создание виджетов 1 вкладки ___
+
+        # ___ Создание виджетов 2 вкладки ___
+        # Создание и конфигурация таблицы
+        tree_scroll = ttk.Scrollbar(self.tab_2)
+        tree_scroll.grid(row=0, column=2, padx=0, pady=0,
+                         sticky="nsew")
+        self.standard_table = ttk.Treeview(
+            self.tab_2,
+            selectmode="extended",
+            yscrollcommand=tree_scroll.set,
+            height=4,
+            columns=('#0', '#1', '#2', '#3'),
+            show="headings"
+        )
+        self.standard_table.column(0, width=0, anchor="w")
+        self.standard_table.column(1, width=195, anchor="w")
+        self.standard_table.column(2, width=100, anchor="center")
+        self.standard_table.column(3, width=100, anchor="center")
+
+        self.standard_table.heading(0, text="", anchor="center")
+        self.standard_table.heading(1, text="Наименование", anchor="center")
+        self.standard_table.heading(2, text="Eng", anchor="center")
+        self.standard_table.heading(3, text="Стоимость работы, руб",
+                                    anchor="center")
+        self.standard_table.selection()
+        self.standard_table.configure(yscrollcommand=tree_scroll.set)
+
+        # Упаковка таблицы
+        self.standard_table.grid(
+            row=0, column=1, padx=0, pady=0, sticky="nsew"
+        )
+
+        # Добавление данных в таблицу
+        self.data_table = self.get_standard_costs()
+        self.i_data = -1
+        for data in self.data_table:
+            self.i_data += 1
+            temp_list = list()
+            temp_list.append(f'{self.i_data}:')
+            temp_list.extend(data)
+            self.standard_table.insert('', index='end', values=temp_list)
+
+        # Создание кнопки перехода на начальную вкладку
+        self.btn_back_to_tab_1 = ttk.Button(
+            self.tab_2_panel_2,
+            width=4,
+            text="Вернуться",
+            command=self.click_back
+        )
+        self.btn_back_to_tab_1.grid(
+            row=3, column=3, padx=10, pady=15, sticky='nsew')
+
+    def get_standard_costs(self):  # Метод получения данных для таблицы
+        table_data = list()
+        # Считывание информации из конфига
+        costs = ConfigSet().config
+        for item in self.standard_names:
+            temp = [
+                item,
+                self.standard_names[item],
+                costs["STANDARD"][self.standard_names[item]]
+            ]
+            table_data.append(temp)
+        return table_data
+
+    def click_back(self):
+        self.child_tabs_control.select(self.tab_1)
 
     def grab_focus(self):  # Метод сохранения фокуса на дочернем окне
         self.child_root.grab_set()
