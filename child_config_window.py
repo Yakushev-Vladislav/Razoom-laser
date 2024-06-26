@@ -81,7 +81,6 @@ class ChildConfigSet:
         self.tab_2_panel_2.columnconfigure(index=0, weight=1)
         self.tab_2_panel_2.columnconfigure(index=1, weight=1)
         self.tab_2_panel_2.columnconfigure(index=2, weight=1)
-        self.tab_2_panel_2.columnconfigure(index=3, weight=1)
         self.tab_2_panel_2.rowconfigure(index=0, weight=1)
         self.tab_2_panel_2.rowconfigure(index=1, weight=2)
         self.tab_2_panel_2.rowconfigure(index=2, weight=1)
@@ -191,7 +190,7 @@ class ChildConfigSet:
                                               sticky='nsew')
 
         # Окно ввода ratio_thermal_graving __Гравировка термовлиянием__
-        ttk.Label(self.tab_1, text='Грав. термовлиянием').grid(
+        ttk.Label(self.tab_1, text='Термовлияние').grid(
             row=7, column=1, padx=0, pady=0, sticky='ns'
         )
         self.ent_ratio_thermal_graving = ttk.Entry(
@@ -320,13 +319,14 @@ class ChildConfigSet:
             show="headings"
         )
         self.standard_table.column(0, width=0, anchor="w")
-        self.standard_table.column(1, width=195, anchor="w")
+        self.standard_table.column(1, width=100, anchor="w")
         self.standard_table.column(2, width=100, anchor="center")
         self.standard_table.column(3, width=100, anchor="center")
 
         self.standard_table.heading(0, text="", anchor="center")
-        self.standard_table.heading(1, text="Наименование", anchor="center")
-        self.standard_table.heading(2, text="Eng", anchor="center")
+        self.standard_table.heading(1, text="Название работы", anchor="center")
+        self.standard_table.heading(
+            2, text="Название для конфигурации (ENG)", anchor="center")
         self.standard_table.heading(3, text="Стоимость работы, руб",
                                     anchor="center")
         self.standard_table.selection()
@@ -386,27 +386,27 @@ class ChildConfigSet:
         self.btn_add_new_element = ttk.Button(
             self.tab_2_panel_2,
             width=10,
-            text="Добавить",
+            text="Добавить работу в базу данных",
             command=self.click_add
         )
         self.btn_add_new_element.grid(
-            row=1, column=3, padx=5, pady=(5, 10), sticky='nsew')
+            row=2, column=0, padx=5, pady=10, sticky='nsew',columnspan=3)
 
         # Разделительная черта
         ttk.Separator(self.tab_2_panel_2).grid(
-            row=2, column=0, columnspan=4, pady=5, sticky='ew'
+            row=3, column=0, columnspan=4, pady=5, sticky='ew'
         )
 
         # Окно ввода __ Номер удаляемой строки __
         ttk.Label(self.tab_2_panel_2,
                   text='Номер удаляемой строки').grid(
-            row=3, column=0, padx=0, pady=0, sticky='ns'
+            row=4, column=0, padx=0, pady=0, sticky='ns'
         )
         self.ent_delete_element = ttk.Entry(
             self.tab_2_panel_2,
             width=20
         )
-        self.ent_delete_element.grid(row=4, column=0, padx=5, pady=(10, 40),
+        self.ent_delete_element.grid(row=5, column=0, padx=5, pady=(10, 40),
                            sticky='nsew')
 
         # Создание кнопки удаления работы
@@ -417,7 +417,7 @@ class ChildConfigSet:
             command=self.click_delete_element
         )
         self.btn_delete_element.grid(
-            row=4, column=1, padx=5, pady=(10, 40), sticky='nsew')
+            row=5, column=1, padx=5, pady=(10, 40), sticky='nsew')
 
         # Создание кнопки перехода на начальную вкладку
         self.btn_back_to_tab_1 = ttk.Button(
@@ -427,7 +427,7 @@ class ChildConfigSet:
             command=self.click_back
         )
         self.btn_back_to_tab_1.grid(
-            row=4, column=3, padx=5, pady=(10, 40), sticky='nsew')
+            row=5, column=2, padx=5, pady=(10, 40), sticky='nsew')
 
     def get_standard_costs(self):  # Метод получения данных для таблицы
         table_data = list()
@@ -455,8 +455,12 @@ class ChildConfigSet:
         if askokcancel('Сброс настроек', 'Вы действительно хотите сбросить '
                                          'настройки по умолчанию?'):
             ConfigSet().default_settings()
+        self.is_not_use()
 
     def click_delete_element(self):
+        pass
+
+    def is_not_use(self):
         pass
 
     def grab_focus(self):  # Метод сохранения фокуса на дочернем окне
