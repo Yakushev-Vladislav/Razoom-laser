@@ -37,6 +37,8 @@ class ChildConfigSet:
 
         # Объявление переменных
         self.standard_names = standard
+        #self.ratio_from_config = ConfigSet().config['RATIO_SETTINGS']
+        #self.main_from_config = ConfigSet().config['MAIN']
 
         # Создание вкладок окна
         self.child_tabs_control = ttk.Notebook(self.child_root)
@@ -95,7 +97,7 @@ class ChildConfigSet:
 
         # ___ Создание виджетов 1 вкладки ___
         # Информация по первому блоку
-        ttk.Label(self.tab_1, text='Блок настройки базовых цен',
+        ttk.Label(self.tab_1, text='Блок настройки базовых цен, руб.',
                   foreground='red').grid(
             row=0, column=0, padx=0, pady=0, sticky='ns', columnspan=3
         )
@@ -126,11 +128,11 @@ class ChildConfigSet:
         ttk.Label(self.tab_1, text='Стоимость часа работы').grid(
             row=1, column=2, padx=0, pady=0, sticky='ns'
         )
-        self.ent_additional = ttk.Entry(
+        self.ent_one_hour = ttk.Entry(
             self.tab_1,
             width=20
         )
-        self.ent_additional.grid(row=2, column=2, padx=5, pady=5,
+        self.ent_one_hour.grid(row=2, column=2, padx=5, pady=5,
                                  sticky='nsew')
 
         # Разделительная черта
@@ -178,7 +180,7 @@ class ChildConfigSet:
         self.ent_ratio_timing.grid(row=6, column=2, padx=5, pady=5,
                                      sticky='nsew')
 
-                # Окно ввода ratio_packing __Распаковка/Запаковка__
+        # Окно ввода ratio_packing __Распаковка/Запаковка__
         ttk.Label(self.tab_1, text='Распаковка/Запаковка').grid(
             row=7, column=0, padx=0, pady=0, sticky='ns'
         )
@@ -223,15 +225,15 @@ class ChildConfigSet:
         self.ent_ratio_taxation.grid(row=10, column=0, padx=5, pady=5,
                                       sticky='nsew')
 
-        # Окно ввода ratio_rotation __Повышенное внимание__
+        # Окно ввода ratio_attention __Повышенное внимание__
         ttk.Label(self.tab_1, text='Повышенное внимание').grid(
             row=9, column=1, padx=0, pady=0, sticky='ns'
         )
-        self.ent_ratio_rotation = ttk.Entry(
+        self.ent_ratio_attention = ttk.Entry(
             self.tab_1,
             width=20
         )
-        self.ent_ratio_rotation.grid(row=10, column=1, padx=5, pady=5,
+        self.ent_ratio_attention.grid(row=10, column=1, padx=5, pady=5,
                                      sticky='nsew')
 
         # Окно ввода ratio_hand_job __Ручные работы__
@@ -320,8 +322,8 @@ class ChildConfigSet:
         )
         self.standard_table.column(0, width=0, anchor="w")
         self.standard_table.column(1, width=100, anchor="w")
-        self.standard_table.column(2, width=100, anchor="center")
-        self.standard_table.column(3, width=100, anchor="center")
+        self.standard_table.column(2, width=140, anchor="center")
+        self.standard_table.column(3, width=80, anchor="center")
 
         self.standard_table.heading(0, text="", anchor="center")
         self.standard_table.heading(1, text="Название работы", anchor="center")
@@ -429,6 +431,62 @@ class ChildConfigSet:
         self.btn_back_to_tab_1.grid(
             row=5, column=2, padx=5, pady=(10, 40), sticky='nsew')
 
+        # Запись данных в окна ввода
+        self.update_data_in_widgets()
+
+    def update_data_in_widgets(self):  # Запись/обновление данных в окнах ввода
+        # Считывание данных в переменные
+        ratio_from_config = ConfigSet().config['RATIO_SETTINGS']
+        main_from_config = ConfigSet().config['MAIN']
+
+        # Очистка полей ввода для обновления данных
+        # Первый блок
+        self.ent_minimum.delete(0, tk.END)
+        self.ent_additional.delete(0, tk.END)
+        self.ent_one_hour.delete(0, tk.END)
+        # Второй блок
+        self.ent_ratio_laser_gas.delete(0, tk.END)
+        self.ent_ratio_rotation.delete(0, tk.END)
+        self.ent_ratio_timing.delete(0, tk.END)
+        self.ent_ratio_packing.delete(0, tk.END)
+        self.ent_ratio_thermal_graving.delete(0, tk.END)
+        self.ent_ratio_oversize.delete(0, tk.END)
+        self.ent_ratio_taxation.delete(0, tk.END)
+        self.ent_ratio_attention.delete(0, tk.END)
+        self.ent_ratio_hand_job.delete(0, tk.END)
+        self.ent_ratio_numbering.delete(0, tk.END)
+        self.ent_ratio_different_layouts.delete(0, tk.END)
+
+        # Запись значений в окнах ввода
+        # Первый блок
+        self.ent_minimum.insert(0, main_from_config['min_cost'])
+        self.ent_additional.insert(0, main_from_config['additional_cost'])
+        self.ent_one_hour.insert(0, main_from_config['one_hour_of_work'])
+
+        # Второй блок
+        self.ent_ratio_laser_gas.insert(
+            0, ratio_from_config['ratio_laser_gas'])
+        self.ent_ratio_rotation.insert(
+            0, ratio_from_config['ratio_rotation'])
+        self.ent_ratio_timing.insert(
+            0, ratio_from_config['ratio_timing'])
+        self.ent_ratio_packing.insert(
+            0, ratio_from_config['ratio_packing'])
+        self.ent_ratio_thermal_graving.insert(
+            0, ratio_from_config['ratio_thermal_graving'])
+        self.ent_ratio_oversize.insert(
+            0, ratio_from_config['ratio_oversize'])
+        self.ent_ratio_taxation.insert(
+            0, ratio_from_config['ratio_taxation'])
+        self.ent_ratio_attention.insert(
+            0, ratio_from_config['ratio_attention'])
+        self.ent_ratio_hand_job.insert(
+            0, ratio_from_config['ratio_hand_job'])
+        self.ent_ratio_numbering.insert(
+            0, ratio_from_config['ratio_numbering'])
+        self.ent_ratio_different_layouts.insert(
+            0, ratio_from_config['ratio_different_layouts'])
+
     def get_standard_costs(self):  # Метод получения данных для таблицы
         table_data = list()
         # Считывание информации из конфига
@@ -442,25 +500,60 @@ class ChildConfigSet:
             table_data.append(temp)
         return table_data
 
-    def click_back(self):
+    def click_back(self):  # Метод возвращения на первую вкладку
         self.child_tabs_control.select(self.tab_1)
 
-    def click_add(self):
+    def click_add(self):  # Метод добавления новой стандартной работы
         pass
 
-    def click_update_settings(self):
-        pass
+    def click_update_settings(self):  # Метод сохранения настроек
+        # Создание переменной конфигурации
+        new_config = ConfigSet().config
 
-    def click_default_settings(self):
+        # Запись новых данных в переменную конфигурации
+        # Первый блок
+        new_config['MAIN']['min_cost'] = self.ent_minimum.get()
+        new_config['MAIN']['additional_cost'] = self.ent_additional.get()
+        new_config['MAIN']['one_hour_of_work'] = self.ent_one_hour.get()
+
+        # Второй блок
+        new_config['RATIO_SETTINGS']['ratio_laser_gas'] = (
+            self.ent_ratio_laser_gas.get())
+        new_config['RATIO_SETTINGS']['ratio_rotation'] = (
+            self.ent_ratio_rotation.get())
+        new_config['RATIO_SETTINGS']['ratio_timing'] = (
+            self.ent_ratio_timing.get())
+        new_config['RATIO_SETTINGS']['ratio_attention'] = (
+            self.ent_ratio_attention.get())
+        new_config['RATIO_SETTINGS']['ratio_packing'] = (
+            self.ent_ratio_packing.get())
+        new_config['RATIO_SETTINGS']['ratio_hand_job'] = (
+            self.ent_ratio_hand_job.get())
+        new_config['RATIO_SETTINGS']['ratio_taxation'] = (
+            self.ent_ratio_taxation.get())
+        new_config['RATIO_SETTINGS']['ratio_oversize'] = (
+            self.ent_ratio_oversize.get())
+        new_config['RATIO_SETTINGS']['ratio_different_layouts'] = (
+            self.ent_ratio_different_layouts.get())
+        new_config['RATIO_SETTINGS']['ratio_numbering'] = (
+            self.ent_ratio_numbering.get())
+        new_config['RATIO_SETTINGS']['ratio_thermal_graving'] = (
+            self.ent_ratio_thermal_graving.get())
+
+        # Запись в файл конфигурации
+        ConfigSet().update_settings(some_new=new_config)
+
+    def click_default_settings(self):  # Метод сброса настроек "По умолчанию"
         if askokcancel('Сброс настроек', 'Вы действительно хотите сбросить '
                                          'настройки по умолчанию?'):
             ConfigSet().default_settings()
-        self.is_not_use()
+        self.update_data_in_widgets()
+        self.child_root.update()
 
-    def click_delete_element(self):
+    def click_delete_element(self):  # Метод удаления стандартной работы
         pass
 
-    def is_not_use(self):
+    def is_not_use(self):  # Метод исправления ошибки статичности
         pass
 
     def grab_focus(self):  # Метод сохранения фокуса на дочернем окне
@@ -484,9 +577,15 @@ class ConfigSet:
 
         # Создание списков коэффициентов и стандартных настроек
 
-    def update_settings(self):  # Обновления файла конфигурации
-        with open('settings/settings.ini', 'w') as configfile:
-            self.config.write(configfile)
+    def update_settings(self, some_new=None):  # Обновления файла конфигурации
+        if some_new:
+            with open('settings/settings.ini', 'w') as configfile:
+                some_new.write(configfile)
+        else:
+            with open('settings/settings.ini', 'w') as configfile:
+                self.config.write(configfile)
+
+        self.is_not_use()  # Исправление статичности метода
 
     def default_settings(self):  # Метод сброса настроек программы до базовых
         # Формирование переменной базовой конфигурации
