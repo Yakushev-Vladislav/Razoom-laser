@@ -4,7 +4,6 @@ from tkinter.messagebox import askokcancel
 import configparser
 
 
-
 class ChildConfigSet:
     def __init__(self, parent, width, height, theme, standard,
                  title='Предварительная настройка программы',
@@ -37,8 +36,6 @@ class ChildConfigSet:
 
         # Объявление переменных
         self.standard_names = standard
-        #self.ratio_from_config = ConfigSet().config['RATIO_SETTINGS']
-        #self.main_from_config = ConfigSet().config['MAIN']
 
         # Создание вкладок окна
         self.child_tabs_control = ttk.Notebook(self.child_root)
@@ -111,7 +108,7 @@ class ChildConfigSet:
             width=20
         )
         self.ent_minimum.grid(row=2, column=0, padx=5, pady=5,
-                           sticky='nsew')
+                              sticky='nsew')
 
         # Окно ввода __ Доп стоимость за прицел __
         ttk.Label(self.tab_1, text='Стоимость доп. прицела').grid(
@@ -122,7 +119,7 @@ class ChildConfigSet:
             width=20
         )
         self.ent_additional.grid(row=2, column=1, padx=5, pady=5,
-                              sticky='nsew')
+                                 sticky='nsew')
 
         # Окно ввода __ Стоимость часа работы __
         ttk.Label(self.tab_1, text='Стоимость часа работы').grid(
@@ -133,7 +130,7 @@ class ChildConfigSet:
             width=20
         )
         self.ent_one_hour.grid(row=2, column=2, padx=5, pady=5,
-                                 sticky='nsew')
+                               sticky='nsew')
 
         # Разделительная черта
         ttk.Separator(self.tab_1).grid(
@@ -156,7 +153,7 @@ class ChildConfigSet:
             width=20
         )
         self.ent_ratio_laser_gas.grid(row=6, column=0, padx=5, pady=5,
-                                 sticky='nsew')
+                                      sticky='nsew')
 
         # Окно ввода ratio_rotation __Вращатель__
         ttk.Label(self.tab_1, text='Вращатель').grid(
@@ -167,7 +164,7 @@ class ChildConfigSet:
             width=20
         )
         self.ent_ratio_rotation.grid(row=6, column=1, padx=5, pady=5,
-                                      sticky='nsew')
+                                     sticky='nsew')
 
         # Окно ввода ratio_timing __Срочность__
         ttk.Label(self.tab_1, text='Срочность').grid(
@@ -178,7 +175,7 @@ class ChildConfigSet:
             width=20
         )
         self.ent_ratio_timing.grid(row=6, column=2, padx=5, pady=5,
-                                     sticky='nsew')
+                                   sticky='nsew')
 
         # Окно ввода ratio_packing __Распаковка/Запаковка__
         ttk.Label(self.tab_1, text='Распаковка/Запаковка').grid(
@@ -189,7 +186,7 @@ class ChildConfigSet:
             width=20
         )
         self.ent_ratio_packing.grid(row=8, column=0, padx=5, pady=5,
-                                              sticky='nsew')
+                                    sticky='nsew')
 
         # Окно ввода ratio_thermal_graving __Гравировка термовлиянием__
         ttk.Label(self.tab_1, text='Термовлияние').grid(
@@ -200,7 +197,7 @@ class ChildConfigSet:
             width=20
         )
         self.ent_ratio_thermal_graving.grid(row=8, column=1, padx=5, pady=5,
-                                    sticky='nsew')
+                                            sticky='nsew')
 
         # Окно ввода ratio_oversize __Негабаритное изделие__
         ttk.Label(self.tab_1, text='Негабаритное изделие').grid(
@@ -211,8 +208,7 @@ class ChildConfigSet:
             width=20
         )
         self.ent_ratio_oversize.grid(row=8, column=2, padx=5, pady=5,
-                                            sticky='nsew')
-
+                                     sticky='nsew')
 
         # Окно ввода ratio_taxation __Оплата с НДС__
         ttk.Label(self.tab_1, text='Оплата с НДС').grid(
@@ -223,7 +219,7 @@ class ChildConfigSet:
             width=20
         )
         self.ent_ratio_taxation.grid(row=10, column=0, padx=5, pady=5,
-                                      sticky='nsew')
+                                     sticky='nsew')
 
         # Окно ввода ratio_attention __Повышенное внимание__
         ttk.Label(self.tab_1, text='Повышенное внимание').grid(
@@ -234,7 +230,7 @@ class ChildConfigSet:
             width=20
         )
         self.ent_ratio_attention.grid(row=10, column=1, padx=5, pady=5,
-                                     sticky='nsew')
+                                      sticky='nsew')
 
         # Окно ввода ratio_hand_job __Ручные работы__
         ttk.Label(self.tab_1, text='Ручные работы').grid(
@@ -351,7 +347,7 @@ class ChildConfigSet:
 
         # Окно ввода __ Название работы __
         ttk.Label(self.tab_2_panel_2, text='Название работы').grid(
-            row=0, column=0, padx=0, pady=(5,0), sticky='ns'
+            row=0, column=0, padx=0, pady=(5, 0), sticky='ns'
         )
         self.ent_name = ttk.Entry(
             self.tab_2_panel_2,
@@ -382,7 +378,7 @@ class ChildConfigSet:
             width=20
         )
         self.ent_cost.grid(row=1, column=2, padx=5, pady=(5, 10),
-                                      sticky='nsew')
+                           sticky='nsew')
 
         # Создание кнопки добавления работы
         self.btn_add_new_element = ttk.Button(
@@ -392,7 +388,7 @@ class ChildConfigSet:
             command=self.click_add
         )
         self.btn_add_new_element.grid(
-            row=2, column=0, padx=5, pady=10, sticky='nsew',columnspan=3)
+            row=2, column=0, padx=5, pady=10, sticky='nsew', columnspan=3)
 
         # Разделительная черта
         ttk.Separator(self.tab_2_panel_2).grid(
@@ -409,7 +405,7 @@ class ChildConfigSet:
             width=20
         )
         self.ent_delete_element.grid(row=5, column=0, padx=5, pady=(10, 40),
-                           sticky='nsew')
+                                     sticky='nsew')
 
         # Создание кнопки удаления работы
         self.btn_delete_element = ttk.Button(
@@ -616,7 +612,7 @@ class ConfigSet:
         ratio_hand_job = 1.15
         ratio_taxation = 1.2
         ratio_oversize = 1.8
-        ratio_different_layouts = 1.2
+        ratio_different_layouts = 1.15
         ratio_numbering = 1.05
         ratio_thermal_graving = 1.15
         """

@@ -305,13 +305,21 @@ class Window:
         self.sizegrip = ttk.Sizegrip(self.root)
         self.sizegrip.place(relx=0.972, rely=0.965)
 
-        # Виджет вывода результатов расчета
+        # Виджеты вывода результатов расчета
         self.lbl_result_0 = ttk.Label(
             self.panel_3,
             text=f"Стоимость работы:"
-            f"  {0:.0f}  руб."
+            f"  {0:.0f}  руб/шт."
         )
-        self.lbl_result_0.grid(row=0, column=1, padx=(10, 10), sticky="nsew")
+        self.lbl_result_0.grid(row=0, column=1, padx=(10, 10), pady=(0, 10),
+                               sticky="nsew")
+        self.lbl_result_7 = ttk.Label(
+            self.panel_3,
+            text=f"Стоимость всей работы:"
+                 f"  {0:.0f}  руб."
+        )
+        self.lbl_result_7.grid(row=1, column=1, padx=(10, 10), pady=(0, 10),
+                               sticky="nsew")
 
         # ____________________2 ВКЛАДКА____________________
         # Создание формы для виджетов
@@ -508,7 +516,12 @@ class Window:
         menu_bar.add_cascade(label='Файл', menu=file_menu)
         menu_bar.add_cascade(label='Вид', menu=view_menu)
         menu_bar.add_cascade(label='Помощь', menu=help_menu)
+        menu_bar.add_command(label='Обновить', command=self.settings_update)
         self.root.configure(menu=menu_bar)
+
+    def settings_update(self):
+        self.main_settings = ConfigSet().config
+        self.root.update()
 
     def run_child_materials(self):  # Открытие дочернего окна листового мат-ла.
         self.root.CHILD = ChildMaterials(
@@ -673,7 +686,12 @@ class Window:
 
         self.lbl_result_0.config(
             text=f"Стоимость работы:"
-            f"  {main_cost:.0f}  руб."
+            f"  {self.round_result(main_cost):.0f}  руб/шт."
+        )
+        all_cost = self.round_result(main_cost) * int(self.spin_number.get())
+        self.lbl_result_7.config(
+            text=f"Стоимость всей работы:"
+                 f"  {all_cost:.0f}  руб."
         )
 
     def get_calc_mat(self):  # Метод расчета себестоимости изделий
@@ -738,6 +756,20 @@ class Window:
         self.combo_mat['values'] = self.material_list
         self.tab_2.update()
         self.root.update()
+
+    def round_result(self, cost):  # Метод округления результатов расчета
+        self.is_not_use()  # Исправление ошибки статичности
+
+        # Непосредственно округление
+        if cost >= 800:
+            return round(cost/50) * 50
+
+        elif 250 <= cost < 800:
+            return round(cost/10) * 10
+        elif 85 <= cost < 250:
+            return round(cost/5) * 5
+        else:
+            return cost
 
     def add_bind(self):  # Установка фонового текста в полях ввода (binds)
         self.to_add_entry()
