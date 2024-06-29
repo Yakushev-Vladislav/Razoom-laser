@@ -583,7 +583,8 @@ class ConfigSet:
 
         self.is_not_use()  # Исправление статичности метода
 
-    def default_settings(self):  # Метод сброса настроек программы до базовых
+    @staticmethod
+    def default_settings():  # Метод сброса настроек программы до базовых
         # Формирование переменной базовой конфигурации
         string_config = """
         [INFO]
@@ -592,6 +593,7 @@ class ConfigSet:
         min_cost = 1000
         additional_cost = 400
         one_hour_of_work = 5000
+        many_items = 0.4
         
         [STANDARD]
         ring = 1400
@@ -637,9 +639,6 @@ class ConfigSet:
         # Запись в файл настроек "по умолчанию"
         with open('settings/settings.ini', 'w') as configfile:
             default_config.write(configfile)
-
-        # Исправление ошибки статичности метода
-        self.is_not_use()
 
     def is_not_use(self):  # Метод исправления ошибки статичности
         pass

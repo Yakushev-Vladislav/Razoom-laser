@@ -48,8 +48,11 @@ class Window:
         self.bool_4 = tk.BooleanVar(value=False)
         self.bool_5 = tk.BooleanVar(value=False)
         self.bool_6 = tk.BooleanVar(value=False)
+        self.bool_7 = tk.BooleanVar(value=False)
+        self.bool_8 = tk.BooleanVar(value=False)
         self.rb = tk.IntVar(value=1)
         self.not_use = None
+
         # Создание словаря для связи списка со стоимостями
         self.standard_items = {
             "Жетон/Брелок": "badge",
@@ -89,7 +92,7 @@ class Window:
         # Создание формы для виджетов основного расчета
         self.panel_1 = ttk.Frame(self.tab_1, padding=(0, 0, 0, 0))
         self.panel_1.grid(row=0, column=0, padx=10, pady=(10, 0),
-                          sticky="nsew", rowspan=3)
+                          sticky="nsew", rowspan=1)
 
         # Создание формы для переключателей
         self.panel_2 = ttk.LabelFrame(
@@ -100,13 +103,22 @@ class Window:
         self.panel_2.grid(row=0, column=1, padx=(10, 20), pady=(10, 5),
                           sticky="nsew")
 
-        # Создание формы для вывода результатов
+        # Создание формы расчета по времени работы оборудования
         self.panel_3 = ttk.LabelFrame(
+            self.tab_1,
+            text="Время работы оборудования",
+            padding=(20, 20)
+        )
+        self.panel_3.grid(row=2, column=0, padx=(10, 20), pady=(10, 20),
+                          sticky="nsew")
+
+        # Создание формы для вывода результатов
+        self.panel_4 = ttk.LabelFrame(
             self.tab_1,
             text="Результаты расчета",
             padding=(20, 20)
         )
-        self.panel_3.grid(row=2, column=1, padx=(10, 20), pady=(10, 20),
+        self.panel_4.grid(row=2, column=1, padx=(10, 20), pady=(10, 20),
                           sticky="nsew")
 
         # Конфигурация форм
@@ -129,6 +141,13 @@ class Window:
         self.panel_2.rowconfigure(index=2, weight=2)
         self.panel_2.rowconfigure(index=3, weight=1)
         self.panel_2.rowconfigure(index=4, weight=1)
+        self.panel_2.rowconfigure(index=5, weight=1)
+
+        self.panel_3.columnconfigure(index=0, weight=1)
+        self.panel_3.columnconfigure(index=1, weight=1)
+        self.panel_3.rowconfigure(index=0, weight=1)
+        self.panel_3.rowconfigure(index=1, weight=1)
+        self.panel_3.rowconfigure(index=2, weight=1)
 
         # Создание выпадающего списка стандартных изделий
         ttk.Label(self.panel_1, text="Стандартное изделие:").grid(
@@ -237,7 +256,7 @@ class Window:
             command=self.get_calc
         )
         self.btn_calculate.grid(
-            row=8, column=1, padx=10, pady=20, sticky='nsew'
+            row=8, column=0, padx=10, pady=20, sticky='nsew', columnspan=2
         )
 
         # Создание переключателей в форме углубленного расчета
@@ -283,23 +302,37 @@ class Window:
         )
         self.chk_6.grid(row=2, column=1, padx=2, pady=10, sticky="nsew")
 
+        self.chk_7 = ttk.Checkbutton(
+            self.panel_2,
+            text='Повышенное внимание',
+            variable=self.bool_7
+        )
+        self.chk_7.grid(row=3, column=0, padx=2, pady=10, sticky="nsew")
+
+        self.chk_8 = ttk.Checkbutton(
+            self.panel_2,
+            text='Ручные работы',
+            variable=self.bool_8
+        )
+        self.chk_8.grid(row=3, column=1, padx=2, pady=10, sticky="nsew")
+
         # Переключатель сложности установки
         ttk.Label(self.panel_2, text='Сложность установки').grid(
-            row=3, column=0, padx=(10, 0), pady=10, sticky='nsew'
+            row=4, column=0, padx=(10, 0), pady=10, sticky='nsew'
         )
         self.spin_hard = ttk.Spinbox(self.panel_2, from_=1, to=5)
         self.spin_hard.insert(0, '1')
         self.spin_hard.grid(
-            row=3, column=1, padx=0, pady=5, sticky='nsew'
+            row=4, column=1, padx=0, pady=5, sticky='nsew'
         )
         # Переключатель глубины гравировки
         ttk.Label(self.panel_2, text='Глубина гравировки').grid(
-            row=4, column=0, padx=(10, 0), pady=10, sticky='nsew'
+            row=5, column=0, padx=(10, 0), pady=10, sticky='nsew'
         )
         self.spin_deep = ttk.Spinbox(self.panel_2, from_=1, to=3)
         self.spin_deep.insert(0, '1')
         self.spin_deep.grid(
-            row=4, column=1, padx=0, pady=5, sticky='nsew'
+            row=5, column=1, padx=0, pady=5, sticky='nsew'
         )
         # Создание ползунка изменения размера
         self.sizegrip = ttk.Sizegrip(self.root)
@@ -307,19 +340,41 @@ class Window:
 
         # Виджеты вывода результатов расчета
         self.lbl_result_0 = ttk.Label(
-            self.panel_3,
+            self.panel_4,
             text=f"Стоимость работы:"
             f"  {0:.0f}  руб/шт."
         )
         self.lbl_result_0.grid(row=0, column=1, padx=(10, 10), pady=(0, 10),
                                sticky="nsew")
         self.lbl_result_7 = ttk.Label(
-            self.panel_3,
+            self.panel_4,
             text=f"Стоимость всей работы:"
                  f"  {0:.0f}  руб."
         )
         self.lbl_result_7.grid(row=1, column=1, padx=(10, 10), pady=(0, 10),
                                sticky="nsew")
+
+        # Виджеты времени работы оборудования
+        ttk.Label(self.panel_3, text='Время работы, мин.').grid(
+            row=0, column=0, padx=0, pady=0, sticky='ns')
+        self.ent_time_of_work = ttk.Entry(self.panel_3, width=5)
+        self.ent_time_of_work.grid(row=1, column=0, padx=10, pady=10,
+                                   sticky='nsew')
+        self.btn_time_calculate = ttk.Button(
+            self.panel_3,
+            text='Расчёт',
+            command=self.get_time_calc
+        )
+        self.btn_time_calculate.grid(
+            row=1, column=1, padx=10, pady=10, sticky='nsew')
+
+        self.lbl_result_time = ttk.Label(
+            self.panel_3,
+            text=f"Стоимость работы:"
+                 f"  {0:.0f}  руб/шт."
+        )
+        self.lbl_result_time.grid(row=3, column=0, padx=(10, 10), pady=(0, 10),
+                                  sticky="ns", columnspan=2)
 
         # ____________________2 ВКЛАДКА____________________
         # Создание формы для виджетов
@@ -573,6 +628,25 @@ class Window:
             self.style.theme_use(self.theme)
         self.root.update()
 
+    def get_time_calc(self):
+        try:  # Проверяем на то, что введено корректное число
+            cost = (
+                float(self.ent_time_of_work.get()) *
+                int(self.main_settings['MAIN']['one_hour_of_work']) / 60
+
+            )
+
+            self.lbl_result_time.config(
+                text=f"Стоимость работы:"
+                     f" {self.round_result(cost):.0f}  руб/шт."
+            )
+
+        except ValueError:  # Если число некорректно
+            self.lbl_result_time.config(
+                text=f"Стоимость работы:"
+                     f" {0:.0f}  руб/шт."
+            )
+
     def get_calc(self):  # Метод основного и углубленного расчета
 
         # Формирование начальной стоимости
@@ -675,14 +749,15 @@ class Window:
             additional_cost = 0
 
         # Коэффициент зависимости от количества изделий
-        ratio_many_items = int(self.spin_number.get()) ** (-0.5)
+        ratio_many_items = int(self.spin_number.get()) ** (
+            -float(self.main_settings["MAIN"]["many_items"]))
 
         # Расчет основной стоимости
         main_cost = ((additional_cost + (cost * (
                 ratio_laser * ratio_rotation * ratio_different_layouts *
                 ratio_timing * ratio_packing * ratio_thermal_graving *
                 ratio_oversize * ratio_numbering))) * ratio_taxation *
-                     ratio_many_items)
+                ratio_many_items)
 
         self.lbl_result_0.config(
             text=f"Стоимость работы:"
@@ -757,9 +832,8 @@ class Window:
         self.tab_2.update()
         self.root.update()
 
-    def round_result(self, cost):  # Метод округления результатов расчета
-        self.is_not_use()  # Исправление ошибки статичности
-
+    @staticmethod
+    def round_result(cost):  # Метод округления результатов расчета
         # Непосредственно округление
         if cost >= 800:
             return round(cost/50) * 50
@@ -777,6 +851,7 @@ class Window:
         self.to_add_entry2()
         self.to_add_entry3()
         self.to_add_entry4()
+        self.to_add_entry5()
 
         self.ent_width_grav.bind('<FocusIn>', self.erase_entry)
         self.ent_width_grav.bind('<FocusOut>', self.to_add_entry)
@@ -792,6 +867,9 @@ class Window:
 
         self.ent_height.bind('<FocusIn>', self.erase_entry4)
         self.ent_height.bind('<FocusOut>', self.to_add_entry4)
+
+        self.ent_time_of_work.bind('<FocusIn>', self.erase_entry5)
+        self.ent_time_of_work.bind('<FocusOut>', self.to_add_entry5)
 
     def erase_entry(self, event=None):
         if self.ent_width_grav.get() == '-':
@@ -816,6 +894,11 @@ class Window:
     def erase_entry4(self, event=None):
         if self.ent_height.get() == '-':
             self.ent_height.delete(0, 'end')
+        self.not_use = event
+
+    def erase_entry5(self, event=None):
+        if self.ent_time_of_work.get() == '-':
+            self.ent_time_of_work.delete(0, 'end')
         self.not_use = event
 
     def to_add_entry(self, event=None):
@@ -843,6 +926,11 @@ class Window:
             self.ent_height.insert(0, '-')
         self.not_use = event
 
+    def to_add_entry5(self, event=None):
+        if self.ent_time_of_work.get() == "":
+            self.ent_time_of_work.insert(0, '-')
+        self.not_use = event
+
     def run(self):  # Метод, реализующий запуск программы
         # Удаление пустых строк из файла перед запуском
         with open("resources/materials_data.txt", 'r') as f1:
@@ -863,9 +951,6 @@ class Window:
         choice = askokcancel('Выход', 'Вы действительно хотите выйти?')
         if choice:
             self.root.destroy()
-
-    def is_not_use(self):  # Метод исправления ошибки статичности методов
-        pass
 
 
 if __name__ == "__main__":  # Запуск программы
