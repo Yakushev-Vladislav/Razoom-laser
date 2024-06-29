@@ -370,8 +370,8 @@ class Window:
 
         self.lbl_result_time = ttk.Label(
             self.panel_3,
-            text=f"Стоимость работы:"
-                 f"  {0:.0f}  руб/шт."
+            text=f"Стоимость работы: "
+                 f" {0:.0f}  руб/шт."
         )
         self.lbl_result_time.grid(row=3, column=0, padx=(10, 10), pady=(0, 10),
                                   sticky="ns", columnspan=2)
@@ -638,13 +638,13 @@ class Window:
 
             self.lbl_result_time.config(
                 text=f"Стоимость работы:"
-                     f" {self.round_result(cost):.0f}  руб/шт."
+                     f"  {self.round_result(cost):.0f}  руб/шт."
             )
 
         except ValueError:  # Если число некорректно
             self.lbl_result_time.config(
                 text=f"Стоимость работы:"
-                     f" {0:.0f}  руб/шт."
+                     f"  {0:.0f}  руб/шт."
             )
 
     def get_calc(self):  # Метод основного и углубленного расчета
