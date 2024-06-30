@@ -50,6 +50,7 @@ class Window:
         self.bool_6 = tk.BooleanVar(value=False)
         self.bool_7 = tk.BooleanVar(value=False)
         self.bool_8 = tk.BooleanVar(value=False)
+        self.bool_9 = tk.BooleanVar(value=False)
         self.rb = tk.IntVar(value=1)
         self.not_use = None
 
@@ -139,9 +140,11 @@ class Window:
         self.panel_2.rowconfigure(index=0, weight=2)
         self.panel_2.rowconfigure(index=1, weight=2)
         self.panel_2.rowconfigure(index=2, weight=2)
-        self.panel_2.rowconfigure(index=3, weight=1)
-        self.panel_2.rowconfigure(index=4, weight=1)
+        self.panel_2.rowconfigure(index=3, weight=2)
+        self.panel_2.rowconfigure(index=4, weight=2)
         self.panel_2.rowconfigure(index=5, weight=1)
+        self.panel_2.rowconfigure(index=6, weight=1)
+        self.panel_2.rowconfigure(index=7, weight=1)
 
         self.panel_3.columnconfigure(index=0, weight=1)
         self.panel_3.columnconfigure(index=1, weight=1)
@@ -265,75 +268,93 @@ class Window:
             text='Срочность',
             variable=self.bool_1
         )
-        self.chk_1.grid(row=0, column=0, padx=2, pady=10, sticky="nsew")
+        self.chk_1.grid(row=0, column=0, padx=2, pady=5, sticky="nsew")
 
         self.chk_2 = ttk.Checkbutton(
             self.panel_2,
             text='Распаковка/Запаковка',
             variable=self.bool_2
         )
-        self.chk_2.grid(row=0, column=1, padx=2, pady=10, sticky="nsew")
+        self.chk_2.grid(row=0, column=1, padx=2, pady=5, sticky="nsew")
 
         self.chk_3 = ttk.Checkbutton(
             self.panel_2,
             text='Гравировка термовлиянием',
             variable=self.bool_3
         )
-        self.chk_3.grid(row=1, column=0, padx=2, pady=10, sticky="nsew")
+        self.chk_3.grid(row=1, column=0, padx=2, pady=5, sticky="nsew")
 
         self.chk_4 = ttk.Checkbutton(
             self.panel_2,
             text='Негабаритное изделие',
             variable=self.bool_4
         )
-        self.chk_4.grid(row=1, column=1, padx=2, pady=10, sticky="nsew")
+        self.chk_4.grid(row=1, column=1, padx=2, pady=5, sticky="nsew")
 
         self.chk_5 = ttk.Checkbutton(
             self.panel_2,
             text='Счетчик',
             variable=self.bool_5
         )
-        self.chk_5.grid(row=2, column=0, padx=2, pady=10, sticky="nsew")
+        self.chk_5.grid(row=2, column=0, padx=2, pady=5, sticky="nsew")
 
         self.chk_6 = ttk.Checkbutton(
             self.panel_2,
             text='Оплата с НДС',
             variable=self.bool_6
         )
-        self.chk_6.grid(row=2, column=1, padx=2, pady=10, sticky="nsew")
+        self.chk_6.grid(row=2, column=1, padx=2, pady=5, sticky="nsew")
 
         self.chk_7 = ttk.Checkbutton(
             self.panel_2,
             text='Повышенное внимание',
             variable=self.bool_7
         )
-        self.chk_7.grid(row=3, column=0, padx=2, pady=10, sticky="nsew")
+        self.chk_7.grid(row=3, column=0, padx=2, pady=5, sticky="nsew")
 
         self.chk_8 = ttk.Checkbutton(
             self.panel_2,
             text='Ручные работы',
             variable=self.bool_8
         )
-        self.chk_8.grid(row=3, column=1, padx=2, pady=10, sticky="nsew")
+        self.chk_8.grid(row=3, column=1, padx=2, pady=5, sticky="nsew")
+
+        self.chk_9 = ttk.Checkbutton(
+            self.panel_2,
+            text='Стыковка элементов',
+            variable=self.bool_9
+        )
+        self.chk_9.grid(row=4, column=0, padx=2, pady=5, sticky="nsew")
 
         # Переключатель сложности установки
         ttk.Label(self.panel_2, text='Сложность установки').grid(
-            row=4, column=0, padx=(10, 0), pady=10, sticky='nsew'
+            row=5, column=0, padx=(10, 0), pady=5, sticky='nsew'
         )
         self.spin_hard = ttk.Spinbox(self.panel_2, from_=1, to=5)
         self.spin_hard.insert(0, '1')
+        self.spin_hard.configure(state='readonly')
         self.spin_hard.grid(
-            row=4, column=1, padx=0, pady=5, sticky='nsew'
+            row=5, column=1, padx=0, pady=5, sticky='nsew'
         )
+
         # Переключатель глубины гравировки
         ttk.Label(self.panel_2, text='Глубина гравировки').grid(
-            row=5, column=0, padx=(10, 0), pady=10, sticky='nsew'
+            row=6, column=0, padx=(10, 0), pady=5, sticky='nsew'
         )
         self.spin_deep = ttk.Spinbox(self.panel_2, from_=1, to=3)
         self.spin_deep.insert(0, '1')
+        self.spin_deep.configure(state='readonly')
         self.spin_deep.grid(
-            row=5, column=1, padx=0, pady=5, sticky='nsew'
+            row=6, column=1, padx=0, pady=5, sticky='nsew'
         )
+
+        # Окно ввода скидки оператора
+        ttk.Label(self.panel_2, text='Скидка оператора, %').grid(
+            row=7, column=0, padx=(10, 0), pady=0, sticky='nsew')
+        self.ent_discount = ttk.Entry(self.panel_2, width=5)
+        self.ent_discount.grid(row=7, column=1, padx=0, pady=5,
+                               sticky='nsew')
+
         # Создание ползунка изменения размера
         self.sizegrip = ttk.Sizegrip(self.root)
         self.sizegrip.place(relx=0.972, rely=0.965)
@@ -740,6 +761,27 @@ class Window:
         else:
             ratio_taxation = 1
 
+        # Коэффициент ratio_attention __Повышенное внимание__
+        if self.bool_7.get():
+            ratio_attention = float(self.main_settings["RATIO_SETTINGS"][
+                "ratio_attention"])
+        else:
+            ratio_attention = 1
+
+        # Коэффициент ratio_hand_job __Ручные работы__
+        if self.bool_8.get():
+            ratio_hand_job = float(self.main_settings["RATIO_SETTINGS"][
+                "ratio_hand_job"])
+        else:
+            ratio_hand_job = 1
+
+        # Коэффициент ratio_docking __Стыковка элементов__
+        if self.bool_9.get() and int(self.spin_aim.get()) > 1:
+            ratio_docking = float(self.main_settings["RATIO_SETTINGS"][
+                "ratio_docking"])
+        else:
+            ratio_docking = 1
+
         # Дополнительная стоимость за количество установок
         if int(self.spin_aim.get()) > 1:
             additional_cost = (
@@ -752,12 +794,25 @@ class Window:
         ratio_many_items = int(self.spin_number.get()) ** (
             -float(self.main_settings["MAIN"]["many_items"]))
 
+        # Скидка оператора
+        try:
+            ratio_discount = 1 - float(self.ent_discount.get()) / 100
+        except ValueError:
+            ratio_discount = 1
+
         # Расчет основной стоимости
+        """
+        Формула имеет следующий вид:
+        Итоговая цена = (дополнительные прицелы + 
+        + минимальная стоимость * коэффициенты) * учет НДС * учет скидки * 
+        * учет количества изделий
+        """
         main_cost = ((additional_cost + (cost * (
                 ratio_laser * ratio_rotation * ratio_different_layouts *
                 ratio_timing * ratio_packing * ratio_thermal_graving *
-                ratio_oversize * ratio_numbering))) * ratio_taxation *
-                ratio_many_items)
+                ratio_oversize * ratio_numbering * ratio_attention *
+                ratio_hand_job * ratio_docking)))
+                     * ratio_taxation * ratio_many_items * ratio_discount)
 
         self.lbl_result_0.config(
             text=f"Стоимость работы:"
@@ -852,6 +907,7 @@ class Window:
         self.to_add_entry3()
         self.to_add_entry4()
         self.to_add_entry5()
+        self.to_add_entry6()
 
         self.ent_width_grav.bind('<FocusIn>', self.erase_entry)
         self.ent_width_grav.bind('<FocusOut>', self.to_add_entry)
@@ -870,6 +926,9 @@ class Window:
 
         self.ent_time_of_work.bind('<FocusIn>', self.erase_entry5)
         self.ent_time_of_work.bind('<FocusOut>', self.to_add_entry5)
+
+        self.ent_discount.bind('<FocusIn>', self.erase_entry6)
+        self.ent_discount.bind('<FocusOut>', self.to_add_entry6)
 
     def erase_entry(self, event=None):
         if self.ent_width_grav.get() == '-':
@@ -901,6 +960,11 @@ class Window:
             self.ent_time_of_work.delete(0, 'end')
         self.not_use = event
 
+    def erase_entry6(self, event=None):
+        if self.ent_discount.get() == '-':
+            self.ent_discount.delete(0, 'end')
+        self.not_use = event
+
     def to_add_entry(self, event=None):
         if self.ent_width_grav.get() == "":
             self.ent_width_grav.insert(0, '-')
@@ -929,6 +993,11 @@ class Window:
     def to_add_entry5(self, event=None):
         if self.ent_time_of_work.get() == "":
             self.ent_time_of_work.insert(0, '-')
+        self.not_use = event
+
+    def to_add_entry6(self, event=None):
+        if self.ent_discount.get() == "":
+            self.ent_discount.insert(0, '-')
         self.not_use = event
 
     def run(self):  # Метод, реализующий запуск программы
