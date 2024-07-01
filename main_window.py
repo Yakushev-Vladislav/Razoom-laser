@@ -330,10 +330,10 @@ class Window:
         ttk.Label(self.panel_2, text='Сложность установки').grid(
             row=5, column=0, padx=(10, 0), pady=5, sticky='nsew'
         )
-        self.spin_hard = ttk.Spinbox(self.panel_2, from_=1, to=5)
-        self.spin_hard.insert(0, '1')
-        self.spin_hard.configure(state='readonly')
-        self.spin_hard.grid(
+        self.spin_difficult = ttk.Spinbox(self.panel_2, from_=1, to=5)
+        self.spin_difficult.insert(0, '1')
+        self.spin_difficult.configure(state='readonly')
+        self.spin_difficult.grid(
             row=5, column=1, padx=0, pady=5, sticky='nsew'
         )
 
@@ -341,10 +341,10 @@ class Window:
         ttk.Label(self.panel_2, text='Глубина гравировки').grid(
             row=6, column=0, padx=(10, 0), pady=5, sticky='nsew'
         )
-        self.spin_deep = ttk.Spinbox(self.panel_2, from_=1, to=3)
-        self.spin_deep.insert(0, '1')
-        self.spin_deep.configure(state='readonly')
-        self.spin_deep.grid(
+        self.spin_depth = ttk.Spinbox(self.panel_2, from_=1, to=5)
+        self.spin_depth.insert(0, '1')
+        self.spin_depth.configure(state='readonly')
+        self.spin_depth.grid(
             row=6, column=1, padx=0, pady=5, sticky='nsew'
         )
 
@@ -363,14 +363,18 @@ class Window:
         self.lbl_result_0 = ttk.Label(
             self.panel_4,
             text=f"Стоимость работы:"
-            f"  {0:.0f}  руб/шт."
+            f"  {0:.0f}  руб/шт.",
+            font = 'Arial 15',
+            foreground='green'
         )
         self.lbl_result_0.grid(row=0, column=1, padx=(10, 10), pady=(0, 10),
                                sticky="nsew")
         self.lbl_result_7 = ttk.Label(
             self.panel_4,
             text=f"Стоимость всей работы:"
-                 f"  {0:.0f}  руб."
+                 f"  {0:.0f}  руб.",
+            font='Arial 15',
+            foreground='green'
         )
         self.lbl_result_7.grid(row=1, column=1, padx=(10, 10), pady=(0, 10),
                                sticky="nsew")
@@ -794,6 +798,17 @@ class Window:
         ratio_many_items = int(self.spin_number.get()) ** (
             -float(self.main_settings["MAIN"]["many_items"]))
 
+        # Коэффициент сложности установки
+        difficult_list = self.main_settings['GRADATION']['difficult'].split(', ')
+        ratio_difficult = float(
+            difficult_list[int(self.spin_difficult.get()) - 1])
+
+        # Коэффициент глубины гравировки
+        depth_list = self.main_settings['GRADATION']['depth'].split(
+            ', ')
+        ratio_depth = float(
+            depth_list[int(self.spin_depth.get()) - 1])
+
         # Скидка оператора
         try:
             ratio_discount = 1 - float(self.ent_discount.get()) / 100
@@ -807,11 +822,13 @@ class Window:
         + минимальная стоимость * коэффициенты) * учет НДС * учет скидки * 
         * учет количества изделий
         """
+
         main_cost = ((additional_cost + (cost * (
                 ratio_laser * ratio_rotation * ratio_different_layouts *
                 ratio_timing * ratio_packing * ratio_thermal_graving *
                 ratio_oversize * ratio_numbering * ratio_attention *
-                ratio_hand_job * ratio_docking)))
+                ratio_hand_job * ratio_docking * ratio_difficult *
+                ratio_depth)))
                      * ratio_taxation * ratio_many_items * ratio_discount)
 
         self.lbl_result_0.config(
@@ -852,14 +869,20 @@ class Window:
             )
 
             # Себестоимость одного изделия
-            total_1 = Calculation(
-                gab_width, gab_height, material_name).get_price() / total_3
+            try:
+                total_1 = Calculation(
+                    gab_width, gab_height, material_name).get_price() / total_3
+            except ZeroDivisionError:
+                total_1 = 0.0
 
             # Себестоимость партии
             total_2 = total_1 * number_of_products
 
             # Потребное количество листов на партию
-            total_4 = ceil(number_of_products / total_3)
+            try:
+                total_4 = ceil(number_of_products / total_3)
+            except ZeroDivisionError:
+                total_4 = 0.0
 
             # Вывод результатов
             self.lbl_result_1.config(
