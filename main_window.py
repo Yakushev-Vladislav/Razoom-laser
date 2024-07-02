@@ -26,8 +26,8 @@ class Window:
         self.root.resizable(True, True)
 
         # Минимальные размеры окна и расположение
-        self.root.geometry(f"{1000}x{650}+200+100")
-        self.root.minsize(1000, 650)
+        self.root.geometry(f"{1000}x{700}+200+100")
+        self.root.minsize(1000, 700)
         self.root.geometry("%dx%d" % (self.root.winfo_width(),
                                       self.root.winfo_height()))
 
@@ -39,7 +39,10 @@ class Window:
         self.style.theme_use(self.theme)
 
         # Создание переменных
+        # Переменная настроек (конфигурации) программы
         self.main_settings = ConfigSet().config
+
+        # Переменные для переключателей выбора типа и сложности расчета
         self.bool_rotation = tk.BooleanVar(value=False)
         self.bool_different = tk.BooleanVar(value=False)
         self.bool_1 = tk.BooleanVar(value=False)
@@ -51,8 +54,33 @@ class Window:
         self.bool_7 = tk.BooleanVar(value=False)
         self.bool_8 = tk.BooleanVar(value=False)
         self.bool_9 = tk.BooleanVar(value=False)
+        self.bool_10 = tk.BooleanVar(value=False)
+
+        # Переменная выбора типа оборудования
         self.rb = tk.IntVar(value=1)
+
+        # Переменная для bind методов
         self.not_use = None
+
+        # Переменные коэффициентов сложности и дополнительная стоимость
+        self.cost_design = 0
+        self.additional_cost = 0
+        self.ratio_laser = 1
+        self.ratio_rotation = 1
+        self.ratio_different_layouts = 1
+        self.ratio_timing = 1
+        self.ratio_packing = 1
+        self.ratio_thermal_graving = 1
+        self.ratio_oversize = 1
+        self.ratio_numbering = 1
+        self.ratio_taxation = 1
+        self.ratio_attention = 1
+        self.ratio_hand_job = 1
+        self.ratio_docking = 1
+        self.ratio_many_items = 1
+        self.ratio_difficult = 1
+        self.ratio_depth = 1
+        self.ratio_discount = 1
 
         # Создание словаря для связи списка со стоимостями
         self.standard_items = {
@@ -74,8 +102,9 @@ class Window:
         self.tab_1.columnconfigure(index=0, weight=1)
         self.tab_1.columnconfigure(index=1, weight=2)
         self.tab_1.rowconfigure(index=0, weight=4)
-        self.tab_1.rowconfigure(index=1, weight=1)
-        self.tab_1.rowconfigure(index=2, weight=4)
+        self.tab_1.rowconfigure(index=1, weight=4)
+        self.tab_1.rowconfigure(index=2, weight=1)
+        self.tab_1.rowconfigure(index=3, weight=4)
 
         self.tab_2.columnconfigure(index=0, weight=1)
         self.tab_2.columnconfigure(index=1, weight=50)
@@ -99,27 +128,36 @@ class Window:
         self.panel_2 = ttk.LabelFrame(
             self.tab_1,
             text="Углубленный расчет",
-            padding=(20, 20)
+            padding=10
         )
         self.panel_2.grid(row=0, column=1, padx=(10, 20), pady=(10, 5),
-                          sticky="nsew")
+                          sticky="nsew", rowspan=2)
 
         # Создание формы расчета по времени работы оборудования
         self.panel_3 = ttk.LabelFrame(
             self.tab_1,
             text="Время работы оборудования",
-            padding=(20, 20)
+            padding=5
         )
-        self.panel_3.grid(row=2, column=0, padx=(10, 20), pady=(10, 20),
+        self.panel_3.grid(row=3, column=0, padx=(10, 20), pady=(10, 20),
                           sticky="nsew")
 
         # Создание формы для вывода результатов
         self.panel_4 = ttk.LabelFrame(
             self.tab_1,
             text="Результаты расчета",
-            padding=(20, 20)
+            padding=5
         )
-        self.panel_4.grid(row=2, column=1, padx=(10, 20), pady=(10, 20),
+        self.panel_4.grid(row=3, column=1, padx=(10, 20), pady=(10, 20),
+                          sticky="nsew")
+
+        # Создание формы расчета с количеством прицелов в партии
+        self.panel_5 = ttk.LabelFrame(
+            self.tab_1,
+            text="Учет установок в партии",
+            padding=5
+        )
+        self.panel_5.grid(row=1, column=0, padx=(10, 20), pady=(5, 5),
                           sticky="nsew")
 
         # Конфигурация форм
@@ -145,6 +183,7 @@ class Window:
         self.panel_2.rowconfigure(index=5, weight=1)
         self.panel_2.rowconfigure(index=6, weight=1)
         self.panel_2.rowconfigure(index=7, weight=1)
+        self.panel_2.rowconfigure(index=8, weight=1)
 
         self.panel_3.columnconfigure(index=0, weight=1)
         self.panel_3.columnconfigure(index=1, weight=1)
@@ -152,9 +191,20 @@ class Window:
         self.panel_3.rowconfigure(index=1, weight=1)
         self.panel_3.rowconfigure(index=2, weight=1)
 
+        self.panel_4.columnconfigure(index=0, weight=1)
+        self.panel_4.rowconfigure(index=0, weight=1)
+        self.panel_4.rowconfigure(index=1, weight=1)
+        self.panel_4.rowconfigure(index=2, weight=1)
+
+        self.panel_5.columnconfigure(index=0, weight=1)
+        self.panel_5.columnconfigure(index=1, weight=1)
+        self.panel_5.rowconfigure(index=0, weight=1)
+        self.panel_5.rowconfigure(index=1, weight=1)
+        self.panel_5.rowconfigure(index=2, weight=1)
+
         # Создание выпадающего списка стандартных изделий
         ttk.Label(self.panel_1, text="Стандартное изделие:").grid(
-            row=0, column=0, padx=10, pady=(5, 10), sticky='ns')
+            row=0, column=0, padx=10, pady=0, sticky='ns')
         self.combo_list = [
             "Нет",
             "Жетон/Брелок",
@@ -171,7 +221,7 @@ class Window:
             width=20
         )
         self.combo_products.current(0)
-        self.combo_products.grid(row=0, column=1, padx=5, pady=(5, 10),
+        self.combo_products.grid(row=0, column=1, padx=5, pady=0,
                                  sticky="nsew", columnspan=1)
 
         # Создание переключателей выбора оборудования
@@ -181,7 +231,7 @@ class Window:
             variable=self.rb,
             value=1
         )
-        self.rbt_solid.grid(row=1, column=0, padx=5, pady=(20, 5),
+        self.rbt_solid.grid(row=1, column=0, padx=5, pady=0,
                             sticky="ns")
         self.rbt_co2 = ttk.Radiobutton(
             self.panel_1,
@@ -189,18 +239,18 @@ class Window:
             variable=self.rb,
             value=2
         )
-        self.rbt_co2.grid(row=1, column=1, padx=5, pady=(20, 5),
+        self.rbt_co2.grid(row=1, column=1, padx=5, pady=0,
                           sticky="ns")
 
         # Подписи к формам ввода области гравировки
         ttk.Label(self.panel_1, text='Размер области гравировки').grid(
-            row=2, column=0, columnspan=2, padx=5, pady=(0, 10), sticky='ns'
+            row=2, column=0, columnspan=2, padx=5, pady=2, sticky='ns'
         )
         ttk.Label(self.panel_1, text='Ширина, мм.').grid(
-            row=3, column=0, padx=5, pady=5, sticky='ns'
+            row=3, column=0, padx=5, pady=2, sticky='ns'
         )
         ttk.Label(self.panel_1, text='Высота, мм.').grid(
-            row=3, column=1, padx=5, pady=5, sticky='ns'
+            row=3, column=1, padx=5, pady=2, sticky='ns'
         )
 
         # Поля ввода габаритов изделия
@@ -221,7 +271,7 @@ class Window:
             style="Switch"
         )
         self.switch_rotation.grid(
-            row=5, column=0, padx=5, pady=20, sticky="ns")
+            row=5, column=0, padx=5, pady=5, sticky="ns")
 
         # Переключатель -Разные макеты-
         self.chk_different = ttk.Checkbutton(
@@ -259,7 +309,7 @@ class Window:
             command=self.get_calc
         )
         self.btn_calculate.grid(
-            row=8, column=0, padx=10, pady=20, sticky='nsew', columnspan=2
+            row=8, column=0, padx=10, pady=10, sticky='nsew', columnspan=2
         )
 
         # Создание переключателей в форме углубленного расчета
@@ -303,7 +353,7 @@ class Window:
             text='Оплата с НДС',
             variable=self.bool_6
         )
-        self.chk_6.grid(row=2, column=1, padx=2, pady=5, sticky="nsew")
+        self.chk_6.grid(row=4, column=0, padx=2, pady=5, sticky="nsew")
 
         self.chk_7 = ttk.Checkbutton(
             self.panel_2,
@@ -324,7 +374,14 @@ class Window:
             text='Стыковка элементов',
             variable=self.bool_9
         )
-        self.chk_9.grid(row=4, column=0, padx=2, pady=5, sticky="nsew")
+        self.chk_9.grid(row=2, column=1, padx=2, pady=5, sticky="nsew")
+
+        self.chk_10 = ttk.Checkbutton(
+            self.panel_2,
+            text='Оплата по счету ИП',
+            variable=self.bool_10
+        )
+        self.chk_10.grid(row=4, column=1, padx=2, pady=5, sticky="nsew")
 
         # Переключатель сложности установки
         ttk.Label(self.panel_2, text='Сложность установки').grid(
@@ -348,11 +405,18 @@ class Window:
             row=6, column=1, padx=0, pady=5, sticky='nsew'
         )
 
+        # Окно ввода доплаты за макетирование
+        ttk.Label(self.panel_2, text='Макетирование, руб.').grid(
+            row=7, column=0, padx=(10, 0), pady=0, sticky='nsew')
+        self.ent_design = ttk.Entry(self.panel_2, width=5)
+        self.ent_design.grid(row=7, column=1, padx=0, pady=5,
+                             sticky='nsew')
+
         # Окно ввода скидки оператора
         ttk.Label(self.panel_2, text='Скидка оператора, %').grid(
-            row=7, column=0, padx=(10, 0), pady=0, sticky='nsew')
+            row=8, column=0, padx=(10, 0), pady=0, sticky='nsew')
         self.ent_discount = ttk.Entry(self.panel_2, width=5)
-        self.ent_discount.grid(row=7, column=1, padx=0, pady=5,
+        self.ent_discount.grid(row=8, column=1, padx=0, pady=5,
                                sticky='nsew')
 
         # Создание ползунка изменения размера
@@ -364,20 +428,20 @@ class Window:
             self.panel_4,
             text=f"Стоимость работы:"
             f"  {0:.0f}  руб/шт.",
-            font = 'Arial 15',
-            foreground='green'
+            font='Arial 15',
+            foreground='#217346'
         )
-        self.lbl_result_0.grid(row=0, column=1, padx=(10, 10), pady=(0, 10),
-                               sticky="nsew")
+        self.lbl_result_0.grid(row=0, column=0, padx=(10, 10), pady=(0, 10),
+                               sticky="ns")
         self.lbl_result_7 = ttk.Label(
             self.panel_4,
             text=f"Стоимость всей работы:"
                  f"  {0:.0f}  руб.",
             font='Arial 15',
-            foreground='green'
+            foreground='#217346'
         )
-        self.lbl_result_7.grid(row=1, column=1, padx=(10, 10), pady=(0, 10),
-                               sticky="nsew")
+        self.lbl_result_7.grid(row=1, column=0, padx=(10, 10), pady=(0, 10),
+                               sticky="ns")
 
         # Виджеты времени работы оборудования
         ttk.Label(self.panel_3, text='Время работы, мин.').grid(
@@ -400,6 +464,30 @@ class Window:
         )
         self.lbl_result_time.grid(row=3, column=0, padx=(10, 10), pady=(0, 10),
                                   sticky="ns", columnspan=2)
+
+        # Виджеты расчета партии с количеством изделий в установке
+        ttk.Label(self.panel_5, text='Количество изделий за 1 установку, '
+                                     'шт.').grid(
+            row=0, column=0, padx=0, pady=0, sticky='ns')
+        self.ent_items_in_one = ttk.Entry(self.panel_5, width=5)
+        self.ent_items_in_one.grid(row=1, column=0, padx=10, pady=10,
+                                   sticky='nsew')
+        self.btn_items_calculate = ttk.Button(
+            self.panel_5,
+            text='Расчёт',
+            command=self.get_calculate_items
+        )
+        self.btn_items_calculate.grid(
+            row=1, column=1, padx=10, pady=10, sticky='nsew')
+
+        self.lbl_result_items = ttk.Label(
+            self.panel_5,
+            text=f"Стоимость работы: "
+                 f" {0:.0f}  руб."
+        )
+        self.lbl_result_items.grid(
+            row=3, column=0, padx=(10, 10), pady=(0, 10), sticky="ns",
+            columnspan=2)
 
         # ____________________2 ВКЛАДКА____________________
         # Создание формы для виджетов
@@ -653,7 +741,7 @@ class Window:
             self.style.theme_use(self.theme)
         self.root.update()
 
-    def get_time_calc(self):
+    def get_time_calc(self):  # Расчет по времени работы оборудования
         try:  # Проверяем на то, что введено корректное число
             cost = (
                 float(self.ent_time_of_work.get()) *
@@ -672,6 +760,20 @@ class Window:
                      f"  {0:.0f}  руб/шт."
             )
 
+    def get_calculate_items(self):  # Метод расчета по количеству установок
+        try:
+            result = float(self.ent_items_in_one.get())
+
+            self.lbl_result_items.config(
+                text=f"Стоимость работы: "
+                     f" {result:.0f}  руб."
+            )
+        except ValueError:
+            self.lbl_result_items.config(
+                text=f"Стоимость работы: "
+                     f" {0:.0f}  руб."
+            )
+
     def get_calc(self):  # Метод основного и углубленного расчета
 
         # Формирование начальной стоимости
@@ -682,12 +784,46 @@ class Window:
                 self.main_settings["STANDARD"][
                     self.standard_items[self.combo_products.get()]]
             )
-        # Формирование значений коэффициентов
+
+        # Получение данных для коэффициентов
+        self.get_ratio_for_calculation()
+
+        # Расчет основной стоимости
         """
-        !!На будущее!! Здесь везде идет присвоение, а значит можно было 
+        Формула имеет следующий вид:
+        Итоговая цена = (дополнительные прицелы + 
+        + минимальная стоимость * коэффициенты) * учет НДС * учет скидки * 
+        * учет количества изделий
+        """
+
+        main_cost = ((self.additional_cost + (cost * (
+                self.ratio_laser * self.ratio_rotation *
+                self.ratio_different_layouts * self.ratio_timing *
+                self.ratio_packing * self.ratio_thermal_graving *
+                self.ratio_oversize * self.ratio_numbering *
+                self.ratio_attention * self.ratio_hand_job *
+                self.ratio_docking * self.ratio_difficult *
+                self.ratio_depth)))
+                     * self.ratio_taxation * self.ratio_many_items *
+                     self.ratio_discount)
+
+        self.lbl_result_0.config(
+            text=f"Стоимость работы:"
+            f"  {self.round_result(main_cost):.0f}  руб/шт."
+        )
+        all_cost = (self.round_result(main_cost) * int(self.spin_number.get())
+                    + self.cost_design)
+        self.lbl_result_7.config(
+            text=f"Стоимость всей работы:"
+                 f"  {all_cost:.0f}  руб."
+        )
+
+    def get_ratio_for_calculation(self):  # Метод формирования коэффициентов
+        """
+        !!На будущее!! Здесь везде идет присвоение, а значит можно было
         использовать тернарный IF, но это сильно усложняет читаемость.
         Вот пример:
-        
+
         # Коэффициент ratio_laser __Тип лазера__
         ratio_laser = float(self.main_settings["RATIO_SETTINGS"][
                                 "ratio_laser_gas"]) if (self.rb.get() == 2) \
@@ -699,147 +835,130 @@ class Window:
                                    "ratio_rotation"]) if (
             self.bool_rotation.get()) else 1
         """
+        # Формирование значений коэффициентов
         # Коэффициент ratio_laser __Тип лазера__
         if self.rb.get() == 2:  # Если газовый лазер
-            ratio_laser = float(self.main_settings[
-                "RATIO_SETTINGS"]["ratio_laser_gas"])
+            self.ratio_laser = float(self.main_settings[
+                                    "RATIO_SETTINGS"]["ratio_laser_gas"])
         else:  # Если твердотельный лазер
-            ratio_laser = float(self.main_settings[
-                "RATIO_SETTINGS"]["ratio_laser_diode"])
+            self.ratio_laser = float(self.main_settings[
+                                    "RATIO_SETTINGS"]["ratio_laser_diode"])
 
         # Коэффициент ratio_rotation __Вращатель__
         if self.bool_rotation.get():  # Если гравировка с вращением
-            ratio_rotation = float(self.main_settings[
-                "RATIO_SETTINGS"]["ratio_rotation"])
+            self.ratio_rotation = float(self.main_settings[
+                                       "RATIO_SETTINGS"]["ratio_rotation"])
         else:  # Если гравировка без вращения
-            ratio_rotation = 1
+            self.ratio_rotation = 1
 
         # Коэффициент ratio_different_layouts __Разные макеты__
         if self.bool_different.get() and (
                 int(self.spin_number.get()) > 1):  # Если разные макеты
-            ratio_different_layouts = float(
+            self.ratio_different_layouts = float(
                 self.main_settings["RATIO_SETTINGS"][
                     "ratio_different_layouts"])
         else:  # Если один макет
-            ratio_different_layouts = 1
+            self.ratio_different_layouts = 1
 
         # Коэффициент ratio_timing __Срочность__
         if self.bool_1.get():
-            ratio_timing = float(self.main_settings["RATIO_SETTINGS"][
-                "ratio_timing"])
+            self.ratio_timing = float(self.main_settings["RATIO_SETTINGS"][
+                                     "ratio_timing"])
         else:
-            ratio_timing = 1
+            self.ratio_timing = 1
 
         # Коэффициент ratio_packing __Распаковка/Запаковка__
         if self.bool_2.get():
-            ratio_packing = float(self.main_settings["RATIO_SETTINGS"][
-                "ratio_packing"])
+            self.ratio_packing = float(self.main_settings["RATIO_SETTINGS"][
+                                      "ratio_packing"])
         else:
-            ratio_packing = 1
+            self.ratio_packing = 1
 
         # Коэффициент ratio_thermal_graving __Гравировка термовлиянием__
         if self.bool_3.get():
-            ratio_thermal_graving = float(self.main_settings["RATIO_SETTINGS"][
-                "ratio_thermal_graving"])
+            self.ratio_thermal_graving = float(self.main_settings[
+                                               "RATIO_SETTINGS"][
+                                              "ratio_thermal_graving"])
         else:
-            ratio_thermal_graving = 1
+            self.ratio_thermal_graving = 1
 
         # Коэффициент ratio_oversize __Негабаритное изделие__
         if self.bool_4.get():
-            ratio_oversize = float(self.main_settings["RATIO_SETTINGS"][
-                "ratio_oversize"])
+            self.ratio_oversize = float(self.main_settings["RATIO_SETTINGS"][
+                                       "ratio_oversize"])
         else:
-            ratio_oversize = 1
+            self.ratio_oversize = 1
 
         # Коэффициент ratio_numbering __Счетчик__
         if self.bool_5.get() and (int(self.spin_number.get()) > 1):
-            ratio_numbering = float(self.main_settings["RATIO_SETTINGS"][
-                "ratio_numbering"])
+            self.ratio_numbering = float(self.main_settings["RATIO_SETTINGS"][
+                                        "ratio_numbering"])
         else:
-            ratio_numbering = 1
+            self.ratio_numbering = 1
 
         # Коэффициент ratio_taxation __Оплата с НДС__
         if self.bool_6.get():
-            ratio_taxation = float(self.main_settings["RATIO_SETTINGS"][
-                "ratio_taxation"])
+            self.ratio_taxation = float(self.main_settings["RATIO_SETTINGS"][
+                                       "ratio_taxation"])
         else:
-            ratio_taxation = 1
+            self.ratio_taxation = 1
 
         # Коэффициент ratio_attention __Повышенное внимание__
         if self.bool_7.get():
-            ratio_attention = float(self.main_settings["RATIO_SETTINGS"][
-                "ratio_attention"])
+            self.ratio_attention = float(self.main_settings["RATIO_SETTINGS"][
+                                        "ratio_attention"])
         else:
-            ratio_attention = 1
+            self.ratio_attention = 1
 
         # Коэффициент ratio_hand_job __Ручные работы__
         if self.bool_8.get():
-            ratio_hand_job = float(self.main_settings["RATIO_SETTINGS"][
-                "ratio_hand_job"])
+            self.ratio_hand_job = float(self.main_settings["RATIO_SETTINGS"][
+                                       "ratio_hand_job"])
         else:
-            ratio_hand_job = 1
+            self.ratio_hand_job = 1
 
         # Коэффициент ratio_docking __Стыковка элементов__
         if self.bool_9.get() and int(self.spin_aim.get()) > 1:
-            ratio_docking = float(self.main_settings["RATIO_SETTINGS"][
-                "ratio_docking"])
+            self.ratio_docking = float(self.main_settings["RATIO_SETTINGS"][
+                                      "ratio_docking"])
         else:
-            ratio_docking = 1
+            self.ratio_docking = 1
 
         # Дополнительная стоимость за количество установок
         if int(self.spin_aim.get()) > 1:
-            additional_cost = (
-                (int(self.spin_aim.get()) - 1) *
-                int(self.main_settings["MAIN"]["additional_cost"]))
+            self.additional_cost = (
+                    (int(self.spin_aim.get()) - 1) *
+                    int(self.main_settings["MAIN"]["additional_cost"]))
         else:
-            additional_cost = 0
+            self.additional_cost = 0
 
         # Коэффициент зависимости от количества изделий
-        ratio_many_items = int(self.spin_number.get()) ** (
+        self.ratio_many_items = int(self.spin_number.get()) ** (
             -float(self.main_settings["MAIN"]["many_items"]))
 
         # Коэффициент сложности установки
-        difficult_list = self.main_settings['GRADATION']['difficult'].split(', ')
-        ratio_difficult = float(
+        difficult_list = (
+            self.main_settings['GRADATION']['difficult'].split(', '))
+        self.ratio_difficult = float(
             difficult_list[int(self.spin_difficult.get()) - 1])
 
         # Коэффициент глубины гравировки
         depth_list = self.main_settings['GRADATION']['depth'].split(
             ', ')
-        ratio_depth = float(
+        self.ratio_depth = float(
             depth_list[int(self.spin_depth.get()) - 1])
+
+        # Доплата за макетирование
+        try:
+            self.cost_design = float(self.ent_design.get())
+        except ValueError:
+            self.cost_design = 0
 
         # Скидка оператора
         try:
-            ratio_discount = 1 - float(self.ent_discount.get()) / 100
+            self.ratio_discount = 1 - float(self.ent_discount.get()) / 100
         except ValueError:
-            ratio_discount = 1
-
-        # Расчет основной стоимости
-        """
-        Формула имеет следующий вид:
-        Итоговая цена = (дополнительные прицелы + 
-        + минимальная стоимость * коэффициенты) * учет НДС * учет скидки * 
-        * учет количества изделий
-        """
-
-        main_cost = ((additional_cost + (cost * (
-                ratio_laser * ratio_rotation * ratio_different_layouts *
-                ratio_timing * ratio_packing * ratio_thermal_graving *
-                ratio_oversize * ratio_numbering * ratio_attention *
-                ratio_hand_job * ratio_docking * ratio_difficult *
-                ratio_depth)))
-                     * ratio_taxation * ratio_many_items * ratio_discount)
-
-        self.lbl_result_0.config(
-            text=f"Стоимость работы:"
-            f"  {self.round_result(main_cost):.0f}  руб/шт."
-        )
-        all_cost = self.round_result(main_cost) * int(self.spin_number.get())
-        self.lbl_result_7.config(
-            text=f"Стоимость всей работы:"
-                 f"  {all_cost:.0f}  руб."
-        )
+            self.ratio_discount = 1
 
     def get_calc_mat(self):  # Метод расчета себестоимости изделий
 
@@ -931,6 +1050,8 @@ class Window:
         self.to_add_entry4()
         self.to_add_entry5()
         self.to_add_entry6()
+        self.to_add_entry7()
+        self.to_add_entry8()
 
         self.ent_width_grav.bind('<FocusIn>', self.erase_entry)
         self.ent_width_grav.bind('<FocusOut>', self.to_add_entry)
@@ -952,6 +1073,12 @@ class Window:
 
         self.ent_discount.bind('<FocusIn>', self.erase_entry6)
         self.ent_discount.bind('<FocusOut>', self.to_add_entry6)
+
+        self.ent_items_in_one.bind('<FocusIn>', self.erase_entry7)
+        self.ent_items_in_one.bind('<FocusOut>', self.to_add_entry7)
+
+        self.ent_design.bind('<FocusIn>', self.erase_entry8)
+        self.ent_design.bind('<FocusOut>', self.to_add_entry8)
 
     def erase_entry(self, event=None):
         if self.ent_width_grav.get() == '-':
@@ -988,6 +1115,16 @@ class Window:
             self.ent_discount.delete(0, 'end')
         self.not_use = event
 
+    def erase_entry7(self, event=None):
+        if self.ent_items_in_one.get() == '-':
+            self.ent_items_in_one.delete(0, 'end')
+        self.not_use = event
+
+    def erase_entry8(self, event=None):
+        if self.ent_design.get() == '-':
+            self.ent_design.delete(0, 'end')
+        self.not_use = event
+
     def to_add_entry(self, event=None):
         if self.ent_width_grav.get() == "":
             self.ent_width_grav.insert(0, '-')
@@ -1021,6 +1158,16 @@ class Window:
     def to_add_entry6(self, event=None):
         if self.ent_discount.get() == "":
             self.ent_discount.insert(0, '-')
+        self.not_use = event
+
+    def to_add_entry7(self, event=None):
+        if self.ent_items_in_one.get() == "":
+            self.ent_items_in_one.insert(0, '-')
+        self.not_use = event
+
+    def to_add_entry8(self, event=None):
+        if self.ent_design.get() == "":
+            self.ent_design.insert(0, '-')
         self.not_use = event
 
     def run(self):  # Метод, реализующий запуск программы
