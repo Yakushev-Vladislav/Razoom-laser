@@ -626,6 +626,7 @@ class ConfigSet:
         
         [STANDARD]
         ring = 1400
+        ring_2_sides = 2200
         knife = 1000
         pen = 1000
         badge = 900
@@ -649,7 +650,7 @@ class ConfigSet:
         ratio_docking = 1.15
         
         [GRADATION]
-        difficult = 1, 1.1, 1.15, 1.25, 1.4
+        difficult = 1, 1.2, 1.3, 1.5, 1.8
         depth = 1, 1.15, 1.3, 1.5, 2
         """
 

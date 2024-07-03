@@ -26,8 +26,8 @@ class Window:
         self.root.resizable(True, True)
 
         # Минимальные размеры окна и расположение
-        self.root.geometry(f"{1000}x{700}+200+100")
-        self.root.minsize(1000, 700)
+        self.root.geometry(f"{1000}x{750}+100+100")
+        self.root.minsize(1000, 750)
         self.root.geometry("%dx%d" % (self.root.winfo_width(),
                                       self.root.winfo_height()))
 
@@ -86,6 +86,7 @@ class Window:
         self.standard_items = {
             "Жетон/Брелок": "badge",
             "Кольцо": "ring",
+            "Кольцо с 2-х сторон": "ring_2_sides",
             "Ручка": "pen",
             "Нож": "knife",
             "Термокружка/Термос": "thermos",
@@ -209,6 +210,7 @@ class Window:
             "Нет",
             "Жетон/Брелок",
             "Кольцо",
+            "Кольцо с 2-х сторон",
             "Ручка",
             "Термокружка/Термос",
             "Нож",
@@ -433,6 +435,16 @@ class Window:
         )
         self.lbl_result_0.grid(row=0, column=0, padx=(10, 10), pady=(0, 10),
                                sticky="ns")
+        self.lbl_result_design = ttk.Label(
+            self.panel_4,
+            text=f"Из них макетирование:"
+                 f"  {0:.0f}  руб.",
+            font='Arial 12',
+            foreground='#217346'
+        )
+        self.lbl_result_design.grid(
+            row=2, column=0, padx=(10, 10), pady=(0, 10), sticky="ns")
+
         self.lbl_result_7 = ttk.Label(
             self.panel_4,
             text=f"Стоимость всей работы:"
@@ -816,6 +828,10 @@ class Window:
         self.lbl_result_7.config(
             text=f"Стоимость всей работы:"
                  f"  {all_cost:.0f}  руб."
+        )
+        self.lbl_result_design.config(
+            text=f"Из них макетирование:"
+                 f"  {self.cost_design:.0f}  руб."
         )
 
     def get_ratio_for_calculation(self):  # Метод формирования коэффициентов
