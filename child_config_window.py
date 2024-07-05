@@ -645,7 +645,7 @@ class ConfigSet:
         ratio_taxation = 1.2
         ratio_oversize = 1.8
         ratio_different_layouts = 1.15
-        ratio_numbering = 1.05
+        ratio_numbering = 1.1
         ratio_thermal_graving = 1.15
         ratio_docking = 1.15
         

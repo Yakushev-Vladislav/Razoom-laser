@@ -98,6 +98,7 @@ class Window:
         self.tabs_control = ttk.Notebook(self.root)
         self.tab_1 = ttk.Frame(self.tabs_control)
         self.tab_2 = ttk.Frame(self.tabs_control)
+        self.tab_3 = ttk.Frame(self.tabs_control)
 
         # Конфигурация отзывчивости вкладок
         self.tab_1.columnconfigure(index=0, weight=1)
@@ -113,8 +114,9 @@ class Window:
         self.tab_2.rowconfigure(index=1, weight=4)
 
         # Добавление вкладок в набор
-        self.tabs_control.add(self.tab_1, text='Расчет')
+        self.tabs_control.add(self.tab_1, text='Частные лица')
         self.tabs_control.add(self.tab_2, text='Листовой материал')
+        self.tabs_control.add(self.tab_3, text='Оптовый расчёт')
         # Упаковка вкладок
         self.tabs_control.pack(fill='both', expand=True)
 
@@ -417,9 +419,12 @@ class Window:
         # Окно ввода скидки оператора
         ttk.Label(self.panel_2, text='Скидка оператора, %').grid(
             row=8, column=0, padx=(10, 0), pady=0, sticky='nsew')
-        self.ent_discount = ttk.Entry(self.panel_2, width=5)
-        self.ent_discount.grid(row=8, column=1, padx=0, pady=5,
-                               sticky='nsew')
+        self.spin_discount = ttk.Spinbox(self.panel_2, from_=0, to=30)
+        self.spin_discount.insert(0, '0')
+        self.spin_discount.configure(state='readonly')
+        self.spin_discount.grid(
+            row=8, column=1, padx=0, pady=5, sticky='nsew'
+        )
 
         # Создание ползунка изменения размера
         self.sizegrip = ttk.Sizegrip(self.root)
@@ -972,7 +977,7 @@ class Window:
 
         # Скидка оператора
         try:
-            self.ratio_discount = 1 - float(self.ent_discount.get()) / 100
+            self.ratio_discount = 1 - float(self.spin_discount.get()) / 100
         except ValueError:
             self.ratio_discount = 1
 
@@ -1067,7 +1072,6 @@ class Window:
         self.to_add_entry5()
         self.to_add_entry6()
         self.to_add_entry7()
-        self.to_add_entry8()
 
         self.ent_width_grav.bind('<FocusIn>', self.erase_entry)
         self.ent_width_grav.bind('<FocusOut>', self.to_add_entry)
@@ -1087,14 +1091,11 @@ class Window:
         self.ent_time_of_work.bind('<FocusIn>', self.erase_entry5)
         self.ent_time_of_work.bind('<FocusOut>', self.to_add_entry5)
 
-        self.ent_discount.bind('<FocusIn>', self.erase_entry6)
-        self.ent_discount.bind('<FocusOut>', self.to_add_entry6)
+        self.ent_items_in_one.bind('<FocusIn>', self.erase_entry6)
+        self.ent_items_in_one.bind('<FocusOut>', self.to_add_entry6)
 
-        self.ent_items_in_one.bind('<FocusIn>', self.erase_entry7)
-        self.ent_items_in_one.bind('<FocusOut>', self.to_add_entry7)
-
-        self.ent_design.bind('<FocusIn>', self.erase_entry8)
-        self.ent_design.bind('<FocusOut>', self.to_add_entry8)
+        self.ent_design.bind('<FocusIn>', self.erase_entry7)
+        self.ent_design.bind('<FocusOut>', self.to_add_entry7)
 
     def erase_entry(self, event=None):
         if self.ent_width_grav.get() == '-':
@@ -1127,16 +1128,11 @@ class Window:
         self.not_use = event
 
     def erase_entry6(self, event=None):
-        if self.ent_discount.get() == '-':
-            self.ent_discount.delete(0, 'end')
-        self.not_use = event
-
-    def erase_entry7(self, event=None):
         if self.ent_items_in_one.get() == '-':
             self.ent_items_in_one.delete(0, 'end')
         self.not_use = event
 
-    def erase_entry8(self, event=None):
+    def erase_entry7(self, event=None):
         if self.ent_design.get() == '-':
             self.ent_design.delete(0, 'end')
         self.not_use = event
@@ -1172,16 +1168,11 @@ class Window:
         self.not_use = event
 
     def to_add_entry6(self, event=None):
-        if self.ent_discount.get() == "":
-            self.ent_discount.insert(0, '-')
-        self.not_use = event
-
-    def to_add_entry7(self, event=None):
         if self.ent_items_in_one.get() == "":
             self.ent_items_in_one.insert(0, '-')
         self.not_use = event
 
-    def to_add_entry8(self, event=None):
+    def to_add_entry7(self, event=None):
         if self.ent_design.get() == "":
             self.ent_design.insert(0, '-')
         self.not_use = event
