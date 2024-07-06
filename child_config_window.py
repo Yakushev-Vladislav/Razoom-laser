@@ -41,6 +41,7 @@ class ChildConfigSet:
         self.child_tabs_control = ttk.Notebook(self.child_root)
         self.tab_1 = ttk.Frame(self.child_tabs_control)
         self.tab_2 = ttk.Frame(self.child_tabs_control)
+        self.tab_3 = ttk.Frame(self.child_tabs_control)
 
         # Конфигурация отзывчивости вкладок окна
         self.tab_1.columnconfigure(index=0, weight=1)
@@ -86,8 +87,10 @@ class ChildConfigSet:
         self.tab_2_panel_2.rowconfigure(index=4, weight=2)
 
         # Добавление вкладок в набор
-        self.child_tabs_control.add(self.tab_1, text='Основные настройки')
+        self.child_tabs_control.add(self.tab_1, text='Частные лица')
         self.child_tabs_control.add(self.tab_2, text='Стандартные изделия')
+        self.child_tabs_control.add(self.tab_3, text='Оптовый расчет')
+
         # Упаковка вкладок
         self.child_tabs_control.pack(fill='both', expand=True)
 
@@ -220,16 +223,16 @@ class ChildConfigSet:
         self.ent_ratio_hand_job.grid(row=8, column=1, padx=5, pady=5,
                                      sticky='nsew')
 
-        # Окно ввода ratio_taxation __Оплата с НДС__
+        # Окно ввода ratio_taxation_ao __Оплата с НДС__
         ttk.Label(self.tab_1, text='Оплата с НДС').grid(
             row=7, column=2, padx=0, pady=0, sticky='ns'
         )
-        self.ent_ratio_taxation = ttk.Entry(
+        self.ent_ratio_taxation_ao = ttk.Entry(
             self.tab_1,
             width=20
         )
-        self.ent_ratio_taxation.grid(row=8, column=2, padx=5, pady=5,
-                                     sticky='nsew')
+        self.ent_ratio_taxation_ao.grid(row=8, column=2, padx=5, pady=5,
+                                        sticky='nsew')
 
         # Окно ввода ratio_oversize __Негабаритное изделие__
         ttk.Label(self.tab_1, text='Негабаритное изделие').grid(
@@ -469,7 +472,7 @@ class ChildConfigSet:
         self.ent_ratio_packing.delete(0, tk.END)
         self.ent_ratio_thermal_graving.delete(0, tk.END)
         self.ent_ratio_oversize.delete(0, tk.END)
-        self.ent_ratio_taxation.delete(0, tk.END)
+        self.ent_ratio_taxation_ao.delete(0, tk.END)
         self.ent_ratio_attention.delete(0, tk.END)
         self.ent_ratio_hand_job.delete(0, tk.END)
         self.ent_ratio_numbering.delete(0, tk.END)
@@ -496,8 +499,8 @@ class ChildConfigSet:
             0, ratio_from_config['ratio_thermal_graving'])
         self.ent_ratio_oversize.insert(
             0, ratio_from_config['ratio_oversize'])
-        self.ent_ratio_taxation.insert(
-            0, ratio_from_config['ratio_taxation'])
+        self.ent_ratio_taxation_ao.insert(
+            0, ratio_from_config['ratio_taxation_ao'])
         self.ent_ratio_attention.insert(
             0, ratio_from_config['ratio_attention'])
         self.ent_ratio_hand_job.insert(
@@ -552,8 +555,8 @@ class ChildConfigSet:
             self.ent_ratio_packing.get())
         new_config['RATIO_SETTINGS']['ratio_hand_job'] = (
             self.ent_ratio_hand_job.get())
-        new_config['RATIO_SETTINGS']['ratio_taxation'] = (
-            self.ent_ratio_taxation.get())
+        new_config['RATIO_SETTINGS']['ratio_taxation_ao'] = (
+            self.ent_ratio_taxation_ao.get())
         new_config['RATIO_SETTINGS']['ratio_oversize'] = (
             self.ent_ratio_oversize.get())
         new_config['RATIO_SETTINGS']['ratio_different_layouts'] = (
@@ -600,8 +603,6 @@ class ConfigSet:
         self.config = configparser.ConfigParser()
         self.config.read('settings/settings.ini')
 
-        # Создание списков коэффициентов и стандартных настроек
-
     def update_settings(self, some_new=None):  # Обновления файла конфигурации
         if some_new:
             with open('settings/settings.ini', 'w') as configfile:
@@ -629,29 +630,55 @@ class ConfigSet:
         ring_2_sides = 2200
         knife = 1000
         pen = 1000
-        badge = 900
+        badge = 1000
         thermos = 1200
         keyboard = 1500
         personal_keyboard = 2000
         
         [RATIO_SETTINGS]
-        ratio_laser_diode = 1
         ratio_laser_gas = 1.15
         ratio_rotation = 1.3
         ratio_timing = 1.5
         ratio_attention = 1.15
         ratio_packing = 1.15
         ratio_hand_job = 1.15
-        ratio_taxation = 1.2
+        ratio_taxation_ao = 1.2
         ratio_oversize = 1.8
         ratio_different_layouts = 1.15
         ratio_numbering = 1.1
         ratio_thermal_graving = 1.15
         ratio_docking = 1.15
+        ratio_taxation_ip = 1.07
         
         [GRADATION]
         difficult = 1, 1.2, 1.3, 1.5, 1.8
         depth = 1, 1.15, 1.3, 1.5, 2
+        area = 1, 1.15, 1.2, 1.5
+        
+        [INDUSTRIAL_MAIN]
+        industrial__hour_of_work = 4000
+        industrial_all_area_cost = 1500
+        industrial_timing_correction = 0.96
+        
+        [RATIO_INDUSTRIAL_SETTINGS]
+        industrial_ratio_laser_gas = 1.15
+        industrial_ratio_rotation = 1.3
+        industrial_ratio_timing = 1.5
+        industrial_ratio_attention = 1.15
+        industrial_ratio_packing = 1.15
+        industrial_ratio_hand_job = 1.15
+        industrial_ratio_taxation_ao = 1.2
+        industrial_ratio_oversize = 1.8
+        industrial_ratio_different_layouts = 1.15
+        industrial_ratio_numbering = 1.1
+        industrial_ratio_thermal_graving = 1.15
+        industrial_ratio_docking = 1.15
+        industrial_ratio_taxation_ip = 1.07
+        
+        [INDUSTRIAL_GRADATION]
+        industrial_difficult = 1, 1.3, 1.5, 1.8, 2.0
+        industrial_depth = 1, 1.3, 1.5, 2, 3
+        industrial_area = 1, 1.15, 1.2, 1.5
         """
 
         # Создание переменной класса конфигурации и считывание базовых разделов

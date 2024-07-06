@@ -68,37 +68,43 @@ class Calculation:
         self.price = Materials().get_mat()[mat_name]
 
     def figure_1(self):  # Первый метод упаковки
+        try:
+            # Проверка максимальной вместимости контейнера в строках и столбцах
+            self.figure_per_rows = self.w_big // self.width
+            self.figure_per_columns = self.h_big // self.height
+            self.total_1 += int(self.figure_per_rows * self.figure_per_columns)
 
-        # Проверка максимальной вместимости контейнера в строках и столбцах
-        self.figure_per_rows = self.w_big // self.width
-        self.figure_per_columns = self.h_big // self.height
-        self.total_1 += int((self.figure_per_rows * self.figure_per_columns))
-
-        # После заполнения строк проверяем вместимость оставшейся части листа,
-        # при этом переворачиваем изделие и проверяем на вместимость
-        if (self.w_big - (self.figure_per_rows * self.width)) >= self.height:
-            x_2 = (self.w_big
-                   - (self.figure_per_rows * self.width)) // self.height
-            y_2 = self.h_big // self.width
-            self.total_1 += int(x_2 * y_2)
-
+            # После заполнения строк проверяем вместимость оставшейся части
+            # листа, при этом переворачиваем изделие и проверяем на вместимость
+            if (self.w_big - (
+                    self.figure_per_rows * self.width)) >= self.height:
+                x_2 = (self.w_big
+                       - (self.figure_per_rows * self.width)) // self.height
+                y_2 = self.h_big // self.width
+                self.total_1 += int(x_2 * y_2)
+        except ZeroDivisionError:
+            self.total_1 = 0
         # Возвращаем количество изделий с листа первым методом
         return self.total_1
 
     def figure_2(self):  # Второй метод упаковки (изделие повернуто на 90 гр.)
-        # Проверка максимальной вместимости контейнера в строках и столбцах
-        self.figure_per_rows = self.w_big // self.height
-        self.figure_per_columns = self.h_big // self.width
-        self.total_2 += int((self.figure_per_rows * self.figure_per_columns))
+        try:
+            # Проверка максимальной вместимости контейнера в строках и столбцах
+            self.figure_per_rows = self.w_big // self.height
+            self.figure_per_columns = self.h_big // self.width
+            self.total_2 += int(self.figure_per_rows * self.figure_per_columns)
 
-        # После заполнения строк проверяем вместимость оставшейся части листа,
-        # при этом переворачиваем изделие и проверяем на вместимость
-        if (self.w_big - (self.figure_per_rows * self.height)) >= self.width:
-            x_2 = (self.h_big
-                   - (self.figure_per_rows * self.height)) // self.width
-            y_2 = self.h_big // self.height
-            self.total_2 += int(x_2 * y_2)
+            # После заполнения строк проверяем вместимость оставшейся части
+            # листа, при этом переворачиваем изделие и проверяем на вместимость
+            if (self.w_big - (
+                    self.figure_per_rows * self.height)) >= self.width:
+                x_2 = (self.h_big
+                       - (self.figure_per_rows * self.height)) // self.width
+                y_2 = self.h_big // self.height
+                self.total_2 += int(x_2 * y_2)
 
+        except ZeroDivisionError:
+            self.total_2 = 0
         # Возвращаем количество изделий с листа вторым методом
         return self.total_2
 
