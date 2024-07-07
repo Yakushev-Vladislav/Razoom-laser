@@ -26,8 +26,8 @@ class Window:
         self.root.resizable(True, True)
 
         # Минимальные размеры окна и расположение
-        self.root.geometry(f"{1000}x{650}+100+100")
-        self.root.minsize(1000, 650)
+        self.root.geometry(f"{1000}x{750}+50+50")
+        self.root.minsize(1000, 750)
         self.root.geometry("%dx%d" % (self.root.winfo_width(),
                                       self.root.winfo_height()))
 
@@ -45,26 +45,27 @@ class Window:
         # Переменные для переключателей выбора типа и сложности расчета
         self.bool_rotation = tk.BooleanVar(value=False)
         self.bool_different = tk.BooleanVar(value=False)
-        self.bool_1 = tk.BooleanVar(value=False)
-        self.bool_2 = tk.BooleanVar(value=False)
-        self.bool_3 = tk.BooleanVar(value=False)
-        self.bool_4 = tk.BooleanVar(value=False)
-        self.bool_5 = tk.BooleanVar(value=False)
-        self.bool_6 = tk.BooleanVar(value=False)
-        self.bool_7 = tk.BooleanVar(value=False)
-        self.bool_8 = tk.BooleanVar(value=False)
-        self.bool_9 = tk.BooleanVar(value=False)
-        self.bool_10 = tk.BooleanVar(value=False)
+        self.bool_ratio_timing = tk.BooleanVar(value=False)
+        self.bool_ratio_packing = tk.BooleanVar(value=False)
+        self.bool_ratio_thermal_graving = tk.BooleanVar(value=False)
+        self.bool_ratio_oversize = tk.BooleanVar(value=False)
+        self.bool_ratio_numbering = tk.BooleanVar(value=False)
+        self.bool_ratio_taxation_ao = tk.BooleanVar(value=False)
+        self.bool_ratio_attention = tk.BooleanVar(value=False)
+        self.bool_ratio_hand_job = tk.BooleanVar(value=False)
+        self.bool_ratio_docking = tk.BooleanVar(value=False)
+        self.bool_ratio_taxation_ip = tk.BooleanVar(value=False)
 
         # Переменная выбора типа оборудования
-        self.rb = tk.IntVar(value=1)
+        self.rb_type_of_laser = tk.IntVar(value=1)
 
         # Переменная для bind методов
         self.not_use = None
 
         # Переменные коэффициентов сложности и дополнительная стоимость
         self.past_cost = 0
-        self.past_cost_design = 0
+        self.past_cost_text = ''
+        self.present_cost = 0
         self.cost_design = 0
         self.additional_cost = 0
         self.ratio_laser = 1
@@ -208,6 +209,8 @@ class Window:
         self.panel_4.rowconfigure(index=0, weight=1)
         self.panel_4.rowconfigure(index=1, weight=1)
         self.panel_4.rowconfigure(index=2, weight=1)
+        self.panel_4.rowconfigure(index=3, weight=1)
+        self.panel_4.rowconfigure(index=4, weight=1)
 
         self.panel_5.columnconfigure(index=0, weight=1)
         self.panel_5.columnconfigure(index=1, weight=1)
@@ -242,7 +245,7 @@ class Window:
         self.rbt_solid = ttk.Radiobutton(
             self.panel_1,
             text="Твердотельный лазер",
-            variable=self.rb,
+            variable=self.rb_type_of_laser,
             value=1
         )
         self.rbt_solid.grid(row=1, column=0, padx=5, pady=0,
@@ -250,7 +253,7 @@ class Window:
         self.rbt_co2 = ttk.Radiobutton(
             self.panel_1,
             text="СО2 лазер",
-            variable=self.rb,
+            variable=self.rb_type_of_laser,
             value=2
         )
         self.rbt_co2.grid(row=1, column=1, padx=5, pady=0,
@@ -327,77 +330,87 @@ class Window:
         )
 
         # Создание переключателей в форме углубленного расчета
-        self.chk_1 = ttk.Checkbutton(
+        self.chk_ratio_timing = ttk.Checkbutton(
             self.panel_2,
             text='Срочность',
-            variable=self.bool_1
+            variable=self.bool_ratio_timing
         )
-        self.chk_1.grid(row=0, column=0, padx=2, pady=5, sticky="nsew")
+        self.chk_ratio_timing.grid(row=0, column=0, padx=2, pady=5,
+                                   sticky="nsew")
 
-        self.chk_2 = ttk.Checkbutton(
+        self.chk_ratio_packing = ttk.Checkbutton(
             self.panel_2,
             text='Распаковка/Запаковка',
-            variable=self.bool_2
+            variable=self.bool_ratio_packing
         )
-        self.chk_2.grid(row=0, column=1, padx=2, pady=5, sticky="nsew")
+        self.chk_ratio_packing.grid(row=0, column=1, padx=2, pady=5,
+                                    sticky="nsew")
 
-        self.chk_3 = ttk.Checkbutton(
+        self.chk_ratio_thermal_graving = ttk.Checkbutton(
             self.panel_2,
             text='Гравировка термовлиянием',
-            variable=self.bool_3
+            variable=self.bool_ratio_thermal_graving
         )
-        self.chk_3.grid(row=1, column=0, padx=2, pady=5, sticky="nsew")
+        self.chk_ratio_thermal_graving.grid(row=1, column=0, padx=2, pady=5,
+                                            sticky="nsew")
 
-        self.chk_4 = ttk.Checkbutton(
+        self.chk_ratio_oversize = ttk.Checkbutton(
             self.panel_2,
             text='Негабаритное изделие',
-            variable=self.bool_4
+            variable=self.bool_ratio_oversize
         )
-        self.chk_4.grid(row=1, column=1, padx=2, pady=5, sticky="nsew")
+        self.chk_ratio_oversize.grid(row=1, column=1, padx=2, pady=5,
+                                     sticky="nsew")
 
-        self.chk_5 = ttk.Checkbutton(
+        self.chk_ratio_numbering = ttk.Checkbutton(
             self.panel_2,
             text='Счетчик',
-            variable=self.bool_5
+            variable=self.bool_ratio_numbering
         )
-        self.chk_5.grid(row=2, column=0, padx=2, pady=5, sticky="nsew")
+        self.chk_ratio_numbering.grid(row=2, column=0, padx=2, pady=5,
+                                      sticky="nsew")
 
-        self.chk_6 = ttk.Checkbutton(
+        self.chk_ratio_taxation_ao = ttk.Checkbutton(
             self.panel_2,
             text='Оплата по счету АО',
-            variable=self.bool_6,
+            variable=self.bool_ratio_taxation_ao,
             command=self.disable_taxation
         )
-        self.chk_6.grid(row=4, column=0, padx=2, pady=5, sticky="nsew")
+        self.chk_ratio_taxation_ao.grid(row=4, column=0, padx=2, pady=5,
+                                        sticky="nsew")
 
-        self.chk_7 = ttk.Checkbutton(
+        self.chk_ratio_attention = ttk.Checkbutton(
             self.panel_2,
             text='Повышенное внимание',
-            variable=self.bool_7
+            variable=self.bool_ratio_attention
         )
-        self.chk_7.grid(row=3, column=0, padx=2, pady=5, sticky="nsew")
+        self.chk_ratio_attention.grid(row=3, column=0, padx=2, pady=5,
+                                      sticky="nsew")
 
-        self.chk_8 = ttk.Checkbutton(
+        self.chk_ratio_hand_job = ttk.Checkbutton(
             self.panel_2,
             text='Ручные работы',
-            variable=self.bool_8
+            variable=self.bool_ratio_hand_job
         )
-        self.chk_8.grid(row=3, column=1, padx=2, pady=5, sticky="nsew")
+        self.chk_ratio_hand_job.grid(row=3, column=1, padx=2, pady=5,
+                                     sticky="nsew")
 
-        self.chk_9 = ttk.Checkbutton(
+        self.chk_ratio_docking = ttk.Checkbutton(
             self.panel_2,
             text='Стыковка элементов',
-            variable=self.bool_9
+            variable=self.bool_ratio_docking
         )
-        self.chk_9.grid(row=2, column=1, padx=2, pady=5, sticky="nsew")
+        self.chk_ratio_docking.grid(row=2, column=1, padx=2, pady=5,
+                                    sticky="nsew")
 
-        self.chk_10 = ttk.Checkbutton(
+        self.chk_ratio_taxation_ip = ttk.Checkbutton(
             self.panel_2,
             text='Оплата по счету ИП',
-            variable=self.bool_10,
+            variable=self.bool_ratio_taxation_ip,
             command=self.disable_taxation
         )
-        self.chk_10.grid(row=4, column=1, padx=2, pady=5, sticky="nsew")
+        self.chk_ratio_taxation_ip.grid(row=4, column=1, padx=2, pady=5,
+                                        sticky="nsew")
 
         # Переключатель сложности установки
         ttk.Label(self.panel_2, text='Сложность установки').grid(
@@ -462,24 +475,64 @@ class Window:
         self.lbl_result_design.grid(
             row=1, column=0, padx=(10, 10), pady=(2, 10), sticky="nsew")
 
+        ttk.Separator(self.panel_4).grid(row=3, column=0, columnspan=2,
+                                         pady=5, sticky='ew')
+
         self.lbl_result_cost = ttk.Label(
             self.panel_4,
-            text=f"Стоимость всей работы:"
+            text=f"ИТОГОВАЯ СТОИМОСТЬ:"
                  f"  {0:.0f}  руб.",
             font='Arial 15 bold',
             foreground='#217346'
         )
-        self.lbl_result_cost.grid(row=2, column=0, padx=(10, 10), pady=(0, 10),
-                                  sticky="ns", columnspan=2)
+        self.lbl_result_cost.grid(row=4, column=0, padx=(10, 10), pady=(0, 10),
+                                  sticky="nsew", columnspan=1)
 
         # Кнопка добавления нового расчета
         self.btn_add_calculate = ttk.Button(
             self.panel_4,
             text='Добавить расчет',
-            command=self.add_calc
+            command=self.add_new_calc
         )
         self.btn_add_calculate.grid(
             row=0, column=1, padx=10, pady=10, sticky='nsew')
+
+        # Кнопка обнуления расчета
+        self.btn_reset = ttk.Button(
+            self.panel_4,
+            text='Сброс',
+            command=self.get_reset_results
+        )
+        self.btn_reset.grid(
+            row=1, column=1, padx=10, pady=10, sticky='nsew')
+
+        # Кнопка выхода
+        self.btn_close_window = ttk.Button(
+            self.panel_4,
+            text='Выход',
+            command=self.destroy
+        )
+        self.btn_close_window.grid(
+            row=4, column=1, padx=10, pady=10, sticky='nsew')
+
+        # Вывод результатов прошлого и текущего расчета
+        self.lbl_present_results = ttk.Label(
+            self.panel_4,
+            text=f"Текущий расчет = {0:.0f} руб.",
+            font='Arial 12',
+            foreground='#217346'
+        )
+        self.lbl_present_results.grid(row=2, column=0, padx=10, pady=10,
+                                      sticky="nsew", columnspan=1)
+
+        self.lbl_past_results = ttk.Label(
+            self.panel_4,
+            text=f"",
+            font='Arial 12',
+            foreground='#217346'
+        )
+        self.lbl_past_results.grid(row=2, column=1, padx=10, pady=10,
+                                   sticky="ns", columnspan=1)
 
         # ____________________2 ВКЛАДКА____________________
         # Создание формы для виджетов
@@ -732,7 +785,7 @@ class Window:
         menu_bar.add_command(label='Обновить', command=self.settings_update)
         self.root.configure(menu=menu_bar)
 
-    def settings_update(self):
+    def settings_update(self):  # Метод обновления окна
         self.main_settings = ConfigSet().config
         self.root.update()
 
@@ -859,18 +912,18 @@ class Window:
         )
         all_cost = (self.round_result(main_cost) * int(self.spin_number.get())
                     + self.cost_design)
+        self.lbl_present_results.config(
+            text=f"Текущий расчет = {all_cost:.0f} руб."
+        )
+        self.present_cost = all_cost
         self.lbl_result_cost.config(
-            text=f"Стоимость всей работы:"
-                 f"  {all_cost:.0f}  руб."
+            text=f"ИТОГОВАЯ СТОИМОСТЬ:"
+                 f"  {self.past_cost + self.present_cost:.0f}  руб."
         )
         self.lbl_result_design.config(
             text=f"Стоимость макетирования:"
                  f"  {self.cost_design:.0f}  руб."
         )
-
-        # Сохранение результатов расчета
-        self.past_cost = all_cost
-        self.past_cost_design = self.cost_design
 
     def get_ratio_for_calculation(self):  # Метод формирования коэффициентов
         """
@@ -880,7 +933,8 @@ class Window:
 
         # Коэффициент ratio_laser __Тип лазера__
         ratio_laser = float(self.main_settings["RATIO_SETTINGS"][
-                                "ratio_laser_gas"]) if (self.rb.get() == 2) \
+                                "ratio_laser_gas"]) if (
+                                self.rb_type_of_laser.get() == 2) \
             else float(self.main_settings["RATIO_SETTINGS"][
                            "ratio_laser_diode"])
 
@@ -893,7 +947,7 @@ class Window:
         # Коэффициент ratio_size __Габариты гравировки__
         try:
             size_list = (
-                self.main_settings['GRADATION']['area'].split(', '))
+                self.main_settings['GRADATION']['area'].split(','))
             size_1 = 70*70
             size_2 = 120*120
             size_3 = 150*150
@@ -916,7 +970,7 @@ class Window:
             self.ratio_size = 1
 
         # Коэффициент ratio_laser __Тип лазера__
-        if self.rb.get() == 2:  # Если газовый лазер
+        if self.rb_type_of_laser.get() == 2:  # Если газовый лазер
             self.ratio_laser = float(self.main_settings[
                                     "RATIO_SETTINGS"]["ratio_laser_gas"])
         else:  # Если твердотельный лазер
@@ -939,21 +993,21 @@ class Window:
             self.ratio_different_layouts = 1
 
         # Коэффициент ratio_timing __Срочность__
-        if self.bool_1.get():
+        if self.bool_ratio_timing.get():
             self.ratio_timing = float(self.main_settings["RATIO_SETTINGS"][
                                      "ratio_timing"])
         else:
             self.ratio_timing = 1
 
         # Коэффициент ratio_packing __Распаковка/Запаковка__
-        if self.bool_2.get():
+        if self.bool_ratio_packing.get():
             self.ratio_packing = float(self.main_settings["RATIO_SETTINGS"][
                                       "ratio_packing"])
         else:
             self.ratio_packing = 1
 
         # Коэффициент ratio_thermal_graving __Гравировка термовлиянием__
-        if self.bool_3.get():
+        if self.bool_ratio_thermal_graving.get():
             self.ratio_thermal_graving = float(self.main_settings[
                                                "RATIO_SETTINGS"][
                                               "ratio_thermal_graving"])
@@ -961,51 +1015,54 @@ class Window:
             self.ratio_thermal_graving = 1
 
         # Коэффициент ratio_oversize __Негабаритное изделие__
-        if self.bool_4.get():
+        if self.bool_ratio_oversize.get():
             self.ratio_oversize = float(self.main_settings["RATIO_SETTINGS"][
                                        "ratio_oversize"])
         else:
             self.ratio_oversize = 1
 
         # Коэффициент ratio_numbering __Счетчик__
-        if self.bool_5.get() and (int(self.spin_number.get()) > 1):
+        if self.bool_ratio_numbering.get() and (
+                int(self.spin_number.get()) > 1):
             self.ratio_numbering = float(self.main_settings["RATIO_SETTINGS"][
                                         "ratio_numbering"])
         else:
             self.ratio_numbering = 1
 
         # Коэффициент ratio_taxation_ao __Оплата по счету АО__
-        if self.bool_6.get():
+        if self.bool_ratio_taxation_ao.get():
             self.ratio_taxation_ao = float(
-                self.main_settings["RATIO_SETTINGS"]["ratio_taxation_ao"])
+                self.main_settings["RATIO_SETTINGS"][
+                    "ratio_taxation"].split(',')[0])
         else:
             self.ratio_taxation_ao = 1
 
         # Коэффициент ratio_attention __Повышенное внимание__
-        if self.bool_7.get():
+        if self.bool_ratio_attention.get():
             self.ratio_attention = float(self.main_settings["RATIO_SETTINGS"][
                                         "ratio_attention"])
         else:
             self.ratio_attention = 1
 
         # Коэффициент ratio_hand_job __Ручные работы__
-        if self.bool_8.get():
+        if self.bool_ratio_hand_job.get():
             self.ratio_hand_job = float(self.main_settings["RATIO_SETTINGS"][
                                        "ratio_hand_job"])
         else:
             self.ratio_hand_job = 1
 
         # Коэффициент ratio_docking __Стыковка элементов__
-        if self.bool_9.get() and int(self.spin_aim.get()) > 1:
+        if self.bool_ratio_docking.get() and int(self.spin_aim.get()) > 1:
             self.ratio_docking = float(self.main_settings["RATIO_SETTINGS"][
                                       "ratio_docking"])
         else:
             self.ratio_docking = 1
 
         # Коэффициент ratio_taxation_ip __Оплата по счету ИП__
-        if self.bool_10.get():
+        if self.bool_ratio_taxation_ip.get():
             self.ratio_taxation_ip = float(
-                self.main_settings["RATIO_SETTINGS"]["ratio_taxation_ip"])
+                self.main_settings["RATIO_SETTINGS"][
+                    "ratio_taxation"].split(',')[1])
         else:
             self.ratio_taxation_ip = 1
 
@@ -1023,13 +1080,13 @@ class Window:
 
         # Коэффициент сложности установки
         difficult_list = (
-            self.main_settings['GRADATION']['difficult'].split(', '))
+            self.main_settings['GRADATION']['difficult'].split(','))
         self.ratio_difficult = float(
             difficult_list[int(self.spin_difficult.get()) - 1])
 
         # Коэффициент глубины гравировки
         depth_list = self.main_settings['GRADATION']['depth'].split(
-            ', ')
+            ',')
         self.ratio_depth = float(
             depth_list[int(self.spin_depth.get()) - 1])
 
@@ -1045,8 +1102,116 @@ class Window:
         except ValueError:
             self.ratio_discount = 1
 
-    def add_calc(self):  # Метод добавления расчета
-        pass
+    def add_new_calc(self):  # Метод добавления расчета
+        # Сохраняем данные прошлых расчетов
+        self.past_cost = self.present_cost
+        self.present_cost = 0
+        if self.past_cost_text == "":
+            self.past_cost_text += f'{self.past_cost:.0f}'
+        else:
+            self.past_cost_text += f'+ {self.past_cost:.0f}'
+
+        # Добавление новых данных в прошлый и текущий расчет
+        self.lbl_past_results.config(
+            text=f"Прошлый расчет = {self.past_cost_text} руб."
+        )
+        self.lbl_present_results.config(
+            text=f"Текущий расчет = {0:.0f} руб."
+        )
+
+        # Обнуление вывода первого расчета
+        self.lbl_result_grav.config(
+            text=f"Стоимость гравировки:"
+                 f"  {0:.0f}  руб/шт."
+        )
+        self.lbl_result_design.config(
+            text=f"Стоимость макетирования:"
+                 f"  {0:.0f}  руб.",
+        )
+
+        # Обнуление переключателей и окон ввода
+        self.reset_tab_1()
+
+    def reset_tab_1(self):  # Метод обнуления переключателей и полей
+        # Обнуление переключателей
+        self.bool_rotation.set(False)
+        self.bool_different.set(False)
+        self.bool_ratio_timing.set(False)
+        self.bool_ratio_packing.set(False)
+        self.bool_ratio_thermal_graving.set(False)
+        self.bool_ratio_oversize.set(False)
+        self.bool_ratio_numbering.set(False)
+        self.bool_ratio_taxation_ao.set(False)
+        self.bool_ratio_attention.set(False)
+        self.bool_ratio_hand_job.set(False)
+        self.bool_ratio_docking.set(False)
+        self.bool_ratio_taxation_ip.set(False)
+        self.rb_type_of_laser.set(1)
+        self.chk_ratio_taxation_ip.config(state='enabled')
+        self.chk_ratio_taxation_ao.config(state='enabled')
+
+        # Обнуление окон ввода данных
+        self.ent_design.delete(0, tk.END)
+        self.ent_height_grav.delete(0, tk.END)
+        self.ent_width_grav.delete(0, tk.END)
+
+        self.to_add_entry()
+        self.to_add_entry1()
+        self.to_add_entry7()
+
+        # Обнуление выпадающего списка и счетчиков
+        self.combo_products.set('Нет')
+
+        self.spin_difficult.configure(state='normal')
+        self.spin_difficult.delete(0, tk.END)
+        self.spin_difficult.insert(0, '1')
+        self.spin_difficult.configure(state='readonly')
+
+        self.spin_depth.configure(state='normal')
+        self.spin_depth.delete(0, tk.END)
+        self.spin_depth.insert(0, '1')
+        self.spin_depth.configure(state='readonly')
+
+        self.spin_number.configure(state='normal')
+        self.spin_number.delete(0, tk.END)
+        self.spin_number.insert(0, '1')
+        self.spin_number.configure(state='readonly')
+
+        self.spin_aim.configure(state='normal')
+        self.spin_aim.delete(0, tk.END)
+        self.spin_aim.insert(0, '1')
+        self.spin_aim.configure(state='readonly')
+
+        self.spin_discount.configure(state='normal')
+        self.spin_discount.delete(0, tk.END)
+        self.spin_discount.insert(0, '0')
+        self.spin_discount.configure(state='readonly')
+
+    def get_reset_results(self):  # Метод обнуления результатов и окна
+        # Обнуление результатов расчета
+        self.past_cost = 0
+        self.past_cost_text = ''
+        self.lbl_past_results.config(
+            text=f""
+        )
+        self.lbl_present_results.config(
+            text=f"Текущий расчет = {0:.0f} руб."
+        )
+        self.lbl_result_grav.config(
+            text=f"Стоимость гравировки:"
+                 f"  {0:.0f}  руб/шт."
+        )
+        self.lbl_result_design.config(
+            text=f"Стоимость макетирования:"
+                 f"  {0:.0f}  руб."
+        )
+        self.lbl_result_cost.config(
+            text=f"ИТОГОВАЯ СТОИМОСТЬ:"
+                 f"  {0:.0f}  руб."
+        )
+
+        # Обнуляем переключатели
+        self.reset_tab_1()
 
     def get_calc_mat(self):  # Метод расчета себестоимости изделий
 
@@ -1134,17 +1299,17 @@ class Window:
         # Если активируется способ оплаты одним методом, то происходит
         # деактивация возможности выбора второго
 
-        if self.bool_6.get():
-            self.chk_10.config(state='disabled')
+        if self.bool_ratio_taxation_ao.get():
+            self.chk_ratio_taxation_ip.config(state='disabled')
 
-        elif not self.bool_6.get():
-            self.chk_10.config(state='enabled')
+        elif not self.bool_ratio_taxation_ao.get():
+            self.chk_ratio_taxation_ip.config(state='enabled')
 
-        if self.bool_10.get():
-            self.chk_6.config(state='disabled')
+        if self.bool_ratio_taxation_ip.get():
+            self.chk_ratio_taxation_ao.config(state='disabled')
 
-        elif not self.bool_10.get():
-            self.chk_6.config(state='enabled')
+        elif not self.bool_ratio_taxation_ip.get():
+            self.chk_ratio_taxation_ao.config(state='enabled')
 
     def add_bind(self):  # Установка фонового текста в полях ввода (binds)
         self.to_add_entry()

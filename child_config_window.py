@@ -36,6 +36,7 @@ class ChildConfigSet:
 
         # Объявление переменных
         self.standard_names = standard
+        self.child_temp_config = ConfigSet()
 
         # Создание вкладок окна
         self.child_tabs_control = ttk.Notebook(self.child_root)
@@ -61,6 +62,8 @@ class ChildConfigSet:
         self.tab_1.rowconfigure(index=10, weight=1)
         self.tab_1.rowconfigure(index=11, weight=1)
         self.tab_1.rowconfigure(index=12, weight=1)
+        self.tab_1.rowconfigure(index=13, weight=1)
+        self.tab_1.rowconfigure(index=14, weight=1)
 
         self.tab_2.columnconfigure(index=0, weight=1)
         self.tab_2.columnconfigure(index=1, weight=50)
@@ -223,16 +226,16 @@ class ChildConfigSet:
         self.ent_ratio_hand_job.grid(row=8, column=1, padx=5, pady=5,
                                      sticky='nsew')
 
-        # Окно ввода ratio_taxation_ao __Оплата с НДС__
-        ttk.Label(self.tab_1, text='Оплата с НДС').grid(
+        # Окно ввода ratio_docking __Стыковка элементов__
+        ttk.Label(self.tab_1, text='Стыковка элементов').grid(
             row=7, column=2, padx=0, pady=0, sticky='ns'
         )
-        self.ent_ratio_taxation_ao = ttk.Entry(
+        self.ent_ratio_docking = ttk.Entry(
             self.tab_1,
             width=20
         )
-        self.ent_ratio_taxation_ao.grid(row=8, column=2, padx=5, pady=5,
-                                        sticky='nsew')
+        self.ent_ratio_docking.grid(row=8, column=2, padx=5, pady=5,
+                                    sticky='nsew')
 
         # Окно ввода ratio_oversize __Негабаритное изделие__
         ttk.Label(self.tab_1, text='Негабаритное изделие').grid(
@@ -277,20 +280,53 @@ class ChildConfigSet:
         self.ent_ratio_thermal_graving.grid(row=10, column=2, padx=5, pady=5,
                                             sticky='nsew')
 
-        # Окно ввода ratio_docking __Стыковка элементов__
-        ttk.Label(self.tab_1, text='Стыковка элементов').grid(
+        # Окно ввода ratio_taxation __Оплата с НДС__
+        ttk.Label(self.tab_1, text='Оплата по счету: АО, ИП').grid(
             row=9, column=3, padx=0, pady=0, sticky='ns'
         )
-        self.ent_ratio_docking = ttk.Entry(
+        self.ent_ratio_taxation = ttk.Entry(
             self.tab_1,
             width=20
         )
-        self.ent_ratio_docking.grid(row=10, column=3, padx=5, pady=5,
-                                    sticky='nsew')
+        self.ent_ratio_taxation.grid(row=10, column=3, padx=5, pady=5,
+                                     sticky='nsew')
+
+        # Окно ввода gradation_difficult __Сложность установки__
+        ttk.Label(self.tab_1, text='Сложность установки').grid(
+            row=11, column=0, padx=0, pady=0, sticky='ns', columnspan=1
+        )
+        self.ent_gradation_difficult = ttk.Entry(
+            self.tab_1,
+            width=20
+        )
+        self.ent_gradation_difficult.grid(row=12, column=0, padx=5, pady=5,
+                                          sticky='nsew', columnspan=1)
+
+        # Окно ввода gradation_depth __Глубина гравировки__
+        ttk.Label(self.tab_1, text='Глубина гравировки').grid(
+            row=11, column=1, padx=0, pady=0, sticky='ns', columnspan=1
+        )
+        self.ent_gradation_depth = ttk.Entry(
+            self.tab_1,
+            width=20
+        )
+        self.ent_gradation_depth.grid(row=12, column=1, padx=5, pady=5,
+                                      sticky='nsew', columnspan=1)
+
+        # Окно ввода gradation_area __Габариты гравировки__
+        ttk.Label(self.tab_1, text='Габариты гравировки').grid(
+            row=11, column=2, padx=0, pady=0, sticky='ns', columnspan=1
+        )
+        self.ent_gradation_area = ttk.Entry(
+            self.tab_1,
+            width=20
+        )
+        self.ent_gradation_area.grid(row=12, column=2, padx=5, pady=5,
+                                     sticky='nsew', columnspan=1)
 
         # Разделительная черта
         ttk.Separator(self.tab_1).grid(
-            row=11, column=0, columnspan=4, pady=5, sticky='ew'
+            row=13, column=0, columnspan=4, pady=5, sticky='ew'
         )
 
         # Создание кнопки обновления коэффициентов в программе
@@ -301,7 +337,7 @@ class ChildConfigSet:
             command=self.click_update_settings
         )
         self.btn_update_settings.grid(
-            row=12, column=0, padx=5, pady=10, sticky='nsew', columnspan=2
+            row=14, column=0, padx=5, pady=10, sticky='nsew', columnspan=2
         )
 
         # Создание кнопки сброса настроек "По умолчанию"
@@ -312,7 +348,7 @@ class ChildConfigSet:
             command=self.click_default_settings
         )
         self.btn_default_settings.grid(
-            row=12, column=2, padx=5, pady=10, sticky='nsew'
+            row=14, column=2, padx=5, pady=10, sticky='nsew'
         )
 
         # Создание кнопки закрытия дочернего окна
@@ -323,7 +359,7 @@ class ChildConfigSet:
             command=self.destroy_child
         )
         self.btn_destroy.grid(
-            row=12, column=3, padx=5, pady=10, sticky='nsew'
+            row=14, column=3, padx=5, pady=10, sticky='nsew'
         )
 
         # ___ Создание виджетов 2 вкладки ___
@@ -455,8 +491,10 @@ class ChildConfigSet:
 
     def update_data_in_widgets(self):  # Запись/обновление данных в окнах ввода
         # Считывание данных в переменные
-        ratio_from_config = ConfigSet().config['RATIO_SETTINGS']
-        main_from_config = ConfigSet().config['MAIN']
+        update_config = ConfigSet().config
+        ratio_from_config = update_config['RATIO_SETTINGS']
+        main_from_config = update_config['MAIN']
+        gradation_from_config = update_config['GRADATION']
 
         # Очистка полей ввода для обновления данных
         # Первый блок
@@ -472,12 +510,15 @@ class ChildConfigSet:
         self.ent_ratio_packing.delete(0, tk.END)
         self.ent_ratio_thermal_graving.delete(0, tk.END)
         self.ent_ratio_oversize.delete(0, tk.END)
-        self.ent_ratio_taxation_ao.delete(0, tk.END)
+        self.ent_ratio_taxation.delete(0, tk.END)
         self.ent_ratio_attention.delete(0, tk.END)
         self.ent_ratio_hand_job.delete(0, tk.END)
         self.ent_ratio_numbering.delete(0, tk.END)
         self.ent_ratio_different_layouts.delete(0, tk.END)
         self.ent_ratio_docking.delete(0, tk.END)
+        self.ent_gradation_difficult.delete(0, tk.END)
+        self.ent_gradation_depth.delete(0, tk.END)
+        self.ent_gradation_area.delete(0, tk.END)
 
         # Запись значений в окнах ввода
         # Первый блок
@@ -499,8 +540,6 @@ class ChildConfigSet:
             0, ratio_from_config['ratio_thermal_graving'])
         self.ent_ratio_oversize.insert(
             0, ratio_from_config['ratio_oversize'])
-        self.ent_ratio_taxation_ao.insert(
-            0, ratio_from_config['ratio_taxation_ao'])
         self.ent_ratio_attention.insert(
             0, ratio_from_config['ratio_attention'])
         self.ent_ratio_hand_job.insert(
@@ -511,16 +550,27 @@ class ChildConfigSet:
             0, ratio_from_config['ratio_different_layouts'])
         self.ent_ratio_docking.insert(
             0, ratio_from_config['ratio_docking'])
+        self.ent_ratio_taxation.insert(
+            0, ratio_from_config['ratio_taxation'])
+        self.ent_gradation_difficult.insert(
+            0, gradation_from_config['difficult'])
+        self.ent_gradation_depth.insert(
+            0, gradation_from_config['depth'])
+        self.ent_gradation_area.insert(
+            0, gradation_from_config['area'])
+
+        del (update_config, ratio_from_config, main_from_config,
+             gradation_from_config)
 
     def get_standard_costs(self):  # Метод получения данных для таблицы
         table_data = list()
         # Считывание информации из конфига
-        costs = ConfigSet().config
+        costs = self.child_temp_config.config["STANDARD"]
         for item in self.standard_names:
             temp = [
                 item,
                 self.standard_names[item],
-                costs["STANDARD"][self.standard_names[item]]
+                costs[self.standard_names[item]]
             ]
             table_data.append(temp)
         return table_data
@@ -533,7 +583,7 @@ class ChildConfigSet:
 
     def click_update_settings(self):  # Метод сохранения настроек
         # Создание переменной конфигурации
-        new_config = ConfigSet().config
+        new_config = self.child_temp_config.config
 
         # Запись новых данных в переменную конфигурации
         # Первый блок
@@ -555,8 +605,6 @@ class ChildConfigSet:
             self.ent_ratio_packing.get())
         new_config['RATIO_SETTINGS']['ratio_hand_job'] = (
             self.ent_ratio_hand_job.get())
-        new_config['RATIO_SETTINGS']['ratio_taxation_ao'] = (
-            self.ent_ratio_taxation_ao.get())
         new_config['RATIO_SETTINGS']['ratio_oversize'] = (
             self.ent_ratio_oversize.get())
         new_config['RATIO_SETTINGS']['ratio_different_layouts'] = (
@@ -567,14 +615,22 @@ class ChildConfigSet:
             self.ent_ratio_thermal_graving.get())
         new_config['RATIO_SETTINGS']['ratio_docking'] = (
             self.ent_ratio_docking.get())
+        new_config['RATIO_SETTINGS']['ratio_taxation'] = (
+            self.ent_ratio_taxation.get())
+        new_config['GRADATION']['difficult'] = (
+            self.ent_gradation_difficult.get())
+        new_config['GRADATION']['depth'] = (
+            self.ent_gradation_depth.get())
+        new_config['GRADATION']['area'] = (
+            self.ent_gradation_area.get())
 
         # Запись в файл конфигурации
-        ConfigSet().update_settings(some_new=new_config)
+        self.child_temp_config.update_settings(some_new=new_config)
 
     def click_default_settings(self):  # Метод сброса настроек "По умолчанию"
         if askokcancel('Сброс настроек', 'Вы действительно хотите сбросить '
                                          'настройки по умолчанию?'):
-            ConfigSet().default_settings()
+            self.child_temp_config.default_settings()
         self.update_data_in_widgets()
         self.child_root.update()
 
@@ -642,13 +698,12 @@ class ConfigSet:
         ratio_attention = 1.15
         ratio_packing = 1.15
         ratio_hand_job = 1.15
-        ratio_taxation_ao = 1.2
+        ratio_taxation = 1.2, 1.07
         ratio_oversize = 1.8
         ratio_different_layouts = 1.15
         ratio_numbering = 1.1
         ratio_thermal_graving = 1.15
         ratio_docking = 1.15
-        ratio_taxation_ip = 1.07
         
         [GRADATION]
         difficult = 1, 1.2, 1.3, 1.5, 1.8
@@ -667,13 +722,12 @@ class ConfigSet:
         industrial_ratio_attention = 1.15
         industrial_ratio_packing = 1.15
         industrial_ratio_hand_job = 1.15
-        industrial_ratio_taxation_ao = 1.2
+        industrial_ratio_taxation = 1.2, 1.07
         industrial_ratio_oversize = 1.8
         industrial_ratio_different_layouts = 1.15
         industrial_ratio_numbering = 1.1
         industrial_ratio_thermal_graving = 1.15
         industrial_ratio_docking = 1.15
-        industrial_ratio_taxation_ip = 1.07
         
         [INDUSTRIAL_GRADATION]
         industrial_difficult = 1, 1.3, 1.5, 1.8, 2.0
