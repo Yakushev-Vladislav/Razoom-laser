@@ -5,7 +5,7 @@ import configparser
 
 
 class ChildConfigSet:
-    def __init__(self, parent, width, height, theme, standard,
+    def __init__(self, parent, width, height, theme,
                  title='Предварительная настройка программы',
                  resizable=(False, False), icon=None):
 
@@ -17,7 +17,6 @@ class ChildConfigSet:
         :param width: Ширина окна
         :param height: Высота окна
         :param theme: Тема, используемая в родительском классе
-        :param standard: Словарь стандартных изделий и их конфигураций
         :param title: Название окна
         :param resizable: Изменяемость окна. По умолчанию: (False, False)
         :param icon: Иконка окна. По умолчанию: None
@@ -25,7 +24,7 @@ class ChildConfigSet:
         # Создание дочернего окна поверх основного
         self.child_root = tk.Toplevel(parent)
         self.child_root.title(title)
-        self.child_root.geometry(f"{width}x{height}+200+100")
+        self.child_root.geometry(f"{width}x{height}+100+100")
         self.child_root.resizable(resizable[0], resizable[1])
         if icon:
             self.child_root.iconbitmap(icon)
@@ -35,9 +34,8 @@ class ChildConfigSet:
         self.style_child.theme_use(theme)
 
         # Объявление переменных
-        self.standard_names = standard
         self.child_temp_config = ConfigSet()
-
+        self.not_use = None
         # Создание вкладок окна
         self.child_tabs_control = ttk.Notebook(self.child_root)
         self.tab_1 = ttk.Frame(self.child_tabs_control)
@@ -84,10 +82,10 @@ class ChildConfigSet:
         self.tab_2_panel_2.columnconfigure(index=1, weight=1)
         self.tab_2_panel_2.columnconfigure(index=2, weight=1)
         self.tab_2_panel_2.rowconfigure(index=0, weight=1)
-        self.tab_2_panel_2.rowconfigure(index=1, weight=2)
+        self.tab_2_panel_2.rowconfigure(index=1, weight=1)
         self.tab_2_panel_2.rowconfigure(index=2, weight=1)
         self.tab_2_panel_2.rowconfigure(index=3, weight=1)
-        self.tab_2_panel_2.rowconfigure(index=4, weight=2)
+        self.tab_2_panel_2.rowconfigure(index=4, weight=1)
 
         # Добавление вкладок в набор
         self.child_tabs_control.add(self.tab_1, text='Частные лица')
@@ -372,19 +370,14 @@ class ChildConfigSet:
             selectmode="extended",
             yscrollcommand=tree_scroll.set,
             height=4,
-            columns=('#0', '#1', '#2', '#3'),
+            columns=('#1', '#2'),
             show="headings"
         )
-        self.standard_table.column(0, width=0, anchor="w")
-        self.standard_table.column(1, width=100, anchor="w")
-        self.standard_table.column(2, width=140, anchor="center")
-        self.standard_table.column(3, width=80, anchor="center")
+        self.standard_table.column(0, width=400, anchor="w")
+        self.standard_table.column(1, width=300, anchor="center")
 
-        self.standard_table.heading(0, text="", anchor="center")
-        self.standard_table.heading(1, text="Название работы", anchor="center")
-        self.standard_table.heading(
-            2, text="Название для конфигурации (ENG)", anchor="center")
-        self.standard_table.heading(3, text="Стоимость работы, руб",
+        self.standard_table.heading(0, text="Название работы", anchor="center")
+        self.standard_table.heading(1, text="Стоимость работы, руб",
                                     anchor="center")
         self.standard_table.selection()
         self.standard_table.configure(yscrollcommand=tree_scroll.set)
@@ -396,13 +389,8 @@ class ChildConfigSet:
 
         # Добавление данных в таблицу
         self.data_table = self.get_standard_costs()
-        self.i_data = -1
         for data in self.data_table:
-            self.i_data += 1
-            temp_list = list()
-            temp_list.append(f'{self.i_data}:')
-            temp_list.extend(data)
-            self.standard_table.insert('', index='end', values=temp_list)
+            self.standard_table.insert('', index='end', values=data)
 
         # Окно ввода __ Название работы __
         ttk.Label(self.tab_2_panel_2, text='Название работы').grid(
@@ -413,57 +401,45 @@ class ChildConfigSet:
             width=20
         )
         self.ent_name.grid(row=1, column=0, padx=5, pady=(5, 10),
-                           sticky='nsew')
-
-        # Окно ввода __ Название для конфигурации __
-        ttk.Label(self.tab_2_panel_2,
-                  text='Название для конфигурации').grid(
-            row=0, column=1, padx=5, pady=5, sticky='ns'
-        )
-        self.ent_name_for_config = ttk.Entry(
-            self.tab_2_panel_2,
-            width=20
-        )
-        self.ent_name_for_config.grid(row=1, column=1, padx=5, pady=(5, 10),
-                                      sticky='nsew')
+                           sticky='nsew', columnspan=1)
 
         # Окно ввода __ Стоимость работы __
         ttk.Label(self.tab_2_panel_2,
                   text='Стоимость работы').grid(
-            row=0, column=2, padx=0, pady=5, sticky='ns'
+            row=0, column=1, padx=0, pady=5, sticky='ns'
         )
         self.ent_cost = ttk.Entry(
             self.tab_2_panel_2,
             width=20
         )
-        self.ent_cost.grid(row=1, column=2, padx=5, pady=(5, 10),
+        self.ent_cost.grid(row=1, column=1, padx=5, pady=(5, 10),
                            sticky='nsew')
 
         # Создание кнопки добавления работы
         self.btn_add_new_element = ttk.Button(
             self.tab_2_panel_2,
             width=10,
-            text="Добавить работу в базу данных",
-            command=self.click_add
+            text="Добавить работу",
+            command=self.click_add_standard
         )
         self.btn_add_new_element.grid(
-            row=2, column=0, padx=5, pady=10, sticky='nsew', columnspan=3)
+            row=1, column=2, padx=5, pady=(5, 10), sticky='nsew', columnspan=1)
 
         # Разделительная черта
         ttk.Separator(self.tab_2_panel_2).grid(
-            row=3, column=0, columnspan=4, pady=5, sticky='ew'
+            row=2, column=0, columnspan=4, pady=5, sticky='ew'
         )
 
         # Окно ввода __ Номер удаляемой строки __
         ttk.Label(self.tab_2_panel_2,
-                  text='Номер удаляемой строки').grid(
-            row=4, column=0, padx=0, pady=0, sticky='ns'
+                  text='Название удаляемого элемента').grid(
+            row=3, column=0, padx=0, pady=0, sticky='ns'
         )
         self.ent_delete_element = ttk.Entry(
             self.tab_2_panel_2,
-            width=20
+            width=10
         )
-        self.ent_delete_element.grid(row=5, column=0, padx=5, pady=(10, 40),
+        self.ent_delete_element.grid(row=4, column=0, padx=5, pady=(10, 20),
                                      sticky='nsew')
 
         # Создание кнопки удаления работы
@@ -474,7 +450,7 @@ class ChildConfigSet:
             command=self.click_delete_element
         )
         self.btn_delete_element.grid(
-            row=5, column=1, padx=5, pady=(10, 40), sticky='nsew')
+            row=4, column=1, padx=5, pady=(10, 20), sticky='nsew')
 
         # Создание кнопки перехода на начальную вкладку
         self.btn_back_to_tab_1 = ttk.Button(
@@ -484,10 +460,11 @@ class ChildConfigSet:
             command=self.click_back
         )
         self.btn_back_to_tab_1.grid(
-            row=5, column=2, padx=5, pady=(10, 40), sticky='nsew')
+            row=4, column=2, padx=5, pady=(10, 20), sticky='nsew')
 
         # Запись данных в окна ввода
         self.update_data_in_widgets()
+        self.add_bind_entry()
 
     def update_data_in_widgets(self):  # Запись/обновление данных в окнах ввода
         # Считывание данных в переменные
@@ -559,6 +536,23 @@ class ChildConfigSet:
         self.ent_gradation_area.insert(
             0, gradation_from_config['area'])
 
+        # Обновление данных в таблице второй вкладки
+        for item in self.standard_table.get_children():
+            self.standard_table.delete(item)
+
+        self.data_table = self.get_standard_costs()
+        for data in self.data_table:
+            self.standard_table.insert('', index='end', values=data)
+
+        # Очистка полей ввода второй вкладки
+        self.ent_name.delete(0, tk.END)
+        self.ent_cost.delete(0, tk.END)
+        self.ent_delete_element.delete(0, tk.END)
+
+        self.to_add_entry()
+        self.to_add_entry1()
+        self.to_add_entry2()
+
         del (update_config, ratio_from_config, main_from_config,
              gradation_from_config)
 
@@ -566,20 +560,35 @@ class ChildConfigSet:
         table_data = list()
         # Считывание информации из конфига
         costs = self.child_temp_config.config["STANDARD"]
-        for item in self.standard_names:
-            temp = [
-                item,
-                self.standard_names[item],
-                costs[self.standard_names[item]]
-            ]
+        for k, v in costs.items():
+            temp = [k, v]
             table_data.append(temp)
         return table_data
 
     def click_back(self):  # Метод возвращения на первую вкладку
         self.child_tabs_control.select(self.tab_1)
 
-    def click_add(self):  # Метод добавления новой стандартной работы
-        pass
+    def click_add_standard(self):  # Метод добавления новой стандартной работы
+        # Создание переменной конфигурации
+        add_config = self.child_temp_config.config
+
+        # Считываем с окон новые данные
+        try:
+            add_config['STANDARD'][self.ent_name.get()] = (
+                str(int(self.ent_cost.get())))
+        except ValueError:
+            tk.messagebox.showerror(
+                'Ошибка добавления',
+                'Стоимость работы введена некорректно'
+            )
+
+        # Записываем данные в файл
+        self.child_temp_config.update_settings(some_new=add_config)
+
+        # Обновление данных в таблице
+        self.update_data_in_widgets()
+
+        del add_config
 
     def click_update_settings(self):  # Метод сохранения настроек
         # Создание переменной конфигурации
@@ -635,10 +644,66 @@ class ChildConfigSet:
         self.child_root.update()
 
     def click_delete_element(self):  # Метод удаления стандартной работы
-        pass
+        # Создаем переменную конфигурации
+        config_with_deleted_item = self.child_temp_config.config
 
-    def is_not_use(self):  # Метод исправления ошибки статичности
-        pass
+        # Считывание данных из окна ввода и удаление выбранного элемента
+        config_with_deleted_item.remove_option(
+            'STANDARD', self.ent_delete_element.get()
+        )
+
+        # Обновление данных в файле
+        self.child_temp_config.update_settings(
+            some_new=config_with_deleted_item)
+
+        # Обновление данных в таблице
+        self.update_data_in_widgets()
+
+        del config_with_deleted_item
+
+    def add_bind_entry(self):  # Установка фонового текста в полях ввода
+        self.to_add_entry()
+        self.to_add_entry1()
+        self.to_add_entry2()
+
+        self.ent_cost.bind('<FocusIn>', self.erase_entry)
+        self.ent_cost.bind('<FocusOut>', self.to_add_entry)
+
+        self.ent_name.bind('<FocusIn>', self.erase_entry1)
+        self.ent_name.bind('<FocusOut>', self.to_add_entry1)
+
+        self.ent_delete_element.bind('<FocusIn>', self.erase_entry2)
+        self.ent_delete_element.bind('<FocusOut>', self.to_add_entry2)
+
+    def erase_entry(self, event=None):
+        if self.ent_cost.get() == '-':
+            self.ent_cost.delete(0, 'end')
+        self.not_use = event
+
+    def erase_entry1(self, event=None):
+        if self.ent_name.get() == '-':
+            self.ent_name.delete(0, 'end')
+        self.not_use = event
+
+    def erase_entry2(self, event=None):
+        if self.ent_delete_element.get() == '-':
+            self.ent_delete_element.delete(0, 'end')
+        self.not_use = event
+
+    def to_add_entry(self, event=None):
+        if self.ent_cost.get() == "":
+            self.ent_cost.insert(0, '-')
+        self.not_use = event
+
+    def to_add_entry1(self, event=None):
+        if self.ent_name.get() == "":
+            self.ent_name.insert(0, '-')
+        self.not_use = event
+
+    def to_add_entry2(self, event=None):
+        if self.ent_delete_element.get() == "":
+            self.ent_delete_element.insert(0, '-')
+        self.not_use = event
 
     def grab_focus(self):  # Метод сохранения фокуса на дочернем окне
         self.child_root.grab_set()
@@ -657,17 +722,17 @@ class ConfigSet:
 
         # Чтение файла конфигурации
         self.config = configparser.ConfigParser()
-        self.config.read('settings/settings.ini')
+        self.config.read('settings/settings.ini', encoding='utf-8')
 
     def update_settings(self, some_new=None):  # Обновления файла конфигурации
         if some_new:
-            with open('settings/settings.ini', 'w') as configfile:
+            with (open('settings/settings.ini', 'w', encoding='utf-8') as
+                  configfile):
                 some_new.write(configfile)
         else:
-            with open('settings/settings.ini', 'w') as configfile:
+            with (open('settings/settings.ini', 'w', encoding='utf-8') as
+                  configfile):
                 self.config.write(configfile)
-
-        self.is_not_use()  # Исправление статичности метода
 
     @staticmethod
     def default_settings():  # Метод сброса настроек программы до базовых
@@ -682,14 +747,14 @@ class ConfigSet:
         many_items = 0.4
         
         [STANDARD]
-        ring = 1400
-        ring_2_sides = 2200
-        knife = 1000
-        pen = 1000
-        badge = 1000
-        thermos = 1200
-        keyboard = 1500
-        personal_keyboard = 2000
+        Кольцо = 1400
+        Кольцо с 2-х сторон = 2200
+        Нож = 1000
+        Ручка = 1000
+        Жетон/Брелок = 1000
+        Термос/Термокружка = 1200
+        Клавиатура = 1500
+        Клавиатура с пробелом = 2000
         
         [RATIO_SETTINGS]
         ratio_laser_gas = 1.15
@@ -753,8 +818,6 @@ class ConfigSet:
                            )
 
         # Запись в файл настроек "по умолчанию"
-        with open('settings/settings.ini', 'w') as configfile:
+        with (open('settings/settings.ini', 'w', encoding='utf-8') as
+              configfile):
             default_config.write(configfile)
-
-    def is_not_use(self):  # Метод исправления ошибки статичности
-        pass

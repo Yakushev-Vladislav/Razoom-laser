@@ -88,18 +88,6 @@ class Window:
         self.ratio_taxation = 1
         self.ratio_size = 1
 
-        # Создание словаря для связи списка со стоимостями
-        self.standard_items = {
-            "Жетон/Брелок": "badge",
-            "Кольцо": "ring",
-            "Кольцо с 2-х сторон": "ring_2_sides",
-            "Ручка": "pen",
-            "Нож": "knife",
-            "Термокружка/Термос": "thermos",
-            "Клавиатура": "keyboard",
-            "Клавиатура с пробелом": "personal_keyboard"
-        }
-
         # Создание основных вкладок
         self.tabs_control = ttk.Notebook(self.root)
         self.tab_1 = ttk.Frame(self.tabs_control)
@@ -221,17 +209,11 @@ class Window:
         # Создание выпадающего списка стандартных изделий
         ttk.Label(self.panel_1, text="Стандартное изделие:").grid(
             row=0, column=0, padx=10, pady=0, sticky='ns')
-        self.combo_list = [
-            "Нет",
-            "Жетон/Брелок",
-            "Кольцо",
-            "Кольцо с 2-х сторон",
-            "Ручка",
-            "Термокружка/Термос",
-            "Нож",
-            "Клавиатура",
-            "Клавиатура с пробелом"
-        ]
+        self.combo_list = list()
+        self.combo_list.append('Нет')
+        for k, v in self.main_settings['STANDARD'].items():
+            self.combo_list.append(k)
+
         self.combo_products = ttk.Combobox(
             self.panel_1,
             values=self.combo_list,
@@ -787,6 +769,11 @@ class Window:
 
     def settings_update(self):  # Метод обновления окна
         self.main_settings = ConfigSet().config
+        self.combo_list = list()
+        self.combo_list.append('Нет')
+        for k, v in self.main_settings['STANDARD'].items():
+            self.combo_list.append(k)
+        self.combo_products.configure(values=self.combo_list)
         self.root.update()
 
     def run_child_materials(self):  # Открытие дочернего окна листового мат-ла.
@@ -815,7 +802,6 @@ class Window:
             self.root,
             700,
             450,
-            standard=self.standard_items,
             theme=self.theme,
             icon="resources/Company_logo.ico"
         )
@@ -879,8 +865,7 @@ class Window:
             cost = int(self.main_settings["MAIN"]["min_cost"])
         else:  # Если выбрано стандартное изделие
             cost = int(
-                self.main_settings["STANDARD"][
-                    self.standard_items[self.combo_products.get()]]
+                self.main_settings["STANDARD"][self.combo_products.get()]
             )
 
         # Получение данных для коэффициентов
