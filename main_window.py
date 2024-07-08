@@ -354,7 +354,7 @@ class Window:
 
         self.chk_ratio_taxation_ao = ttk.Checkbutton(
             self.panel_2,
-            text='Оплата по счету АО',
+            text='Оплата по счету ООО',
             variable=self.bool_ratio_taxation_ao,
             command=self.disable_taxation
         )
@@ -1014,7 +1014,7 @@ class Window:
         else:
             self.ratio_numbering = 1
 
-        # Коэффициент ratio_taxation_ao __Оплата по счету АО__
+        # Коэффициент ratio_taxation_ao __Оплата по счету ООО__
         if self.bool_ratio_taxation_ao.get():
             self.ratio_taxation_ao = float(
                 self.main_settings["RATIO_SETTINGS"][

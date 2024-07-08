@@ -279,7 +279,7 @@ class ChildConfigSet:
                                             sticky='nsew')
 
         # Окно ввода ratio_taxation __Оплата с НДС__
-        ttk.Label(self.tab_1, text='Оплата по счету: АО, ИП').grid(
+        ttk.Label(self.tab_1, text='Оплата по счету: ООО, ИП').grid(
             row=9, column=3, padx=0, pady=0, sticky='ns'
         )
         self.ent_ratio_taxation = ttk.Entry(
