@@ -88,6 +88,12 @@ class Window:
         self.ratio_taxation = 1
         self.ratio_size = 1
 
+        # Размерность блоков ввода градационных сложностей
+        self.gradation_difficult_max = len(
+            self.main_settings['GRADATION']['difficult'].split(','))
+        self.gradation_depth_max = len(
+            self.main_settings['GRADATION']['depth'].split(','))
+
         # Создание основных вкладок
         self.tabs_control = ttk.Notebook(self.root)
         self.tab_1 = ttk.Frame(self.tabs_control)
@@ -398,7 +404,8 @@ class Window:
         ttk.Label(self.panel_2, text='Сложность установки').grid(
             row=5, column=0, padx=(10, 0), pady=5, sticky='nsew'
         )
-        self.spin_difficult = ttk.Spinbox(self.panel_2, from_=1, to=5)
+        self.spin_difficult = ttk.Spinbox(
+            self.panel_2, from_=1, to=self.gradation_difficult_max)
         self.spin_difficult.insert(0, '1')
         self.spin_difficult.configure(state='readonly')
         self.spin_difficult.grid(
@@ -409,7 +416,8 @@ class Window:
         ttk.Label(self.panel_2, text='Глубина гравировки').grid(
             row=6, column=0, padx=(10, 0), pady=5, sticky='nsew'
         )
-        self.spin_depth = ttk.Spinbox(self.panel_2, from_=1, to=5)
+        self.spin_depth = ttk.Spinbox(
+            self.panel_2, from_=1, to=self.gradation_depth_max)
         self.spin_depth.insert(0, '1')
         self.spin_depth.configure(state='readonly')
         self.spin_depth.grid(
@@ -768,12 +776,24 @@ class Window:
         self.root.configure(menu=menu_bar)
 
     def settings_update(self):  # Метод обновления окна
+        # Обновление переменной конфигурации
         self.main_settings = ConfigSet().config
+
+        # Обновление данных в таблице
         self.combo_list = list()
         self.combo_list.append('Нет')
         for k, v in self.main_settings['STANDARD'].items():
             self.combo_list.append(k)
         self.combo_products.configure(values=self.combo_list)
+
+        # Размерность блоков ввода градационных сложностей
+        self.gradation_difficult_max = len(
+            self.main_settings['GRADATION']['difficult'].split(','))
+        self.gradation_depth_max = len(
+            self.main_settings['GRADATION']['depth'].split(','))
+        self.spin_difficult.config(to=self.gradation_difficult_max)
+        self.spin_depth.config(to=self.gradation_depth_max)
+
         self.root.update()
 
     def run_child_materials(self):  # Открытие дочернего окна листового мат-ла.

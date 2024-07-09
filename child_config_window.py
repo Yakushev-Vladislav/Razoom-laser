@@ -579,7 +579,7 @@ class ChildConfigSet:
         except ValueError:
             tk.messagebox.showerror(
                 'Ошибка добавления',
-                'Стоимость работы введена некорректно'
+                'Стоимость работы введена некорректно!'
             )
 
         # Записываем данные в файл
@@ -596,42 +596,71 @@ class ChildConfigSet:
 
         # Запись новых данных в переменную конфигурации
         # Первый блок
-        new_config['MAIN']['min_cost'] = self.ent_minimum.get()
-        new_config['MAIN']['additional_cost'] = self.ent_additional.get()
-        new_config['MAIN']['one_hour_of_work'] = self.ent_one_hour.get()
-        new_config['MAIN']['many_items'] = self.ent_many_items.get()
+        try:  # Валидация введенных данных
+            new_config['MAIN']['min_cost'] = str(
+                int(self.ent_minimum.get()))
+            new_config['MAIN']['additional_cost'] = str(
+                int(self.ent_additional.get()))
+            new_config['MAIN']['one_hour_of_work'] = str(
+                int(self.ent_one_hour.get()))
+            new_config['MAIN']['many_items'] = str(
+                float(self.ent_many_items.get()))
+
+        except ValueError:
+            tk.messagebox.showerror(
+                'Ошибка добавления',
+                'Данные первого блока введены некорректно!'
+            )
+            self.update_data_in_widgets()
 
         # Второй блок
-        new_config['RATIO_SETTINGS']['ratio_laser_gas'] = (
-            self.ent_ratio_laser_gas.get())
-        new_config['RATIO_SETTINGS']['ratio_rotation'] = (
-            self.ent_ratio_rotation.get())
-        new_config['RATIO_SETTINGS']['ratio_timing'] = (
-            self.ent_ratio_timing.get())
-        new_config['RATIO_SETTINGS']['ratio_attention'] = (
-            self.ent_ratio_attention.get())
-        new_config['RATIO_SETTINGS']['ratio_packing'] = (
-            self.ent_ratio_packing.get())
-        new_config['RATIO_SETTINGS']['ratio_hand_job'] = (
-            self.ent_ratio_hand_job.get())
-        new_config['RATIO_SETTINGS']['ratio_oversize'] = (
-            self.ent_ratio_oversize.get())
-        new_config['RATIO_SETTINGS']['ratio_different_layouts'] = (
-            self.ent_ratio_different_layouts.get())
-        new_config['RATIO_SETTINGS']['ratio_numbering'] = (
-            self.ent_ratio_numbering.get())
-        new_config['RATIO_SETTINGS']['ratio_thermal_graving'] = (
-            self.ent_ratio_thermal_graving.get())
-        new_config['RATIO_SETTINGS']['ratio_docking'] = (
-            self.ent_ratio_docking.get())
-        new_config['RATIO_SETTINGS']['ratio_taxation'] = (
-            self.ent_ratio_taxation.get())
-        new_config['GRADATION']['difficult'] = (
-            self.ent_gradation_difficult.get())
-        new_config['GRADATION']['depth'] = (
-            self.ent_gradation_depth.get())
-        new_config['GRADATION']['area'] = (
-            self.ent_gradation_area.get())
+        try:
+            new_config['RATIO_SETTINGS']['ratio_laser_gas'] = str(
+                float(self.ent_ratio_laser_gas.get()))
+            new_config['RATIO_SETTINGS']['ratio_rotation'] = str(
+                float(self.ent_ratio_rotation.get()))
+            new_config['RATIO_SETTINGS']['ratio_timing'] = str(
+                float(self.ent_ratio_timing.get()))
+            new_config['RATIO_SETTINGS']['ratio_attention'] = str(
+                float(self.ent_ratio_attention.get()))
+            new_config['RATIO_SETTINGS']['ratio_packing'] = str(
+                float(self.ent_ratio_packing.get()))
+            new_config['RATIO_SETTINGS']['ratio_hand_job'] = str(
+                float(self.ent_ratio_hand_job.get()))
+            new_config['RATIO_SETTINGS']['ratio_oversize'] = str(
+                float(self.ent_ratio_oversize.get()))
+            new_config['RATIO_SETTINGS']['ratio_different_layouts'] = str(
+                float(self.ent_ratio_different_layouts.get()))
+            new_config['RATIO_SETTINGS']['ratio_numbering'] = str(
+                float(self.ent_ratio_numbering.get()))
+            new_config['RATIO_SETTINGS']['ratio_thermal_graving'] = str(
+                float(self.ent_ratio_thermal_graving.get()))
+            new_config['RATIO_SETTINGS']['ratio_docking'] = str(
+                float(self.ent_ratio_docking.get()))
+
+            [float(x) for x in
+                self.ent_ratio_taxation.get().split(',')]
+            [float(x) for x in
+                self.ent_gradation_difficult.get().split(',')]
+            [float(x) for x in
+                self.ent_gradation_depth.get().split(',')]
+            [float(x) for x in
+                self.ent_gradation_area.get().split(',')]
+
+            new_config['RATIO_SETTINGS']['ratio_taxation'] = (
+                self.ent_ratio_taxation.get())
+            new_config['GRADATION']['difficult'] = (
+                self.ent_gradation_difficult.get())
+            new_config['GRADATION']['depth'] = (
+                self.ent_gradation_depth.get())
+            new_config['GRADATION']['area'] = (
+                self.ent_gradation_area.get())
+        except ValueError:
+            tk.messagebox.showerror(
+                'Ошибка добавления',
+                'Данные второго блока введены некорректно!'
+            )
+            self.update_data_in_widgets()
 
         # Запись в файл конфигурации
         self.child_temp_config.update_settings(some_new=new_config)
@@ -758,7 +787,7 @@ class ConfigSet:
         
         [RATIO_SETTINGS]
         ratio_laser_gas = 1.15
-        ratio_rotation = 1.3
+        ratio_rotation = 1.2
         ratio_timing = 1.5
         ratio_attention = 1.15
         ratio_packing = 1.15
@@ -782,7 +811,7 @@ class ConfigSet:
         
         [RATIO_INDUSTRIAL_SETTINGS]
         industrial_ratio_laser_gas = 1.15
-        industrial_ratio_rotation = 1.3
+        industrial_ratio_rotation = 1.2
         industrial_ratio_timing = 1.5
         industrial_ratio_attention = 1.15
         industrial_ratio_packing = 1.15
