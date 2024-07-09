@@ -96,76 +96,63 @@ class Window:
 
         # Создание основных вкладок
         self.tabs_control = ttk.Notebook(self.root)
-        self.tab_1 = ttk.Frame(self.tabs_control)
-        self.tab_2 = ttk.Frame(self.tabs_control)
-        self.tab_3 = ttk.Frame(self.tabs_control)
+        self.tab_mian_calculate = ttk.Frame(self.tabs_control)
+        self.tab_sheet_material = ttk.Frame(self.tabs_control)
+        self.tab_industrial_calculator = ttk.Frame(self.tabs_control)
 
         # Конфигурация отзывчивости вкладок
-        self.tab_1.columnconfigure(index=0, weight=1)
-        self.tab_1.columnconfigure(index=1, weight=2)
-        self.tab_1.rowconfigure(index=0, weight=4)
-        self.tab_1.rowconfigure(index=1, weight=1)
-        self.tab_1.rowconfigure(index=2, weight=4)
+        self.tab_mian_calculate.columnconfigure(index=0, weight=1)
+        self.tab_mian_calculate.columnconfigure(index=1, weight=2)
+        self.tab_mian_calculate.rowconfigure(index=0, weight=4)
+        self.tab_mian_calculate.rowconfigure(index=1, weight=1)
+        self.tab_mian_calculate.rowconfigure(index=2, weight=4)
 
-        self.tab_2.columnconfigure(index=0, weight=1)
-        self.tab_2.columnconfigure(index=1, weight=50)
-        self.tab_2.rowconfigure(index=0, weight=1)
-        self.tab_2.rowconfigure(index=1, weight=4)
+        self.tab_sheet_material.columnconfigure(index=0, weight=1)
+        self.tab_sheet_material.columnconfigure(index=1, weight=50)
+        self.tab_sheet_material.rowconfigure(index=0, weight=1)
+        self.tab_sheet_material.rowconfigure(index=1, weight=4)
 
-        self.tab_3.columnconfigure(index=0, weight=1)
-        self.tab_3.columnconfigure(index=1, weight=2)
-        self.tab_3.rowconfigure(index=0, weight=1)
-        self.tab_3.rowconfigure(index=1, weight=1)
+        self.tab_industrial_calculator.columnconfigure(index=0, weight=1)
+        self.tab_industrial_calculator.columnconfigure(index=1, weight=1)
+        self.tab_industrial_calculator.columnconfigure(index=2, weight=1)
+        self.tab_industrial_calculator.rowconfigure(index=0, weight=1)
+        self.tab_industrial_calculator.rowconfigure(index=1, weight=1)
+        self.tab_industrial_calculator.rowconfigure(index=2, weight=1)
 
         # Добавление вкладок в набор
-        self.tabs_control.add(self.tab_1, text='Частные лица')
-        self.tabs_control.add(self.tab_2, text='Листовой материал')
-        self.tabs_control.add(self.tab_3, text='Оптовый расчёт')
+        self.tabs_control.add(self.tab_mian_calculate,
+                              text='Частные лица')
+        self.tabs_control.add(self.tab_sheet_material,
+                              text='Листовой материал')
+        self.tabs_control.add(self.tab_industrial_calculator,
+                              text='Оптовый расчёт')
         # Упаковка вкладок
         self.tabs_control.pack(fill='both', expand=True)
 
         # ____________________1 ВКЛАДКА____________________
 
         # Создание формы для виджетов основного расчета
-        self.panel_1 = ttk.Frame(self.tab_1, padding=(0, 0, 0, 0))
+        self.panel_1 = ttk.Frame(self.tab_mian_calculate, padding=(0, 0, 0, 0))
         self.panel_1.grid(row=0, column=0, padx=10, pady=(10, 0),
                           sticky="nsew", rowspan=1)
 
         # Создание формы для переключателей
         self.panel_2 = ttk.LabelFrame(
-            self.tab_1,
+            self.tab_mian_calculate,
             text="Углубленный расчет",
             padding=10
         )
         self.panel_2.grid(row=0, column=1, padx=(10, 20), pady=(10, 5),
                           sticky="nsew", rowspan=1)
 
-        # Создание формы расчета по времени работы оборудования
-        self.panel_3 = ttk.LabelFrame(
-            self.tab_3,
-            text="Время работы оборудования",
-            padding=5
-        )
-        self.panel_3.grid(row=0, column=0, padx=(10, 20), pady=(10, 20),
-                          sticky="nsew")
-
         # Создание формы для вывода результатов
         self.panel_4 = ttk.LabelFrame(
-            self.tab_1,
+            self.tab_mian_calculate,
             text="Результаты расчета",
             padding=5
         )
         self.panel_4.grid(row=2, column=0, padx=(10, 20), pady=(10, 20),
                           sticky="nsew", columnspan=2)
-
-        # Создание формы расчета с количеством прицелов в партии
-        self.panel_5 = ttk.LabelFrame(
-            self.tab_3,
-            text="Учет установок в партии",
-            padding=5
-        )
-        self.panel_5.grid(row=1, column=0, padx=(10, 20), pady=(5, 5),
-                          sticky="nsew")
 
         # Конфигурация форм
         self.panel_1.columnconfigure(index=0, weight=1)
@@ -192,12 +179,6 @@ class Window:
         self.panel_2.rowconfigure(index=7, weight=1)
         self.panel_2.rowconfigure(index=8, weight=1)
 
-        self.panel_3.columnconfigure(index=0, weight=1)
-        self.panel_3.columnconfigure(index=1, weight=1)
-        self.panel_3.rowconfigure(index=0, weight=1)
-        self.panel_3.rowconfigure(index=1, weight=1)
-        self.panel_3.rowconfigure(index=2, weight=1)
-
         self.panel_4.columnconfigure(index=0, weight=1)
         self.panel_4.columnconfigure(index=1, weight=1)
         self.panel_4.rowconfigure(index=0, weight=1)
@@ -205,12 +186,6 @@ class Window:
         self.panel_4.rowconfigure(index=2, weight=1)
         self.panel_4.rowconfigure(index=3, weight=1)
         self.panel_4.rowconfigure(index=4, weight=1)
-
-        self.panel_5.columnconfigure(index=0, weight=1)
-        self.panel_5.columnconfigure(index=1, weight=1)
-        self.panel_5.rowconfigure(index=0, weight=1)
-        self.panel_5.rowconfigure(index=1, weight=1)
-        self.panel_5.rowconfigure(index=2, weight=1)
 
         # Создание выпадающего списка стандартных изделий
         ttk.Label(self.panel_1, text="Стандартное изделие:").grid(
@@ -526,7 +501,7 @@ class Window:
 
         # ____________________2 ВКЛАДКА____________________
         # Создание формы для виджетов
-        self.panel_2_1 = ttk.Frame(self.tab_2)
+        self.panel_2_1 = ttk.Frame(self.tab_sheet_material)
         self.panel_2_1.grid(row=0, column=1, padx=20, pady=(10, 10),
                             sticky="nsew")
 
@@ -541,7 +516,8 @@ class Window:
         self.panel_2_1.rowconfigure(index=3, weight=1)
 
         # Создание формы для вывода результатов
-        self.panel_2_2 = ttk.LabelFrame(self.tab_2, text='Результаты')
+        self.panel_2_2 = ttk.LabelFrame(self.tab_sheet_material,
+                                        text='Результаты')
         self.panel_2_2.grid(row=1, column=1, padx=20, pady=30,
                             sticky="nsew")
 
@@ -692,14 +668,62 @@ class Window:
         )
 
         # ____________________3 ВКЛАДКА____________________
+        # Создание форм вкладки
+        self.panel_1_industrial = ttk.LabelFrame(
+            self.tab_industrial_calculator,
+            text='Углубленный расчет')
+        self.panel_1_industrial.grid(row=0, column=0, padx=20, pady=30,
+                                     sticky="nsew", columnspan=3)
+
+        self.panel_2_industrial = ttk.LabelFrame(
+            self.tab_industrial_calculator,
+            text="Время работы оборудования",
+            padding=5
+        )
+        self.panel_2_industrial.grid(row=1, column=0, padx=(10, 20),
+                                     pady=(10, 20),
+                                     sticky="nsew", columnspan=1)
+
+        self.panel_3_industrial = ttk.LabelFrame(
+            self.tab_industrial_calculator,
+            text="Приближенный расчет времени",
+            padding=5
+        )
+        self.panel_3_industrial.grid(row=1, column=1, padx=(10, 20),
+                                     pady=(10, 20), sticky="nsew",
+                                     columnspan=2)
+
+        self.panel_4_industrial = ttk.LabelFrame(
+            self.tab_industrial_calculator,
+            text="Учет установок в партии",
+            padding=5
+        )
+        self.panel_4_industrial.grid(row=2, column=0, padx=(10, 20),
+                                     pady=(5, 5),
+                                     sticky="nsew")
+
+        # Конфигурация форм вкладки
+
+        self.panel_2_industrial.columnconfigure(index=0, weight=1)
+        self.panel_2_industrial.columnconfigure(index=1, weight=1)
+        self.panel_2_industrial.rowconfigure(index=0, weight=1)
+        self.panel_2_industrial.rowconfigure(index=1, weight=1)
+        self.panel_2_industrial.rowconfigure(index=2, weight=1)
+
+        self.panel_4_industrial.columnconfigure(index=0, weight=1)
+        self.panel_4_industrial.columnconfigure(index=1, weight=1)
+        self.panel_4_industrial.rowconfigure(index=0, weight=1)
+        self.panel_4_industrial.rowconfigure(index=1, weight=1)
+        self.panel_4_industrial.rowconfigure(index=2, weight=1)
+
         # Виджеты времени работы оборудования
-        ttk.Label(self.panel_3, text='Время работы, мин.').grid(
+        ttk.Label(self.panel_2_industrial, text='Время работы, мин.').grid(
             row=0, column=0, padx=0, pady=0, sticky='ns')
-        self.ent_time_of_work = ttk.Entry(self.panel_3, width=5)
+        self.ent_time_of_work = ttk.Entry(self.panel_2_industrial, width=5)
         self.ent_time_of_work.grid(row=1, column=0, padx=10, pady=10,
                                    sticky='nsew')
         self.btn_time_calculate = ttk.Button(
-            self.panel_3,
+            self.panel_2_industrial,
             text='Расчёт',
             command=self.get_time_calc
         )
@@ -707,7 +731,7 @@ class Window:
             row=1, column=1, padx=10, pady=10, sticky='nsew')
 
         self.lbl_result_time = ttk.Label(
-            self.panel_3,
+            self.panel_2_industrial,
             text=f"Стоимость работы: "
                  f" {0:.0f}  руб/шт."
         )
@@ -715,14 +739,14 @@ class Window:
                                   sticky="ns", columnspan=2)
 
         # Виджеты расчета партии с количеством изделий в установке
-        ttk.Label(self.panel_5, text='Количество изделий за 1 установку, '
-                                     'шт.').grid(
+        ttk.Label(self.panel_4_industrial,
+                  text='Количество изделий за 1 установку, шт.').grid(
             row=0, column=0, padx=0, pady=0, sticky='ns')
-        self.ent_items_in_one = ttk.Entry(self.panel_5, width=5)
+        self.ent_items_in_one = ttk.Entry(self.panel_4_industrial, width=5)
         self.ent_items_in_one.grid(row=1, column=0, padx=10, pady=10,
                                    sticky='nsew')
         self.btn_items_calculate = ttk.Button(
-            self.panel_5,
+            self.panel_4_industrial,
             text='Расчёт',
             command=self.get_calculate_items
         )
@@ -730,7 +754,7 @@ class Window:
             row=1, column=1, padx=10, pady=10, sticky='nsew')
 
         self.lbl_result_items = ttk.Label(
-            self.panel_5,
+            self.panel_4_industrial,
             text=f"Стоимость работы: "
                  f" {0:.0f}  руб."
         )
@@ -1284,7 +1308,7 @@ class Window:
         for n in Materials().get_mat():
             self.material_list.append(n)
         self.combo_mat['values'] = self.material_list
-        self.tab_2.update()
+        self.tab_sheet_material.update()
         self.root.update()
 
     @staticmethod
