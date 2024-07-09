@@ -644,8 +644,6 @@ class ChildConfigSet:
                 self.ent_gradation_difficult.get().split(',')]
             [float(x) for x in
                 self.ent_gradation_depth.get().split(',')]
-            [float(x) for x in
-                self.ent_gradation_area.get().split(',')]
 
             new_config['RATIO_SETTINGS']['ratio_taxation'] = (
                 self.ent_ratio_taxation.get())
@@ -653,14 +651,32 @@ class ChildConfigSet:
                 self.ent_gradation_difficult.get())
             new_config['GRADATION']['depth'] = (
                 self.ent_gradation_depth.get())
-            new_config['GRADATION']['area'] = (
-                self.ent_gradation_area.get())
+
         except ValueError:
             tk.messagebox.showerror(
                 'Ошибка добавления',
                 'Данные второго блока введены некорректно!'
             )
-            self.update_data_in_widgets()
+
+        try:
+            temp_list_area = [float(x) for x in
+                              self.ent_gradation_area.get().split(',')]
+
+            if len(temp_list_area) == 5:
+                new_config['GRADATION']['area'] = (
+                    self.ent_gradation_area.get())
+            else:
+                tk.messagebox.showerror(
+                    'Ошибка добавления',
+                    'В поле ввода габаритов гравировки должны быть 4 значения!'
+                )
+
+        except ValueError:
+            tk.messagebox.showerror(
+                'Ошибка добавления',
+                'Данные габаритов гравировки введены некорректно!'
+            )
+        self.update_data_in_widgets()
 
         # Запись в файл конфигурации
         self.child_temp_config.update_settings(some_new=new_config)
