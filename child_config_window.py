@@ -662,7 +662,7 @@ class ChildConfigSet:
             temp_list_area = [float(x) for x in
                               self.ent_gradation_area.get().split(',')]
 
-            if len(temp_list_area) == 5:
+            if len(temp_list_area) == 4:
                 new_config['GRADATION']['area'] = (
                     self.ent_gradation_area.get())
             else:
@@ -789,7 +789,7 @@ class ConfigSet:
         min_cost = 1000
         additional_cost = 400
         one_hour_of_work = 5000
-        many_items = 0.4
+        many_items = 0.42
         
         [STANDARD]
         Кольцо = 1400

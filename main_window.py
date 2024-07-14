@@ -1104,8 +1104,13 @@ class Window:
             self.additional_cost = 0
 
         # Коэффициент зависимости от количества изделий
-        self.ratio_many_items = int(self.spin_number.get()) ** (
-            -float(self.main_settings["MAIN"]["many_items"]))
+        if int(self.spin_number.get()) == 1:
+            self.ratio_many_items = 1
+        elif 1 < int(self.spin_number.get()) <= 5:
+            self.ratio_many_items = 1 - (int(self.spin_number.get())/10)
+        else:
+            self.ratio_many_items = 0.85 * (int(self.spin_number.get()) ** (
+                -float(self.main_settings["MAIN"]["many_items"])))
 
         # Коэффициент сложности установки
         difficult_list = (
@@ -1340,7 +1345,9 @@ class Window:
         elif not self.bool_ratio_taxation_ip.get():
             self.chk_ratio_taxation_ao.config(state='enabled')
 
-    def add_bind(self):  # Установка фонового текста в полях ввода (binds)
+    def add_bind(self):  # Установка фона в полях ввода и расчет (binds)
+        self.root.bind('<Return>', self.get_return_by_keyboard)
+
         self.to_add_entry()
         self.to_add_entry1()
         self.to_add_entry2()
@@ -1373,6 +1380,14 @@ class Window:
 
         self.ent_design.bind('<FocusIn>', self.erase_entry7)
         self.ent_design.bind('<FocusOut>', self.to_add_entry7)
+
+    def get_return_by_keyboard(self, event=None):
+        if self.tabs_control.tabs().index(self.tabs_control.select()) == 0:
+            self.get_calc()
+        elif self.tabs_control.tabs().index(self.tabs_control.select()) == 1:
+            self.get_calc_mat()
+
+        self.not_use = event
 
     def erase_entry(self, event=None):
         if self.ent_width_grav.get() == '-':
