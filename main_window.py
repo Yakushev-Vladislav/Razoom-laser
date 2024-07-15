@@ -975,23 +975,42 @@ class Window:
         # Формирование значений коэффициентов
         # Коэффициент ratio_size __Габариты гравировки__
         try:
+            # Формируем переменные всех базовых размеров и коэффициентов
             size_list = (
                 self.main_settings['GRADATION']['area'].split(','))
             size_1 = 70*70
             size_2 = 120*120
             size_3 = 150*150
+            size_4 = 200 * 200
 
             temp_size = (float(self.ent_width_grav.get()) *
                          float(self.ent_height_grav.get()))
-            if size_1 < temp_size < size_2:
-                self.ratio_size = float(size_list[1])
 
-            elif size_2 < temp_size < size_3:
-                self.ratio_size = float(size_list[2])
+            # Если в первом диапазоне
+            if size_1 <= temp_size < size_2:
 
-            elif temp_size > size_3:
+                self.ratio_size = (float(size_list[0]) * (
+                        (size_2 - temp_size) / (size_2 - size_1)) + float(
+                    size_list[1]) * (temp_size - size_1) / (size_2 - size_1))
+
+            # Если во втором диапазоне
+            elif size_2 <= temp_size < size_3:
+
+                self.ratio_size = (float(size_list[1]) * (
+                        (size_3 - temp_size) / (size_3 - size_2)) + float(
+                    size_list[2]) * (temp_size - size_2) / (size_3 - size_2))
+
+            # Если в третьем диапазоне
+            elif size_3 <= temp_size < size_4:
+                self.ratio_size = (float(size_list[2]) * (
+                        (size_4 - temp_size) / (size_4 - size_3)) + float(
+                    size_list[3]) * (temp_size - size_3) / (size_4 - size_3))
+
+            # Если в четвертом диапазоне
+            elif temp_size >= size_4:
                 self.ratio_size = float(size_list[3])
 
+            # Если гравировка маленькая
             else:
                 self.ratio_size = 1
 
