@@ -774,9 +774,11 @@ class Window:
 
         # Создаем первое подменю -Файл-
         file_menu = tk.Menu(menu_bar)
-        file_menu.add_command(label='Сохранить отчет')
+        file_menu.add_command(label='Сохранить отчет',
+                              state='disabled')
         file_menu.add_command(label='Подобрать режим',
-                              command=self.power_set)
+                              command=self.power_set,
+                              state='disabled')
         file_menu.add_command(label='Листовой материал',
                               command=self.base_of_materials)
         file_menu.add_command(label='Предварительные настройки программы',
@@ -801,7 +803,7 @@ class Window:
         # Конфигурация подменю и меню
         menu_bar.add_cascade(label='Файл', menu=file_menu)
         menu_bar.add_cascade(label='Вид', menu=view_menu)
-        menu_bar.add_cascade(label='Помощь', menu=help_menu)
+        menu_bar.add_cascade(label='Помощь', menu=help_menu, state='disabled')
         menu_bar.add_command(label='Обновить', command=self.settings_update)
         self.root.configure(menu=menu_bar)
 
