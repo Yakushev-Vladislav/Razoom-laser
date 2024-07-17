@@ -12,6 +12,7 @@ from child_power_set_window import ChildPowerSet
 from materials import Materials, Calculation
 from child_config_window import ChildConfigSet
 from child_config_window import ConfigSet
+from child_config_window import RatioArea
 from math import ceil
 
 
@@ -975,44 +976,26 @@ class Window:
         # Формирование значений коэффициентов
         # Коэффициент ratio_size __Габариты гравировки__
         try:
-            # Формируем переменные всех базовых размеров и коэффициентов
             size_list = (
                 self.main_settings['GRADATION']['area'].split(','))
-            size_1 = 70*70
-            size_2 = 120*120
-            size_3 = 150*150
-            size_4 = 200 * 200
-
-            temp_size = (float(self.ent_width_grav.get()) *
-                         float(self.ent_height_grav.get()))
-
-            # Если в первом диапазоне
-            if size_1 <= temp_size < size_2:
-
-                self.ratio_size = (float(size_list[0]) * (
-                        (size_2 - temp_size) / (size_2 - size_1)) + float(
-                    size_list[1]) * (temp_size - size_1) / (size_2 - size_1))
-
-            # Если во втором диапазоне
-            elif size_2 <= temp_size < size_3:
-
-                self.ratio_size = (float(size_list[1]) * (
-                        (size_3 - temp_size) / (size_3 - size_2)) + float(
-                    size_list[2]) * (temp_size - size_2) / (size_3 - size_2))
-
-            # Если в третьем диапазоне
-            elif size_3 <= temp_size < size_4:
-                self.ratio_size = (float(size_list[2]) * (
-                        (size_4 - temp_size) / (size_4 - size_3)) + float(
-                    size_list[3]) * (temp_size - size_3) / (size_4 - size_3))
-
-            # Если в четвертом диапазоне
-            elif temp_size >= size_4:
-                self.ratio_size = float(size_list[3])
-
-            # Если гравировка маленькая
+            if self.rb_type_of_laser.get() == 2:
+                size_min = 150 * 100
+                size_max = 400 * 680
+                ratio_size_max = float(size_list[1])
+                temp_area = float(self.ent_height_grav.get()) * float(
+                    self.ent_width_grav.get())
+                self.ratio_size = RatioArea(
+                    size_min, size_max, ratio_size_max).get_polynomial(
+                    temp_area)
             else:
-                self.ratio_size = 1
+                size_min = 70 * 70
+                size_max = 200 * 200
+                ratio_size_max = float(size_list[0])
+                temp_area = float(self.ent_height_grav.get()) * float(
+                    self.ent_width_grav.get())
+                self.ratio_size = RatioArea(
+                    size_min, size_max, ratio_size_max).get_linear_ratio(
+                    temp_area)
 
         except ValueError:
             self.ratio_size = 1

@@ -818,7 +818,7 @@ class ConfigSet:
         [GRADATION]
         difficult = 1, 1.2, 1.3, 1.5, 1.8
         depth = 1, 1.15, 1.3, 1.5, 2
-        area = 1, 1.15, 1.2, 1.5
+        area = 1.5, 7
         
         [INDUSTRIAL_MAIN]
         industrial__hour_of_work = 4000
@@ -866,3 +866,58 @@ class ConfigSet:
         with (open('settings/settings.ini', 'w', encoding='utf-8') as
               configfile):
             default_config.write(configfile)
+
+
+class RatioArea:
+    def __init__(self, area_min, area_max, ratio_max, ratio_min=1):
+        """
+        Класс реализующий линейную и квадратичную зависимость для расчета
+        коэффициента увеличения стоимости в зависимости от размеров
+        гравировки.
+
+        :param area_min: Максимальная площадь без доплаты
+        :param area_max: Максимальная площадь полного поля станка
+        :param ratio_max: Максимальный коэффициент для полного поля
+        :param ratio_min: Минимальный коэффициент стандартной работы
+        """
+        self.area_min = area_min
+        self.area_max = area_max
+        self.ratio_max = ratio_max
+        self.ratio_min = ratio_min
+
+    def get_linear_ratio(self, area):  # Метод получения линейной зависимости
+        """
+        Обеспечение линейной зависимости по каноническому уравнению прямой
+        :param area: Площадь гравировки
+        :return: Коэффициент доплаты
+        """
+        try:
+            if area <= self.area_min:
+                return self.ratio_min
+            elif area >= self.area_max:
+                return self.ratio_max
+            else:
+                return (
+                    (((area - self.area_min) * abs(
+                        self.ratio_max-self.ratio_min)) / (
+                        self.area_max - self.area_min)) + self.ratio_min
+                )
+        except TypeError:
+            return 1
+
+    def get_polynomial(self, area):  # Метод получения квадратичной зависимости
+        """
+        Обеспечение квадратичной зависимости для коэффициента
+        :param area: Площадь гравировки
+        :return: Коэффициент доплаты
+        """
+        if area <= self.area_min:
+            return self.ratio_min
+        elif area >= self.area_max:
+            return self.ratio_max
+        else:
+            return (
+                ((self.ratio_max - self.ratio_min) / (
+                        (self.area_max - self.area_min) ** 2)) * (
+                    (area - self.area_min) ** 2) + self.ratio_min
+            )
