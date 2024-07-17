@@ -110,8 +110,8 @@ class Window:
 
         self.tab_sheet_material.columnconfigure(index=0, weight=1)
         self.tab_sheet_material.columnconfigure(index=1, weight=50)
-        self.tab_sheet_material.rowconfigure(index=0, weight=1)
-        self.tab_sheet_material.rowconfigure(index=1, weight=4)
+        self.tab_sheet_material.rowconfigure(index=0, weight=2)
+        self.tab_sheet_material.rowconfigure(index=1, weight=1)
 
         self.tab_industrial_calculator.columnconfigure(index=0, weight=1)
         self.tab_industrial_calculator.columnconfigure(index=1, weight=1)
@@ -502,41 +502,41 @@ class Window:
 
         # ____________________2 ВКЛАДКА____________________
         # Создание формы для виджетов
-        self.panel_2_1 = ttk.Frame(self.tab_sheet_material)
-        self.panel_2_1.grid(row=0, column=1, padx=20, pady=(10, 10),
-                            sticky="nsew")
+        self.panel_sheet_materials_widgets = ttk.Frame(self.tab_sheet_material)
+        self.panel_sheet_materials_widgets.grid(
+            row=0, column=1, padx=20, pady=(10, 10), sticky="nsew")
 
         # Конфигурация формы виджетов
-        self.panel_2_1.columnconfigure(index=0, weight=1)
-        self.panel_2_1.columnconfigure(index=1, weight=1)
-        self.panel_2_1.columnconfigure(index=2, weight=1)
-        self.panel_2_1.columnconfigure(index=3, weight=1)
-        self.panel_2_1.rowconfigure(index=0, weight=1)
-        self.panel_2_1.rowconfigure(index=1, weight=1)
-        self.panel_2_1.rowconfigure(index=2, weight=1)
-        self.panel_2_1.rowconfigure(index=3, weight=1)
+        self.panel_sheet_materials_widgets.columnconfigure(index=0, weight=1)
+        self.panel_sheet_materials_widgets.columnconfigure(index=1, weight=1)
+        self.panel_sheet_materials_widgets.columnconfigure(index=2, weight=1)
+        self.panel_sheet_materials_widgets.columnconfigure(index=3, weight=1)
+        self.panel_sheet_materials_widgets.rowconfigure(index=0, weight=1)
+        self.panel_sheet_materials_widgets.rowconfigure(index=1, weight=1)
+        self.panel_sheet_materials_widgets.rowconfigure(index=2, weight=1)
+        self.panel_sheet_materials_widgets.rowconfigure(index=3, weight=1)
 
         # Создание формы для вывода результатов
-        self.panel_2_2 = ttk.LabelFrame(self.tab_sheet_material,
-                                        text='Результаты')
-        self.panel_2_2.grid(row=1, column=1, padx=20, pady=30,
-                            sticky="nsew")
+        self.panel_sheet_materials_result = ttk.LabelFrame(
+            self.tab_sheet_material, text='Результаты')
+        self.panel_sheet_materials_result.grid(
+            row=1, column=1, padx=20, pady=30, sticky="nsew")
 
         # Конфигурация формы для вывода результатов
-        self.panel_2_2.columnconfigure(index=0, weight=1)
-        self.panel_2_2.columnconfigure(index=1, weight=1)
-        self.panel_2_2.rowconfigure(index=0, weight=1)
-        self.panel_2_2.rowconfigure(index=1, weight=1)
-        self.panel_2_2.rowconfigure(index=2, weight=1)
-        self.panel_2_2.rowconfigure(index=3, weight=1)
+        self.panel_sheet_materials_result.columnconfigure(index=0, weight=1)
+        self.panel_sheet_materials_result.columnconfigure(index=1, weight=1)
+        self.panel_sheet_materials_result.rowconfigure(index=0, weight=1)
+        self.panel_sheet_materials_result.rowconfigure(index=1, weight=1)
+        self.panel_sheet_materials_result.rowconfigure(index=2, weight=1)
+        self.panel_sheet_materials_result.rowconfigure(index=3, weight=1)
 
         # Виджеты ввода количества изделий
-        ttk.Label(self.panel_2_1, text='Количество изделий:').grid(
-            row=0, column=0, padx=(0, 5), pady=10, sticky='nsew'
-        )
-        self.ent_num = ttk.Entry(self.panel_2_1, width=10)
-        self.ent_num.grid(row=0, column=1, padx=10, pady=10, sticky='nsew')
-        ttk.Label(self.panel_2_1, text='шт.').grid(
+        ttk.Label(self.panel_sheet_materials_widgets,
+                  text='Количество изделий:').grid(
+            row=0, column=0, padx=(0, 5), pady=10, sticky='nsew')
+        self.ent_num = ttk.Entry(self.panel_sheet_materials_widgets, width=10)
+        self.ent_num.grid(row=0, column=1, padx=10, pady=20, sticky='nsew')
+        ttk.Label(self.panel_sheet_materials_widgets, text='шт.').grid(
             row=0, column=2, padx=15, pady=10, sticky='nsew'
         )
 
@@ -546,126 +546,128 @@ class Window:
             self.material_list.append(n)
 
         # Виджеты выбора материала
-        ttk.Label(self.panel_2_1, text='Выберите материал:').grid(
-            row=1, column=0, padx=(0, 5), pady=10, sticky='nsew'
-        )
+        ttk.Label(self.panel_sheet_materials_widgets,
+                  text='Выберите материал:').grid(
+            row=1, column=0, padx=(0, 5), pady=10, sticky='nsew')
         self.combo_mat = ttk.Combobox(
-            self.panel_2_1,
+            self.panel_sheet_materials_widgets,
             width=35,
             height=5,
             values=self.material_list
         )
         self.combo_mat.current(0)
         self.combo_mat.grid(
-            row=1, column=1, padx=10, pady=10, columnspan=4, sticky='nsew'
+            row=1, column=1, padx=10, pady=20, columnspan=4, sticky='nsew'
         )
 
         # Подписи для полей ввода габаритов изделия
-        ttk.Label(self.panel_2_1, text='Введите габариты изделия:').grid(
+        ttk.Label(self.panel_sheet_materials_widgets,
+                  text='Введите габариты изделия:').grid(
             row=3, column=0, padx=(0, 5), pady=10, sticky='nsew')
-        ttk.Label(self.panel_2_1, text='Ширина, мм').grid(
+        ttk.Label(self.panel_sheet_materials_widgets, text='Ширина, мм').grid(
             row=2, column=1, padx=(10, 10), pady=5, sticky='ns')
-        ttk.Label(self.panel_2_1, text='Высота, мм').grid(
+        ttk.Label(self.panel_sheet_materials_widgets, text='Высота, мм').grid(
             row=2, column=2, padx=(10, 10), pady=5, sticky='ns')
 
         # Поля ввода габаритов изделия
-        self.ent_width = ttk.Entry(self.panel_2_1, width=20)
-        self.ent_width.grid(row=3, column=1, padx=10, pady=10, sticky='nsew')
-        self.ent_height = ttk.Entry(self.panel_2_1, width=20)
-        self.ent_height.grid(row=3, column=2, padx=10, pady=10, sticky='nsew')
+        self.ent_width = ttk.Entry(
+            self.panel_sheet_materials_widgets, width=20)
+        self.ent_width.grid(row=3, column=1, padx=10, pady=20, sticky='nsew')
+        self.ent_height = ttk.Entry(
+            self.panel_sheet_materials_widgets, width=20)
+        self.ent_height.grid(row=3, column=2, padx=10, pady=20, sticky='nsew')
 
         # Кнопка запуска расчетов
         self.btn_materials = ttk.Button(
-            self.panel_2_1,
+            self.panel_sheet_materials_widgets,
             width=15,
             text="Рассчитать",
             command=self.get_calc_mat
         )
         self.btn_materials.grid(
-            row=3, column=3, padx=10, pady=10, columnspan=3, sticky='nsew'
+            row=3, column=3, padx=10, pady=20, columnspan=3, sticky='nsew'
         )
 
         # Виджеты результатов расчета
         # Виджет -Себестоимость одного изделия-
         self.lbl_result_1 = ttk.Label(
-            self.panel_2_2,
+            self.panel_sheet_materials_result,
             text=f"Себестоимость одного изделия:"
                  f"  {0:.0f}  руб.",
-            font='Arial 12'
+            font='Arial 12',
+            foreground='#217346'
         )
         self.lbl_result_1.grid(
-            row=3, column=0, padx=10, pady=(0, 20), sticky='ns'
+            row=0, column=0, padx=10, pady=10, sticky='nsew'
         )
 
         # Виджет -Себестоимость партии-
         self.lbl_result_2 = ttk.Label(
-            self.panel_2_2,
+            self.panel_sheet_materials_result,
             text=f"Себестоимость партии:"
                  f"  {0:.0f}  руб.",
-            font='Arial 12'
+            font='Arial 12',
+            foreground='#217346'
         )
         self.lbl_result_2.grid(
-            row=3, column=1, padx=10, pady=(0, 20), sticky='ns'
+            row=1, column=0, padx=10, pady=10, sticky='nsew'
         )
 
         # Виджет -Количество изделий с одного листа-
         self.lbl_result_3 = ttk.Label(
-            self.panel_2_2,
+            self.panel_sheet_materials_result,
             text=f"Количество изделий с одного листа:"
                  f"  {0:.0f}  шт.",
             font='Arial 12'
         )
         self.lbl_result_3.grid(
-            row=1, column=0, padx=10, pady=0, sticky='ns'
+            row=2, column=1, padx=10, pady=10, sticky='nsew'
         )
 
         # Виджет -Количество листов на партию-
         self.lbl_result_4 = ttk.Label(
-            self.panel_2_2,
+            self.panel_sheet_materials_result,
             text=f"Минимальное количество листов на партию:"
                  f"  {0:.0f}  шт.",
             font='Arial 12'
         )
         self.lbl_result_4.grid(
-            row=1, column=1, padx=10, pady=0, sticky='ns'
+            row=3, column=1, padx=10, pady=10, sticky='nsew'
         )
 
         # Виджет -Стоимость одного изделия партии-
         self.lbl_result_5 = ttk.Label(
-            self.panel_2_2,
+            self.panel_sheet_materials_result,
             text=f"Стоимость изделия:"
                  f"  {0:.0f}  руб/шт.",
-            font='Arial 14'
+            font='Arial 15 bold',
+            foreground='#217346'
         )
         self.lbl_result_5.grid(
-            row=0, column=0, padx=10, pady=0, sticky='ns'
+            row=2, column=0, padx=10, pady=10, sticky='nsew'
         )
 
         # Виджет -Стоимость партии-
         self.lbl_result_6 = ttk.Label(
-            self.panel_2_2,
+            self.panel_sheet_materials_result,
             text=f"Стоимость партии:"
                  f"  {0:.0f}  руб.",
-            font='Arial 14'
+            font='Arial 15 bold',
+            foreground='#217346'
         )
         self.lbl_result_6.grid(
-            row=0, column=1, padx=10, pady=0, sticky='ns'
-        )
-
-        # Разделительная черта
-        ttk.Separator(self.panel_2_2).grid(
-            row=2, column=0, columnspan=2, pady=0, sticky='ew'
+            row=3, column=0, padx=10, pady=10, sticky='nsew'
         )
 
         # Кнопка обновления списка материалов
         self.btn_update = ttk.Button(
-            self.panel_2_1,
+            self.panel_sheet_materials_widgets,
             width=15,
             text="Обновить список",
             command=self.update_base
         )
         self.btn_update.grid(
-            row=0, column=3, padx=10, pady=10, columnspan=3, sticky='nsew'
+            row=0, column=3, padx=10, pady=20, columnspan=3, sticky='nsew'
         )
 
         # ____________________3 ВКЛАДКА____________________
@@ -762,6 +764,9 @@ class Window:
         self.lbl_result_items.grid(
             row=3, column=0, padx=(10, 10), pady=(0, 10), sticky="ns",
             columnspan=2)
+
+        # ПОКА ОТКЛЮЧИМ
+        self.tabs_control.tab(self.tab_industrial_calculator, state='disabled')
 
     def draw_menu(self):  # Метод прорисовки вкладок основного меню
         # Создаем полосу меню в окне

@@ -311,8 +311,8 @@ class ChildConfigSet:
         self.ent_gradation_depth.grid(row=12, column=1, padx=5, pady=5,
                                       sticky='nsew', columnspan=1)
 
-        # Окно ввода gradation_area __Габариты гравировки__
-        ttk.Label(self.tab_1, text='Габариты гравировки').grid(
+        # Окно ввода gradation_area __Коэффициенты площади__
+        ttk.Label(self.tab_1, text='Коэффициенты площади').grid(
             row=11, column=2, padx=0, pady=0, sticky='ns', columnspan=1
         )
         self.ent_gradation_area = ttk.Entry(
@@ -465,6 +465,9 @@ class ChildConfigSet:
         # Запись данных в окна ввода
         self.update_data_in_widgets()
         self.add_bind_entry()
+
+        # ПОКА ОТКЛЮЧИМ
+        self.child_tabs_control.tab(self.tab_3, state='disabled')
 
     def update_data_in_widgets(self):  # Запись/обновление данных в окнах ввода
         # Считывание данных в переменные
@@ -657,18 +660,21 @@ class ChildConfigSet:
                 'Ошибка добавления',
                 'Данные второго блока введены некорректно!'
             )
+            self.update_data_in_widgets()
 
         try:
             temp_list_area = [float(x) for x in
                               self.ent_gradation_area.get().split(',')]
 
-            if len(temp_list_area) == 4:
+            if len(temp_list_area) == 2:
                 new_config['GRADATION']['area'] = (
                     self.ent_gradation_area.get())
             else:
                 tk.messagebox.showerror(
                     'Ошибка добавления',
-                    'В поле ввода габаритов гравировки должны быть 4 значения!'
+                    'В поле ввода габаритов гравировки должны быть 2 значения!'
+                    '\n -> Первое для диодного лазера;\n'
+                    '-> Второе для газового лазера.'
                 )
 
         except ValueError:
@@ -676,7 +682,7 @@ class ChildConfigSet:
                 'Ошибка добавления',
                 'Данные габаритов гравировки введены некорректно!'
             )
-        self.update_data_in_widgets()
+            self.update_data_in_widgets()
 
         # Запись в файл конфигурации
         self.child_temp_config.update_settings(some_new=new_config)
