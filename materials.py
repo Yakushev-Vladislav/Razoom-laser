@@ -1,3 +1,6 @@
+import configparser
+
+
 class Materials:
     def __init__(self):
 
@@ -7,32 +10,19 @@ class Materials:
         """
 
         # Создание переменных
-        self.dannye = list()
         self.my_price = {}
         self.mat_gab_width = {}
         self.mat_gab_height = {}
 
         # Открытие и чтение файла с материалами
-        file_dannye = open(
-            'resources/materials_data.txt',
-            'r',
-            encoding='utf-8'
-        )
-        temp_dannye = file_dannye.readlines()
-        for x in temp_dannye:
-            self.dannye.append(x.split(','))
-            if [''] in self.dannye:
-                self.dannye.remove([''])
-            elif ['\n'] in self.dannye:
-                self.dannye.remove(['\n'])
-
-        file_dannye.close()
+        file_data = configparser.ConfigParser()
+        file_data.read('settings/material_data.ini', encoding='utf-8')
 
         # Запись параметров в соответствующие словари
-        for i in range(len(self.dannye)):
-            self.my_price[self.dannye[i][0]] = int(self.dannye[i][-1])
-            self.mat_gab_width[self.dannye[i][0]] = int(self.dannye[i][-2])
-            self.mat_gab_height[self.dannye[i][0]] = int(self.dannye[i][1])
+        for k, v in file_data['MAIN'].items():
+            self.my_price[k] = [float(x) for x in v.split(',')][-1]
+            self.mat_gab_width[k] = [float(x) for x in v.split(',')][0]
+            self.mat_gab_height[k] = [float(x) for x in v.split(',')][1]
 
     def get_mat(self):  # Метод, возвращающий словарь Название-стоимость
         return self.my_price
@@ -42,6 +32,31 @@ class Materials:
 
     def get_gab_height(self):  # Метод, возвращающий словарь Название-высота
         return self.mat_gab_height
+
+    @staticmethod
+    def get_default():
+        string_materials = """
+        [INFO]
+        info = # Файл содержит список параметров основного листового материала
+        
+        [MAIN]
+        Анодированный алюминий 0.5 мм = 400, 200, 1000
+        Двухслойный пластик 1.5 мм = 1200, 600, 5000
+        Двухслойный пластик 1.5 мм (Китай) = 1200, 600, 1850
+        Двухслойный пластик 0.6 мм = 1200, 600, 2500
+        Самоклеящийся пластик 0.1 мм = 600, 300, 1420
+        ПЭТ 0.5 мм = 2000, 1250, 1000
+        ПЭТ 1 мм = 2000, 1250, 1500
+        ПЭТ 1.5 мм = 2000, 1250, 2000
+        Фанера 4 мм = 1525, 1525, 650
+        Оргстекло 4 мм = 2050, 1500, 6000
+        Оргстекло 3 мм = 2050, 1500, 4510
+        """
+        default_materials = configparser.ConfigParser()
+        default_materials.read_string(string_materials)
+        with (open('settings/material_data.ini', encoding='utf-8') as
+              configfile):
+            default_materials.write(configfile)
 
 
 class Calculation:

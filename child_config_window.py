@@ -466,9 +466,6 @@ class ChildConfigSet:
         self.update_data_in_widgets()
         self.add_bind_entry()
 
-        # ПОКА ОТКЛЮЧИМ
-        self.child_tabs_control.tab(self.tab_3, state='disabled')
-
     def update_data_in_widgets(self):  # Запись/обновление данных в окнах ввода
         # Считывание данных в переменные
         update_config = ConfigSet().config

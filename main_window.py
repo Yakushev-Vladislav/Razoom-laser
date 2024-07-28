@@ -765,20 +765,15 @@ class Window:
             row=3, column=0, padx=(10, 10), pady=(0, 10), sticky="ns",
             columnspan=2)
 
-        # ПОКА ОТКЛЮЧИМ
-        self.tabs_control.tab(self.tab_industrial_calculator, state='disabled')
-
     def draw_menu(self):  # Метод прорисовки вкладок основного меню
         # Создаем полосу меню в окне
         menu_bar = tk.Menu(self.root)
 
         # Создаем первое подменю -Файл-
         file_menu = tk.Menu(menu_bar)
-        file_menu.add_command(label='Сохранить отчет',
-                              state='disabled')
+        file_menu.add_command(label='Сохранить отчет')
         file_menu.add_command(label='Подобрать режим',
-                              command=self.power_set,
-                              state='disabled')
+                              command=self.power_set)
         file_menu.add_command(label='Листовой материал',
                               command=self.base_of_materials)
         file_menu.add_command(label='Предварительные настройки программы',
@@ -803,7 +798,7 @@ class Window:
         # Конфигурация подменю и меню
         menu_bar.add_cascade(label='Файл', menu=file_menu)
         menu_bar.add_cascade(label='Вид', menu=view_menu)
-        menu_bar.add_cascade(label='Помощь', menu=help_menu, state='disabled')
+        menu_bar.add_cascade(label='Помощь', menu=help_menu)
         menu_bar.add_command(label='Обновить', command=self.settings_update)
         self.root.configure(menu=menu_bar)
 
