@@ -9,29 +9,38 @@ class Materials:
         цена) листового материала.
         """
 
-        # Создание переменных
-        self.my_price = {}
-        self.mat_gab_width = {}
-        self.mat_gab_height = {}
-
-        # Открытие и чтение файла с материалами
-        file_data = configparser.ConfigParser()
-        file_data.read('settings/material_data.ini', encoding='utf-8')
-
-        # Запись параметров в соответствующие словари
-        for k, v in file_data['MAIN'].items():
-            self.my_price[k] = [float(x) for x in v.split(',')][-1]
-            self.mat_gab_width[k] = [float(x) for x in v.split(',')][0]
-            self.mat_gab_height[k] = [float(x) for x in v.split(',')][1]
+        # Создание файла конфигурации
+        self.material_config = configparser.ConfigParser()
+        self.material_config.read('settings/material_data.ini',
+                                  encoding='utf-8')
 
     def get_mat(self):  # Метод, возвращающий словарь Название-стоимость
-        return self.my_price
+        my_price = dict()
+        for k, v in self.material_config['MAIN'].items():
+            my_price[k] = [float(x) for x in v.split(',')][-1]
+        return my_price
 
     def get_gab_width(self):  # Метод, возвращающий словарь Название-ширина
-        return self.mat_gab_width
+        mat_gab_width = dict()
+        for k, v in self.material_config['MAIN'].items():
+            mat_gab_width[k] = [float(x) for x in v.split(',')][0]
+        return mat_gab_width
 
     def get_gab_height(self):  # Метод, возвращающий словарь Название-высота
-        return self.mat_gab_height
+        mat_gab_height = dict()
+        for k, v in self.material_config['MAIN'].items():
+            mat_gab_height[k] = [float(x) for x in v.split(',')][1]
+        return mat_gab_height
+
+    def update_materials(self, some_new=None):  # Обновление файла конфигурации
+        if some_new:
+            with (open('settings/material_data.ini', 'w', encoding='utf-8') as
+                  configfile):
+                some_new.write(configfile)
+        else:
+            with (open('settings/material_data.ini', 'w', encoding='utf-8') as
+                  configfile):
+                self.material_config.write(configfile)
 
     @staticmethod
     def get_default():

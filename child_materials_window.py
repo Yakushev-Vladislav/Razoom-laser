@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
-import configparser
+from materials import Materials
 
 
 class ChildMaterials:
@@ -30,7 +30,10 @@ class ChildMaterials:
         self.style_child.theme_use(theme)
 
         # Создание переменной, хранящей массив данных для таблицы
-        self.dannye = []
+        self.data = []
+
+        # Создание переменной конфигурации
+        self.config_material_data = Materials()
 
         # Создание переменной для исключения ошибок 'event' value is not use
         self.not_use_child = None
@@ -85,7 +88,7 @@ class ChildMaterials:
         # Добавление данных в таблицу
         self.get_data_child()
         self.i_data = -1
-        for data in self.dannye:
+        for data in self.data:
             self.i_data += 1
             temp_list = list()
             temp_list.append(f'{self.i_data}:')
@@ -261,20 +264,18 @@ class ChildMaterials:
             self.delete_data.insert(0, '-')
         self.not_use_child = event
 
-    def get_data_child(self):  # Считывание данных из файла
-        self.dannye = list()
-        file_dannye = open(
-            'resources/materials_data.txt',
-            'r',
-            encoding='utf-8'
-        )
-        temp_dannye = file_dannye.readlines()
-        for x in temp_dannye:
-            self.dannye.append(x.split(','))
-        file_dannye.close()
+    def get_data_child(self):  # Обновление списка материалов для таблицы
+        self.data = list()
+        temp_data = self.config_material_data.material_config['MAIN']
+        for k, v in temp_data.items():
+            temp = [k]
+            temp.extend([x for x in v.split(',')])
+            self.data.append(temp)
+
+        del temp_data, temp
 
     def click_add_data(self):  # Метод добавления элемента в таблицу
-
+        temp_new = self.config_material_data.material_config
         # Считывание данных с полей ввода
         new_name = self.name_mat.get()
         new_width = self.width_mat.get()
@@ -299,16 +300,9 @@ class ChildMaterials:
 
         # Иначе запись в файл
         else:
-            with open(
-                    'resources/materials_data.txt',
-                    'a',
-                    encoding='utf-8'
-            ) as file:
-                file.seek(0, 2)
-                file.write(
-                    f'\n{new_name}, {new_width}, {new_height}, {new_price}'
-                )
-            file.close()
+            temp_new['MAIN'][new_name] = (f'{new_width}, {new_height},'
+                                          f' {new_price}')
+            self.config_material_data.update_materials(some_new=temp_new)
 
             # Обновление данных в таблице
             self.i_data += 1
@@ -318,6 +312,7 @@ class ChildMaterials:
             self.child_root.update()
 
     def click_del_data(self):  # Удаление выбранной строки из таблицы
+        deleted_data_config = self.config_material_data.material_config
         # Получение строки для удаления
         deleted_data = self.delete_data.get()
 
@@ -344,30 +339,16 @@ class ChildMaterials:
 
         # Удаление выбранной строки
         else:
-            num = int(deleted_data)
-            # Считывание данных
-            with open(
-                    'resources/materials_data.txt',
-                    'r',
-                    encoding='utf-8'
-            ) as file:
-                lines = file.readlines()
-                if '' in lines:
-                    lines.remove('')
-                elif '\n' in lines:
-                    lines.remove('\n')
-                file.close()
-
-            # Удаление выбранной строки и запись данных в файл
-            with open(
-                    'resources/materials_data.txt',
-                    'w',
-                    encoding='utf-8'
-            ) as file2:
-                del lines[num]
-                filter(None, lines)
-                file2.write(''.join(lines))
-                file2.close()
+            # Считывание удаляемого элемента
+            deleted_item = None
+            for item in self.material_table.get_children():
+                if deleted_data+':' == self.material_table.set(item, 0):
+                    deleted_item = self.material_table.set(item, 1)
+            # Удаление выбранного элемента
+            deleted_data_config.remove_option('MAIN', deleted_item)
+            # Обновление данных в файле конфигурации
+            self.config_material_data.update_materials(
+                some_new=deleted_data_config)
 
             # Обновление данных в таблице
             # Очистка таблицы
@@ -377,7 +358,7 @@ class ChildMaterials:
 
             # Запись новых данных в таблицу
             self.i_data = -1
-            for data in self.dannye:
+            for data in self.data:
                 self.i_data += 1
                 temp_list = list()
                 temp_list.append(f'{self.i_data}:')
@@ -385,6 +366,8 @@ class ChildMaterials:
                 self.material_table.insert('', index='end',
                                            values=temp_list)
                 self.child_root.update()
+
+        del deleted_data_config
 
     def grab_focus(self):  # Метод сохранения фокуса на дочернем окне
         self.child_root.grab_set()

@@ -1474,16 +1474,6 @@ class Window:
         self.not_use = event
 
     def run(self):  # Метод, реализующий запуск программы
-        # Удаление пустых строк из файла перед запуском
-        with open("resources/materials_data.txt", 'r') as f1:
-            lines = f1.readlines()
-        new_lines = list()
-        for line in lines:
-            if len(line.strip()):
-                new_lines.append(line)
-        with open("resources/materials_data.txt", 'w') as f2:
-            f2.writelines(new_lines)
-
         # Прорисовка виджетов и окна
         self.add_bind()
         self.draw_menu()
