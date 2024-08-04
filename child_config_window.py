@@ -2,6 +2,9 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter.messagebox import askokcancel
 import configparser
+import os
+import shutil
+from binds import BindEntry
 
 
 class ChildConfigSet:
@@ -549,9 +552,9 @@ class ChildConfigSet:
         self.ent_cost.delete(0, tk.END)
         self.ent_delete_element.delete(0, tk.END)
 
-        self.to_add_entry()
-        self.to_add_entry1()
-        self.to_add_entry2()
+        BindEntry(self.ent_name).to_add_entry_child()
+        BindEntry(self.ent_cost).to_add_entry_child()
+        BindEntry(self.ent_delete_element).to_add_entry_child()
 
         del (update_config, ratio_from_config, main_from_config,
              gradation_from_config)
@@ -710,48 +713,9 @@ class ChildConfigSet:
         del config_with_deleted_item
 
     def add_bind_entry(self):  # Установка фонового текста в полях ввода
-        self.to_add_entry()
-        self.to_add_entry1()
-        self.to_add_entry2()
-
-        self.ent_cost.bind('<FocusIn>', self.erase_entry)
-        self.ent_cost.bind('<FocusOut>', self.to_add_entry)
-
-        self.ent_name.bind('<FocusIn>', self.erase_entry1)
-        self.ent_name.bind('<FocusOut>', self.to_add_entry1)
-
-        self.ent_delete_element.bind('<FocusIn>', self.erase_entry2)
-        self.ent_delete_element.bind('<FocusOut>', self.to_add_entry2)
-
-    def erase_entry(self, event=None):
-        if self.ent_cost.get() == '-':
-            self.ent_cost.delete(0, 'end')
-        self.not_use = event
-
-    def erase_entry1(self, event=None):
-        if self.ent_name.get() == '-':
-            self.ent_name.delete(0, 'end')
-        self.not_use = event
-
-    def erase_entry2(self, event=None):
-        if self.ent_delete_element.get() == '-':
-            self.ent_delete_element.delete(0, 'end')
-        self.not_use = event
-
-    def to_add_entry(self, event=None):
-        if self.ent_cost.get() == "":
-            self.ent_cost.insert(0, '-')
-        self.not_use = event
-
-    def to_add_entry1(self, event=None):
-        if self.ent_name.get() == "":
-            self.ent_name.insert(0, '-')
-        self.not_use = event
-
-    def to_add_entry2(self, event=None):
-        if self.ent_delete_element.get() == "":
-            self.ent_delete_element.insert(0, '-')
-        self.not_use = event
+        BindEntry(self.ent_cost)
+        BindEntry(self.ent_name)
+        BindEntry(self.ent_delete_element)
 
     def grab_focus(self):  # Метод сохранения фокуса на дочернем окне
         self.child_root.grab_set()
@@ -784,91 +748,11 @@ class ConfigSet:
 
     @staticmethod
     def default_settings():  # Метод сброса настроек программы до базовых
-        # Формирование переменной базовой конфигурации
-        string_config = """
-        [INFO]
-        
-        [MAIN]
-        min_cost = 1000
-        additional_cost = 400
-        one_hour_of_work = 5000
-        many_items = 0.42
-        
-        [STANDARD]
-        Кольцо = 1400
-        Кольцо с 2-х сторон = 2200
-        Нож = 1000
-        Ручка = 1000
-        Жетон/Брелок = 1000
-        Термос/Термокружка = 1000
-        Клавиатура = 1500
-        Клавиатура с пробелом = 2000
-        
-        [RATIO_SETTINGS]
-        ratio_laser_gas = 1.15
-        ratio_rotation = 1.2
-        ratio_timing = 1.5
-        ratio_attention = 1.15
-        ratio_packing = 1.15
-        ratio_hand_job = 1.15
-        ratio_taxation = 1.2, 1.07
-        ratio_oversize = 1.8
-        ratio_different_layouts = 1.15
-        ratio_numbering = 1.1
-        ratio_thermal_graving = 1.15
-        ratio_docking = 1.15
-        
-        [GRADATION]
-        difficult = 1, 1.2, 1.3, 1.5, 1.8
-        depth = 1, 1.15, 1.3, 1.5, 2
-        area = 1.5, 7
-        
-        [INDUSTRIAL_MAIN]
-        industrial__hour_of_work = 4000
-        industrial_all_area_cost = 1500
-        industrial_timing_correction = 0.96
-        
-        [RATIO_INDUSTRIAL_SETTINGS]
-        industrial_ratio_laser_gas = 1.15
-        industrial_ratio_rotation = 1.2
-        industrial_ratio_timing = 1.5
-        industrial_ratio_attention = 1.15
-        industrial_ratio_packing = 1.15
-        industrial_ratio_hand_job = 1.15
-        industrial_ratio_taxation = 1.2, 1.07
-        industrial_ratio_oversize = 1.8
-        industrial_ratio_different_layouts = 1.15
-        industrial_ratio_numbering = 1.1
-        industrial_ratio_thermal_graving = 1.15
-        industrial_ratio_docking = 1.15
-        
-        [INDUSTRIAL_GRADATION]
-        industrial_difficult = 1, 1.3, 1.5, 1.8, 2.0
-        industrial_depth = 1, 1.3, 1.5, 2, 3
-        industrial_area = 1, 1.15, 1.2, 1.5
-        """
-
-        # Создание переменной класса конфигурации и считывание базовых разделов
-        default_config = configparser.ConfigParser()
-        default_config.read_string(string_config)
-        # Заполнение информационного раздела
-        default_config.set('INFO',
-                           'info',
-                           f'# This configuration file contains the '
-                           f'following basic program settings:\n# MAIN - '
-                           f'Contains the minimum cost of working '
-                           f'on the equipment,as well as the cost of one '
-                           f'hour of equipment;\n'
-                           f'# STANDARD - Contains the cost of basic '
-                           f'standard work on the equipment;\n'
-                           f'# RATIO_SETTINGS - Contains the weighting '
-                           f'factors of the complexity of the work performed.'
-                           )
-
-        # Запись в файл настроек "по умолчанию"
-        with (open('settings/settings.ini', 'w', encoding='utf-8') as
-              configfile):
-            default_config.write(configfile)
+        destination_path = 'settings/settings.ini'
+        source_path = 'settings/default/settings.ini'
+        if os.path.exists(destination_path):
+            os.remove(destination_path)
+        shutil.copy2(source_path, destination_path)
 
 
 class RatioArea:

@@ -7,13 +7,14 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter.messagebox import askokcancel
+from math import ceil
 from child_materials_window import ChildMaterials
 from child_power_set_window import ChildPowerSet
 from materials import Materials, Calculation
 from child_config_window import ChildConfigSet
 from child_config_window import ConfigSet
 from child_config_window import RatioArea
-from math import ceil
+from binds import BindEntry
 
 
 class Window:
@@ -1193,9 +1194,9 @@ class Window:
         self.ent_height_grav.delete(0, tk.END)
         self.ent_width_grav.delete(0, tk.END)
 
-        self.to_add_entry()
-        self.to_add_entry1()
-        self.to_add_entry7()
+        BindEntry(self.ent_design).to_add_entry_child()
+        BindEntry(self.ent_height_grav).to_add_entry_child()
+        BindEntry(self.ent_width_grav).to_add_entry_child()
 
         # Обнуление выпадающего списка и счетчиков
         self.combo_products.set('Нет')
@@ -1352,38 +1353,14 @@ class Window:
     def add_bind(self):  # Установка фона в полях ввода и расчет (binds)
         self.root.bind('<Return>', self.get_return_by_keyboard)
 
-        self.to_add_entry()
-        self.to_add_entry1()
-        self.to_add_entry2()
-        self.to_add_entry3()
-        self.to_add_entry4()
-        self.to_add_entry5()
-        self.to_add_entry6()
-        self.to_add_entry7()
-
-        self.ent_width_grav.bind('<FocusIn>', self.erase_entry)
-        self.ent_width_grav.bind('<FocusOut>', self.to_add_entry)
-
-        self.ent_height_grav.bind('<FocusIn>', self.erase_entry1)
-        self.ent_height_grav.bind('<FocusOut>', self.to_add_entry1)
-
-        self.ent_num.bind('<FocusIn>', self.erase_entry2)
-        self.ent_num.bind('<FocusOut>', self.to_add_entry2)
-
-        self.ent_width.bind('<FocusIn>', self.erase_entry3)
-        self.ent_width.bind('<FocusOut>', self.to_add_entry3)
-
-        self.ent_height.bind('<FocusIn>', self.erase_entry4)
-        self.ent_height.bind('<FocusOut>', self.to_add_entry4)
-
-        self.ent_time_of_work.bind('<FocusIn>', self.erase_entry5)
-        self.ent_time_of_work.bind('<FocusOut>', self.to_add_entry5)
-
-        self.ent_items_in_one.bind('<FocusIn>', self.erase_entry6)
-        self.ent_items_in_one.bind('<FocusOut>', self.to_add_entry6)
-
-        self.ent_design.bind('<FocusIn>', self.erase_entry7)
-        self.ent_design.bind('<FocusOut>', self.to_add_entry7)
+        BindEntry(self.ent_width_grav)
+        BindEntry(self.ent_height_grav)
+        BindEntry(self.ent_num)
+        BindEntry(self.ent_width)
+        BindEntry(self.ent_height)
+        BindEntry(self.ent_time_of_work)
+        BindEntry(self.ent_items_in_one)
+        BindEntry(self.ent_design)
 
     def get_return_by_keyboard(self, event=None):
         if self.tabs_control.tabs().index(self.tabs_control.select()) == 0:
@@ -1391,86 +1368,6 @@ class Window:
         elif self.tabs_control.tabs().index(self.tabs_control.select()) == 1:
             self.get_calc_mat()
 
-        self.not_use = event
-
-    def erase_entry(self, event=None):
-        if self.ent_width_grav.get() == '-':
-            self.ent_width_grav.delete(0, 'end')
-        self.not_use = event
-
-    def erase_entry1(self, event=None):
-        if self.ent_height_grav.get() == '-':
-            self.ent_height_grav.delete(0, 'end')
-        self.not_use = event
-
-    def erase_entry2(self, event=None):
-        if self.ent_num.get() == '-':
-            self.ent_num.delete(0, 'end')
-        self.not_use = event
-
-    def erase_entry3(self, event=None):
-        if self.ent_width.get() == '-':
-            self.ent_width.delete(0, 'end')
-        self.not_use = event
-
-    def erase_entry4(self, event=None):
-        if self.ent_height.get() == '-':
-            self.ent_height.delete(0, 'end')
-        self.not_use = event
-
-    def erase_entry5(self, event=None):
-        if self.ent_time_of_work.get() == '-':
-            self.ent_time_of_work.delete(0, 'end')
-        self.not_use = event
-
-    def erase_entry6(self, event=None):
-        if self.ent_items_in_one.get() == '-':
-            self.ent_items_in_one.delete(0, 'end')
-        self.not_use = event
-
-    def erase_entry7(self, event=None):
-        if self.ent_design.get() == '-':
-            self.ent_design.delete(0, 'end')
-        self.not_use = event
-
-    def to_add_entry(self, event=None):
-        if self.ent_width_grav.get() == "":
-            self.ent_width_grav.insert(0, '-')
-        self.not_use = event
-
-    def to_add_entry1(self, event=None):
-        if self.ent_height_grav.get() == "":
-            self.ent_height_grav.insert(0, '-')
-        self.not_use = event
-
-    def to_add_entry2(self, event=None):
-        if self.ent_num.get() == "":
-            self.ent_num.insert(0, '-')
-        self.not_use = event
-
-    def to_add_entry3(self, event=None):
-        if self.ent_width.get() == "":
-            self.ent_width.insert(0, '-')
-        self.not_use = event
-
-    def to_add_entry4(self, event=None):
-        if self.ent_height.get() == "":
-            self.ent_height.insert(0, '-')
-        self.not_use = event
-
-    def to_add_entry5(self, event=None):
-        if self.ent_time_of_work.get() == "":
-            self.ent_time_of_work.insert(0, '-')
-        self.not_use = event
-
-    def to_add_entry6(self, event=None):
-        if self.ent_items_in_one.get() == "":
-            self.ent_items_in_one.insert(0, '-')
-        self.not_use = event
-
-    def to_add_entry7(self, event=None):
-        if self.ent_design.get() == "":
-            self.ent_design.insert(0, '-')
         self.not_use = event
 
     def run(self):  # Метод, реализующий запуск программы

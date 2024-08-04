@@ -1,14 +1,14 @@
-import configparser
-
-my_data = []
-temp_file = configparser.ConfigParser()
-temp_file.read('settings/material_data.ini', encoding='utf-8')
-temp_data = temp_file['MAIN']
-for k, v in temp_data.items():
-    temp = [k]
-    temp.extend([float(x) for x in v.split(',')])
-    my_data.append(temp)
-
-print(*my_data, sep='\n')
+import os
+import shutil
 
 
+def copy_and_replace(source_path, destination_path):
+    if os.path.exists(destination_path):
+        os.remove(destination_path)
+    shutil.copy2(source_path, destination_path)
+
+
+file_need_to_remove = 'settings/test.txt'
+file_for_copy = 'settings/default/test.txt'
+
+copy_and_replace(file_for_copy, file_need_to_remove)

@@ -1,7 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
+from tkinter.messagebox import askokcancel
 from materials import Materials
+from binds import BindEntry
 
 
 class ChildMaterials:
@@ -147,12 +149,12 @@ class ChildMaterials:
             text="Добавить материал",
             command=self.click_add_data
         )
-        self.btn_add.grid(row=2, column=1, padx=10, pady=15, sticky='nsew',
-                          columnspan=2)
+        self.btn_add.grid(row=2, column=0, padx=10, pady=15, sticky='nsew',
+                          columnspan=3)
 
         # Разделительная черта
         ttk.Separator(self.panel_2).grid(
-            row=3, column=0, columnspan=4, pady=10, sticky='ew'
+            row=3, column=0, columnspan=4, pady=(10, 0), sticky='ew'
         )
 
         # Поле ввода для удаления из таблицы
@@ -181,6 +183,15 @@ class ChildMaterials:
         self.btn_del.grid(
             row=5, column=1, padx=15, pady=(5, 25), sticky='nsew')
 
+        # Кнопка сброса таблицы "по умолчанию"
+        self.btn_get_default = ttk.Button(
+            self.panel_2,
+            text="Сброс",
+            command=self.get_default_materials
+        )
+        self.btn_get_default.grid(
+            row=2, column=3, padx=10, pady=15, sticky='nsew')
+
         # Кнопка закрытия окна
         self.btn_destroy = ttk.Button(
             self.panel_2,
@@ -193,76 +204,11 @@ class ChildMaterials:
     def add_bind_child(self):
 
         # Установка фонового текста в полях ввода
-        self.to_add_entry_child()
-        self.to_add_entry_child1()
-        self.to_add_entry_child2()
-        self.to_add_entry_child3()
-        self.to_add_entry_child4()
-
-        self.name_mat.bind('<FocusIn>', self.erase_entry_child)
-        self.name_mat.bind('<FocusOut>', self.to_add_entry_child)
-
-        self.width_mat.bind('<FocusIn>', self.erase_entry_child1)
-        self.width_mat.bind('<FocusOut>', self.to_add_entry_child1)
-
-        self.height_mat.bind('<FocusIn>', self.erase_entry_child2)
-        self.height_mat.bind('<FocusOut>', self.to_add_entry_child2)
-
-        self.price_mat.bind('<FocusIn>', self.erase_entry_child3)
-        self.price_mat.bind('<FocusOut>', self.to_add_entry_child3)
-
-        self.delete_data.bind('<FocusIn>', self.erase_entry_child4)
-        self.delete_data.bind('<FocusOut>', self.to_add_entry_child4)
-
-    def erase_entry_child(self, event=None):
-        if self.name_mat.get() == '-':
-            self.name_mat.delete(0, 'end')
-        self.not_use_child = event
-
-    def erase_entry_child1(self, event=None):
-        if self.width_mat.get() == '-':
-            self.width_mat.delete(0, 'end')
-        self.not_use_child = event
-
-    def erase_entry_child2(self, event=None):
-        if self.height_mat.get() == '-':
-            self.height_mat.delete(0, 'end')
-        self.not_use_child = event
-
-    def erase_entry_child3(self, event=None):
-        if self.price_mat.get() == '-':
-            self.price_mat.delete(0, 'end')
-        self.not_use_child = event
-
-    def erase_entry_child4(self, event=None):
-        if self.delete_data.get() == '-':
-            self.delete_data.delete(0, 'end')
-        self.not_use_child = event
-
-    def to_add_entry_child(self, event=None):
-        if self.name_mat.get() == "":
-            self.name_mat.insert(0, '-')
-        self.not_use_child = event
-
-    def to_add_entry_child1(self, event=None):
-        if self.width_mat.get() == "":
-            self.width_mat.insert(0, '-')
-        self.not_use_child = event
-
-    def to_add_entry_child2(self, event=None):
-        if self.height_mat.get() == "":
-            self.height_mat.insert(0, '-')
-        self.not_use_child = event
-
-    def to_add_entry_child3(self, event=None):
-        if self.price_mat.get() == "":
-            self.price_mat.insert(0, '-')
-        self.not_use_child = event
-
-    def to_add_entry_child4(self, event=None):
-        if self.delete_data.get() == "":
-            self.delete_data.insert(0, '-')
-        self.not_use_child = event
+        BindEntry(self.name_mat)
+        BindEntry(self.width_mat)
+        BindEntry(self.height_mat)
+        BindEntry(self.price_mat)
+        BindEntry(self.delete_data)
 
     def get_data_child(self):  # Обновление списка материалов для таблицы
         self.data = list()
@@ -309,6 +255,18 @@ class ChildMaterials:
             new_data = [f'{self.i_data}:', new_name, new_width, new_height,
                         new_price]
             self.material_table.insert('', index='end', values=new_data)
+
+            # Очистка и установка фонового текста в полях ввода
+            self.name_mat.delete(0, tk.END)
+            self.width_mat.delete(0, tk.END)
+            self.height_mat.delete(0, tk.END)
+            self.price_mat.delete(0, tk.END)
+
+            BindEntry(self.name_mat).to_add_entry_child()
+            BindEntry(self.width_mat).to_add_entry_child()
+            BindEntry(self.height_mat).to_add_entry_child()
+            BindEntry(self.price_mat).to_add_entry_child()
+
             self.child_root.update()
 
     def click_del_data(self):  # Удаление выбранной строки из таблицы
@@ -366,8 +324,36 @@ class ChildMaterials:
                 self.material_table.insert('', index='end',
                                            values=temp_list)
                 self.child_root.update()
+            #  Очистка и установка фонового текста в поле ввода
+            self.delete_data.delete(0, tk.END)
+            BindEntry(self.delete_data).to_add_entry_child()
 
         del deleted_data_config
+
+    def get_default_materials(self):
+        if askokcancel('Сброс настроек', 'Вы действительно хотите сбросить '
+                                         'настройки по умолчанию?'):
+            self.config_material_data.get_default()
+
+        # Переопределение переменной конфигурации
+        del self.config_material_data
+        self.config_material_data = Materials()
+        # Обновление данных в таблице
+        # Очистка таблицы
+        for item in self.material_table.get_children():
+            self.material_table.delete(item)
+        self.get_data_child()
+        # Запись новых данных в таблицу
+        self.i_data = -1
+        for data in self.data:
+            self.i_data += 1
+            temp_list = list()
+            temp_list.append(f'{self.i_data}:')
+            temp_list.extend(data)
+            self.material_table.insert('', index='end',
+                                       values=temp_list)
+            self.child_root.update()
+        self.child_root.update()
 
     def grab_focus(self):  # Метод сохранения фокуса на дочернем окне
         self.child_root.grab_set()

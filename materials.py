@@ -1,4 +1,6 @@
 import configparser
+import os
+import shutil
 
 
 class Materials:
@@ -44,28 +46,11 @@ class Materials:
 
     @staticmethod
     def get_default():
-        string_materials = """
-        [INFO]
-        info = # Файл содержит список параметров основного листового материала
-        
-        [MAIN]
-        Анодированный алюминий 0.5 мм = 400, 200, 1000
-        Двухслойный пластик 1.5 мм = 1200, 600, 5000
-        Двухслойный пластик 1.5 мм (Китай) = 1200, 600, 1850
-        Двухслойный пластик 0.6 мм = 1200, 600, 2500
-        Самоклеящийся пластик 0.1 мм = 600, 300, 1420
-        ПЭТ 0.5 мм = 2000, 1250, 1000
-        ПЭТ 1 мм = 2000, 1250, 1500
-        ПЭТ 1.5 мм = 2000, 1250, 2000
-        Фанера 4 мм = 1525, 1525, 650
-        Оргстекло 4 мм = 2050, 1500, 6000
-        Оргстекло 3 мм = 2050, 1500, 4510
-        """
-        default_materials = configparser.ConfigParser()
-        default_materials.read_string(string_materials)
-        with (open('settings/material_data.ini', encoding='utf-8') as
-              configfile):
-            default_materials.write(configfile)
+        destination_path = 'settings/material_data.ini'
+        source_path = 'settings/default/material_data.ini'
+        if os.path.exists(destination_path):
+            os.remove(destination_path)
+        shutil.copy2(source_path, destination_path)
 
 
 class Calculation:
