@@ -15,6 +15,7 @@ from child_config_window import ChildConfigSet
 from child_config_window import ConfigSet
 from child_config_window import RatioArea
 from binds import BindEntry
+from binds import BalloonTips
 
 
 class Window:
@@ -335,14 +336,14 @@ class Window:
         self.chk_ratio_numbering.grid(row=2, column=0, padx=2, pady=5,
                                       sticky="nsew")
 
-        self.chk_ratio_taxation_ao = ttk.Checkbutton(
+        self.chk_ratio_taxation_ooo = ttk.Checkbutton(
             self.panel_2,
             text='Оплата по счету ООО',
             variable=self.bool_ratio_taxation_ao,
             command=self.disable_taxation
         )
-        self.chk_ratio_taxation_ao.grid(row=4, column=0, padx=2, pady=5,
-                                        sticky="nsew")
+        self.chk_ratio_taxation_ooo.grid(row=4, column=0, padx=2, pady=5,
+                                         sticky="nsew")
 
         self.chk_ratio_attention = ttk.Checkbutton(
             self.panel_2,
@@ -1187,7 +1188,7 @@ class Window:
         self.bool_ratio_taxation_ip.set(False)
         self.rb_type_of_laser.set(1)
         self.chk_ratio_taxation_ip.config(state='enabled')
-        self.chk_ratio_taxation_ao.config(state='enabled')
+        self.chk_ratio_taxation_ooo.config(state='enabled')
 
         # Обнуление окон ввода данных
         self.ent_design.delete(0, tk.END)
@@ -1345,14 +1346,16 @@ class Window:
             self.chk_ratio_taxation_ip.config(state='enabled')
 
         if self.bool_ratio_taxation_ip.get():
-            self.chk_ratio_taxation_ao.config(state='disabled')
+            self.chk_ratio_taxation_ooo.config(state='disabled')
 
         elif not self.bool_ratio_taxation_ip.get():
-            self.chk_ratio_taxation_ao.config(state='enabled')
+            self.chk_ratio_taxation_ooo.config(state='enabled')
 
-    def add_bind(self):  # Установка фона в полях ввода и расчет (binds)
+    def add_bind(self):  # Установка подсказок и других binds
+        # Расчет стоимости при нажатии на Enter в главном окне (1 и 2 вкладки)
         self.root.bind('<Return>', self.get_return_by_keyboard)
 
+        # Установка фонового текста в поля ввода
         BindEntry(self.ent_width_grav)
         BindEntry(self.ent_height_grav)
         BindEntry(self.ent_num)
@@ -1362,7 +1365,58 @@ class Window:
         BindEntry(self.ent_items_in_one)
         BindEntry(self.ent_design)
 
-    def get_return_by_keyboard(self, event=None):
+        # Установка подсказок для элементов в форме углубленного расчета
+        BalloonTips(self.chk_ratio_timing,
+                    text=f'Выход в выходной день\n'
+                    f'или работа сверх очереди.')
+        BalloonTips(self.chk_ratio_packing,
+                    text=f'Большие затраты времени\n'
+                    f'на распаковку/запаковку '
+                    f'изделий.')
+        BalloonTips(self.chk_ratio_thermal_graving,
+                    text=f'Гравировка нанесением\n'
+                         f'оксидной пленки.')
+        BalloonTips(self.chk_ratio_oversize,
+                    text=f'Для гравировки требуется\n'
+                         f'снятие головы.')
+        BalloonTips(self.chk_ratio_numbering,
+                    text=f'Гравировка изделий со\n'
+                         f'сквозной нумерацией.')
+        BalloonTips(self.chk_ratio_docking,
+                    text=f'Гравировка со стыковкой\n'
+                         f'элементов.')
+        BalloonTips(self.chk_ratio_attention,
+                    text=f'Гравировка любых ювелирных изделий,\n'
+                         f'а также других изделий (материалов),\n'
+                         f'требующих особой осторожности.')
+        BalloonTips(self.chk_ratio_hand_job,
+                    text=f'Шлифовка, снятие краски и др. виды работ,\n'
+                         f'требующие больших временных затрат.')
+        BalloonTips(self.chk_ratio_taxation_ooo,
+                    text=f'Учет НДС при оплате по счету ООО.')
+        BalloonTips(self.chk_ratio_taxation_ip,
+                    text=f'Учет НДС при оплате через кассу.')
+        BalloonTips(self.spin_difficult,
+                    text=f'Ступенчатая сложность гравировки:\n'
+                         f'1: Привязка к 1 габариту или грани;\n'
+                         f'2: Привязка к координатному расположению,\n'
+                         f'рамкам, базовым точкам, попадание по окружности;\n'
+                         f'3: Сложность пространственная: тяжело установить\n'
+                         f'или прицелить изделие из-за его габаритов/формы;\n'
+                         f'4: Строгая привязка к параллельности и граням \n'
+                         f'(Например, валы Маенкова);\n'
+                         f'5:Очень сложное выставление и привязка\n'
+                         f'(Например гравировка на спиральном кольце \n'
+                         f'на тонкой грани.')
+        BalloonTips(self.spin_depth,
+                    text=f'Ступенчатая глубина гравировки:\n'
+                         f'1: Типовая гравировка до 20 проходов;\n'
+                         f'2: Гравировка до 50 проходов;\n'
+                         f'3: Гравировка  до 150 проходов;\n'
+                         f'4: Гравировка  до 300 проходов;\n'
+                         f'5: Гравировка  более 300 проходов.')
+
+    def get_return_by_keyboard(self, event=None):  # Метод расчета от Enter
         if self.tabs_control.tabs().index(self.tabs_control.select()) == 0:
             self.get_calc()
         elif self.tabs_control.tabs().index(self.tabs_control.select()) == 1:

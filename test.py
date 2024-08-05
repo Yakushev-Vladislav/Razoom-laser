@@ -1,14 +1,26 @@
-import os
-import shutil
+from tkinter import *
+from custom_hovertip import CustomTooltipLabel
 
 
-def copy_and_replace(source_path, destination_path):
-    if os.path.exists(destination_path):
-        os.remove(destination_path)
-    shutil.copy2(source_path, destination_path)
+# Create the main application window
+root = Tk()
+root.geometry("300x200")
+root.title("Tooltip Example with Tix")
+
+# Create a label widget
+label1 = Label(root, text="Welcome to GeeksforGeeks")
+label1.pack(pady=20)
+
+CustomTooltipLabel(anchor_widget=label1, text="This is tooltip text.",
+                   )
 
 
-file_need_to_remove = 'settings/test.txt'
-file_for_copy = 'settings/default/test.txt'
+# Create a button widget
+button1 = Button(root, text="Click Me", bg="green", fg="white")
+button1.pack(pady=10)
 
-copy_and_replace(file_for_copy, file_need_to_remove)
+# Assign tooltips to the widgets
+
+
+# Run the main application loop
+root.mainloop()
