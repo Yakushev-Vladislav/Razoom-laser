@@ -22,7 +22,7 @@ class ChildMaterials:
         # Создание дочернего окна поверх основного
         self.child_root = tk.Toplevel(parent)
         self.child_root.title(title)
-        self.child_root.geometry(f"{width}x{height}+200+100")
+        self.child_root.geometry(f"{width}x{height}+20+20")
         self.child_root.resizable(resizable[0], resizable[1])
         if icon:
             self.child_root.iconbitmap(icon)
@@ -146,7 +146,7 @@ class ChildMaterials:
         self.btn_add = ttk.Button(
             self.panel_2,
             width=4,
-            text="Добавить материал",
+            text="Добавить/редактировать материал",
             command=self.click_add_data
         )
         self.btn_add.grid(row=2, column=0, padx=10, pady=15, sticky='nsew',
@@ -154,12 +154,12 @@ class ChildMaterials:
 
         # Разделительная черта
         ttk.Separator(self.panel_2).grid(
-            row=3, column=0, columnspan=4, pady=(10, 0), sticky='ew'
+            row=3, column=0, columnspan=4, pady=(5, 0), sticky='ew'
         )
 
         # Поле ввода для удаления из таблицы
         ttk.Label(self.panel_2, text='Введите номер строки').grid(
-            row=4, column=0, padx=0, pady=15, sticky='ns'
+            row=4, column=0, padx=0, pady=5, sticky='ns'
         )
         self.delete_data = ttk.Entry(
             self.panel_2,
@@ -169,7 +169,7 @@ class ChildMaterials:
             row=5,
             column=0,
             padx=10,
-            pady=(5, 25),
+            pady=5,
             sticky='ew'
         )
 
@@ -181,7 +181,8 @@ class ChildMaterials:
             command=self.click_del_data
         )
         self.btn_del.grid(
-            row=5, column=1, padx=15, pady=(5, 25), sticky='nsew')
+            row=5, column=1, padx=15, pady=5, sticky='nsew',
+            columnspan=2)
 
         # Кнопка сброса таблицы "по умолчанию"
         self.btn_get_default = ttk.Button(
@@ -199,7 +200,17 @@ class ChildMaterials:
             command=self.destroy_child
         )
         self.btn_destroy.grid(
-            row=5, column=3, padx=(5, 10), pady=(5, 25), sticky='nsew')
+            row=5, column=3, padx=(5, 10), pady=5, sticky='nsew')
+
+        # Кнопка открытия дочернего окна с матрицей стоимостей
+        self.btn_matrix_run = ttk.Button(
+            self.panel_2,
+            text="Конфигурация стоимости",
+            command=self.run_matrix_window
+        )
+        self.btn_matrix_run.grid(
+            row=6, column=2, padx=(5, 10), pady=(5, 25), sticky='nsew',
+            columnspan=2)
 
     def add_bind_child(self):
 
@@ -251,10 +262,21 @@ class ChildMaterials:
             self.config_material_data.update_materials(some_new=temp_new)
 
             # Обновление данных в таблице
-            self.i_data += 1
-            new_data = [f'{self.i_data}:', new_name, new_width, new_height,
-                        new_price]
-            self.material_table.insert('', index='end', values=new_data)
+            # Очистка таблицы
+            for item in self.material_table.get_children():
+                self.material_table.delete(item)
+            self.get_data_child()
+
+            # Запись новых данных в таблицу
+            self.i_data = -1
+            for data in self.data:
+                self.i_data += 1
+                temp_list = list()
+                temp_list.append(f'{self.i_data}:')
+                temp_list.extend(data)
+                self.material_table.insert('', index='end',
+                                           values=temp_list)
+            self.child_root.update()
 
             # Очистка и установка фонового текста в полях ввода
             self.name_mat.delete(0, tk.END)
@@ -323,7 +345,7 @@ class ChildMaterials:
                 temp_list.extend(data)
                 self.material_table.insert('', index='end',
                                            values=temp_list)
-                self.child_root.update()
+            self.child_root.update()
             #  Очистка и установка фонового текста в поле ввода
             self.delete_data.delete(0, tk.END)
             BindEntry(self.delete_data).to_add_entry_child()
@@ -362,3 +384,55 @@ class ChildMaterials:
 
     def destroy_child(self):  # Метод закрытия дочернего окна
         self.child_root.destroy()
+
+    def run_matrix_window(self):  # Метод открытия дочернего окна матрицы
+        self.child_root.CHILD = ChildMatrixMaterial(
+            self.child_root,
+            700,
+            450,
+            theme='forest-light',
+            icon="resources/Company_logo.ico"
+        )
+        self.child_root.CHILD.grab_focus()
+
+
+class ChildMatrixMaterial:
+    def __init__(self, parent, width: int, height: int, theme: str,
+                 material_name: str = None,
+                 title=f'Матрица стоимостей материала',
+                 resizable=(False, False), icon=None):
+        """
+        Дочернее окно с таблицей стоимостей изделий из выбранного материала.
+        :param parent: Родительское окно (Листовой материал);
+        :param width: Ширина окна;
+        :param height: Высота окна;
+        :param theme: Тема окна;
+        :param material_name: Наименование материала для которого
+        заполняется матрица;
+        :param title: Название окна;
+        :param resizable: Возможность растягивания окна;
+        :param icon: Иконка окна.
+        """
+        # Создание дочернего окна поверх основного
+        self.matrix_root = tk.Toplevel(parent)
+        if material_name:
+            title = f'Матрица стоимостей материала "{material_name}"'
+            self.matrix_root.title(title)
+        else:
+            self.matrix_root.title(title)
+        self.matrix_root.geometry(f"{width}x{height}+20+20")
+        self.matrix_root.resizable(resizable[0], resizable[1])
+        if icon:
+            self.matrix_root.iconbitmap(icon)
+
+        # Установка стиля окна
+        self.style_child = ttk.Style(self.matrix_root)
+        self.style_child.theme_use(theme)
+
+    def grab_focus(self):  # Метод сохранения фокуса на дочернем окне
+        self.matrix_root.grab_set()
+        self.matrix_root.focus_set()
+        self.matrix_root.wait_window()
+
+    def destroy_child(self):  # Метод закрытия дочернего окна
+        self.matrix_root.destroy()

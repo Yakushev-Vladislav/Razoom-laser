@@ -8,7 +8,7 @@ class ChildPowerSet:
         # Создание дочернего окна поверх основного
         self.child_root = tk.Toplevel(parent)
         self.child_root.title(title)
-        self.child_root.geometry(f"{width}x{height}+200+100")
+        self.child_root.geometry(f"{width}x{height}+20+20")
         self.child_root.resizable(resizable[0], resizable[1])
         if icon:
             self.child_root.iconbitmap(icon)

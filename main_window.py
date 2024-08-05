@@ -29,7 +29,7 @@ class Window:
         self.root.resizable(True, True)
 
         # Минимальные размеры окна и расположение
-        self.root.geometry(f"{1000}x{750}+50+50")
+        self.root.geometry(f"{1000}x{750}+10+10")
         self.root.minsize(1000, 750)
         self.root.geometry("%dx%d" % (self.root.winfo_width(),
                                       self.root.winfo_height()))
@@ -554,7 +554,6 @@ class Window:
         self.combo_mat = ttk.Combobox(
             self.panel_sheet_materials_widgets,
             width=35,
-            height=5,
             values=self.material_list
         )
         self.combo_mat.current(0)
@@ -862,9 +861,6 @@ class Window:
     def power_set(self):  # Запуск дочернего окна подбора режимов
         self.run_child_power()
 
-    def configure_program(self):  # Запуск дочернего окна настроек программы
-        self.run_config_window()
-
     def change_theme(self):  # Метод смены темы приложения
         if self.theme == 'forest-light':
             self.theme = 'forest-dark'
@@ -1170,9 +1166,9 @@ class Window:
         )
 
         # Обнуление переключателей и окон ввода
-        self.reset_tab_1()
+        self.reset_tab_mian_calculate()
 
-    def reset_tab_1(self):  # Метод обнуления переключателей и полей
+    def reset_tab_mian_calculate(self):  # Обнуления переключателей и полей
         # Обнуление переключателей
         self.bool_rotation.set(False)
         self.bool_different.set(False)
@@ -1251,7 +1247,7 @@ class Window:
         )
 
         # Обнуляем переключатели
-        self.reset_tab_1()
+        self.reset_tab_mian_calculate()
 
     def get_calc_mat(self):  # Метод расчета себестоимости изделий
 

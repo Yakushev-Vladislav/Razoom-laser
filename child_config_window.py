@@ -27,7 +27,7 @@ class ChildConfigSet:
         # Создание дочернего окна поверх основного
         self.child_root = tk.Toplevel(parent)
         self.child_root.title(title)
-        self.child_root.geometry(f"{width}x{height}+100+100")
+        self.child_root.geometry(f"{width}x{height}+20+20")
         self.child_root.resizable(resizable[0], resizable[1])
         if icon:
             self.child_root.iconbitmap(icon)
@@ -401,7 +401,7 @@ class ChildConfigSet:
         )
         self.ent_name = ttk.Entry(
             self.tab_2_panel_2,
-            width=20
+            width=10
         )
         self.ent_name.grid(row=1, column=0, padx=5, pady=(5, 10),
                            sticky='nsew', columnspan=1)
@@ -413,7 +413,7 @@ class ChildConfigSet:
         )
         self.ent_cost = ttk.Entry(
             self.tab_2_panel_2,
-            width=20
+            width=10
         )
         self.ent_cost.grid(row=1, column=1, padx=5, pady=(5, 10),
                            sticky='nsew')
@@ -422,7 +422,7 @@ class ChildConfigSet:
         self.btn_add_new_element = ttk.Button(
             self.tab_2_panel_2,
             width=10,
-            text="Добавить работу",
+            text="Добавить/изменить работу",
             command=self.click_add_standard
         )
         self.btn_add_new_element.grid(
@@ -555,6 +555,8 @@ class ChildConfigSet:
         BindEntry(self.ent_name).to_add_entry_child()
         BindEntry(self.ent_cost).to_add_entry_child()
         BindEntry(self.ent_delete_element).to_add_entry_child()
+
+        self.child_root.update()
 
         del (update_config, ratio_from_config, main_from_config,
              gradation_from_config)
