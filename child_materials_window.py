@@ -390,6 +390,7 @@ class ChildMaterials:
             self.child_root,
             700,
             450,
+            laser_type='Твердотельный лазер',
             theme='forest-light',
             icon="resources/Company_logo.ico"
         )
@@ -398,6 +399,7 @@ class ChildMaterials:
 
 class ChildMatrixMaterial:
     def __init__(self, parent, width: int, height: int, theme: str,
+                 laser_type: str,
                  material_name: str = None,
                  title=f'Матрица стоимостей материала',
                  resizable=(False, False), icon=None):
@@ -411,7 +413,8 @@ class ChildMatrixMaterial:
         заполняется матрица;
         :param title: Название окна;
         :param resizable: Возможность растягивания окна;
-        :param icon: Иконка окна.
+        :param icon: Иконка окна;
+        :laser_type: Тип оборудования для работы с данным материалом.
         """
         # Создание дочернего окна поверх основного
         self.matrix_root = tk.Toplevel(parent)
@@ -428,6 +431,20 @@ class ChildMatrixMaterial:
         # Установка стиля окна
         self.style_child = ttk.Style(self.matrix_root)
         self.style_child.theme_use(theme)
+
+        # Основные виджеты окна
+
+        # Прорисовка окна в зависимости от типа оборудования
+        if laser_type == 'Твердотельный лазер':
+            self.draw_solid_widget()
+        else:
+            self.draw_gas_widget()
+
+    def draw_solid_widget(self):  # Метод прорисовки виджетов
+        pass
+
+    def draw_gas_widget(self):  # Метод прорисовки виджетов
+        pass
 
     def grab_focus(self):  # Метод сохранения фокуса на дочернем окне
         self.matrix_root.grab_set()
