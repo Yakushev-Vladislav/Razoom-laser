@@ -47,13 +47,23 @@ class ChildMaterials:
         self.child_root.rowconfigure(index=0, weight=1)
         self.child_root.rowconfigure(index=1, weight=2)
 
-        # Создание форм окна
-        self.panel_1 = ttk.Frame(self.child_root, padding=(0, 0, 0, 0))
-        self.panel_1.grid(row=0, column=0, padx=0, pady=(0, 0),
-                          sticky="nsew")
-        self.panel_2 = ttk.Frame(self.child_root, padding=(0, 0, 0, 0))
-        self.panel_2.grid(row=1, column=0, padx=0, pady=(0, 0),
-                          sticky="nsew", columnspan=3)
+        # Создание формы для основных виджетов
+        self.panel_settings = ttk.Frame(self.child_root, padding=(0, 0, 0, 0))
+        self.panel_settings.grid(row=1, column=0, padx=0, pady=(0, 0),
+                                 sticky="nsew", columnspan=3)
+        # Конфигурация формы виджетов
+        self.panel_settings.columnconfigure(index=0, weight=1)
+        self.panel_settings.columnconfigure(index=1, weight=1)
+        self.panel_settings.columnconfigure(index=2, weight=1)
+        self.panel_settings.columnconfigure(index=3, weight=1)
+        self.panel_settings.columnconfigure(index=4, weight=1)
+
+        self.panel_settings.rowconfigure(index=0, weight=1)
+        self.panel_settings.rowconfigure(index=1, weight=1)
+        self.panel_settings.rowconfigure(index=2, weight=1)
+        self.panel_settings.rowconfigure(index=3, weight=1)
+        self.panel_settings.rowconfigure(index=4, weight=1)
+        self.panel_settings.rowconfigure(index=5, weight=1)
 
         # Создание и конфигурация таблицы
         tree_scroll = ttk.Scrollbar(self.child_root)
@@ -99,127 +109,174 @@ class ChildMaterials:
 
         # Создание окон ввода новой данных в таблицу
         # Окно ввода -Названия материала-
-        ttk.Label(self.panel_2, text='Название материала').grid(
+        ttk.Label(self.panel_settings, text='Название материала').grid(
             row=0, column=0, padx=0, pady=5, sticky='ns'
         )
-        self.name_mat = ttk.Entry(
-            self.panel_2,
-            width=24
+        self.ent_name_mat = ttk.Entry(
+            self.panel_settings,
+            width=18
         )
-        # self.name_mat.insert(0, 'Введите название материала')
-        self.name_mat.grid(row=1, column=0, padx=10, pady=5, sticky='nsew')
+        self.ent_name_mat.grid(row=1, column=0, padx=10, pady=5, sticky='nsew')
 
         # Окно ввода -Ширина листа-
-        ttk.Label(self.panel_2, text='Ширина листа, мм').grid(
+        ttk.Label(self.panel_settings, text='Ширина листа, мм').grid(
             row=0, column=1, padx=0, pady=5, sticky='ns'
         )
-        self.width_mat = ttk.Entry(
-            self.panel_2,
-            width=24
+        self.ent_width_mat = ttk.Entry(
+            self.panel_settings,
+            width=18
         )
-        # self.width_mat.insert(0, '0 мм.')
-        self.width_mat.grid(row=1, column=1, padx=10, pady=5, sticky='nsew')
+        self.ent_width_mat.grid(row=1, column=1, padx=10, pady=5,
+                                sticky='nsew')
 
         # Окно ввода -Высота листа-
-        ttk.Label(self.panel_2, text='Высота листа, мм').grid(
+        ttk.Label(self.panel_settings, text='Высота листа, мм').grid(
             row=0, column=2, padx=0, pady=5, sticky='ns'
         )
-        self.height_mat = ttk.Entry(
-            self.panel_2,
-            width=24
+        self.ent_height_mat = ttk.Entry(
+            self.panel_settings,
+            width=18
         )
-        # self.height_mat.insert(0, '0 мм.')
-        self.height_mat.grid(row=1, column=2, padx=10, pady=5, sticky='nsew')
+        self.ent_height_mat.grid(row=1, column=2, padx=10, pady=5,
+                                 sticky='nsew')
 
         # Окно ввода -Стоимость материала-
-        ttk.Label(self.panel_2, text='Стоимость, руб').grid(
+        ttk.Label(self.panel_settings, text='Стоимость, руб').grid(
             row=0, column=3, padx=0, pady=5, sticky='ns'
         )
-        self.price_mat = ttk.Entry(
-            self.panel_2,
-            width=24
+        self.ent_price_mat = ttk.Entry(
+            self.panel_settings,
+            width=18
         )
-        # self.price_mat.insert(0, '0 руб.')
-        self.price_mat.grid(row=1, column=3, padx=10, pady=5, sticky='nsew')
+        self.ent_price_mat.grid(row=1, column=3, padx=10, pady=5,
+                                sticky='nsew')
 
         # Кнопка добавления материала в таблицу
         self.btn_add = ttk.Button(
-            self.panel_2,
+            self.panel_settings,
             width=4,
             text="Добавить/редактировать материал",
             command=self.click_add_data
         )
         self.btn_add.grid(row=2, column=0, padx=10, pady=15, sticky='nsew',
-                          columnspan=3)
+                          columnspan=4)
+
+        # Форма с переключателем типа лазера и ее конфигурация
+        ttk.Label(self.panel_settings, text='Тип лазера').grid(
+            row=0, column=4, padx=0, pady=5, sticky='ns'
+        )
+        self.panel_laser_type = ttk.Frame(self.panel_settings, padding=0)
+        self.panel_laser_type.grid(row=1, column=4, padx=0, pady=(0, 0),
+                                   sticky="nsew")
+        self.panel_laser_type.columnconfigure(index=0, weight=1)
+        self.panel_laser_type.columnconfigure(index=1, weight=1)
+
+        # Переключатели
+        self.rb_laser_type = tk.IntVar(value=1)
+
+        self.rbt_solid = ttk.Radiobutton(
+            self.panel_laser_type,
+            text="ТД",
+            variable=self.rb_laser_type,
+            value=1
+        )
+        self.rbt_solid.grid(row=0, column=0, padx=(35, 0), pady=(5, 0),
+                            sticky="w")
+        self.rbt_co2 = ttk.Radiobutton(
+            self.panel_laser_type,
+            text="СО2",
+            variable=self.rb_laser_type,
+            value=2
+        )
+        self.rbt_co2.grid(row=0, column=1, padx=(0, 40), pady=(5, 0),
+                          sticky="e")
 
         # Разделительная черта
-        ttk.Separator(self.panel_2).grid(
-            row=3, column=0, columnspan=4, pady=(5, 0), sticky='ew'
+        ttk.Separator(self.panel_settings).grid(
+            row=3, column=0, columnspan=5, pady=(5, 0), sticky='ew'
         )
 
         # Поле ввода для удаления из таблицы
-        ttk.Label(self.panel_2, text='Введите номер строки').grid(
-            row=4, column=0, padx=0, pady=5, sticky='ns'
+        ttk.Label(self.panel_settings, text='Введите номер строки').grid(
+            row=4, column=0, padx=0, pady=(5, 0), sticky='ns'
         )
-        self.delete_data = ttk.Entry(
-            self.panel_2,
-            width=24
+        self.ent_delete_data = ttk.Entry(
+            self.panel_settings,
+            width=18
         )
-        self.delete_data.grid(
+        self.ent_delete_data.grid(
             row=5,
             column=0,
             padx=10,
-            pady=5,
+            pady=0,
             sticky='ew'
         )
 
         # Кнопка удаления материала из таблицы
         self.btn_del = ttk.Button(
-            self.panel_2,
+            self.panel_settings,
             width=3,
             text="Удалить материал",
             command=self.click_del_data
         )
         self.btn_del.grid(
-            row=5, column=1, padx=15, pady=5, sticky='nsew',
-            columnspan=2)
+            row=5, column=1, padx=10, pady=15, sticky='nsew',
+            columnspan=1)
 
         # Кнопка сброса таблицы "по умолчанию"
         self.btn_get_default = ttk.Button(
-            self.panel_2,
+            self.panel_settings,
             text="Сброс",
             command=self.get_default_materials
         )
         self.btn_get_default.grid(
-            row=2, column=3, padx=10, pady=15, sticky='nsew')
+            row=2, column=4, padx=(0, 10), pady=15, sticky='nsew')
+
+        # Поле ввода номера строки для конфигурации матрицы стоимостей
+        ttk.Label(self.panel_settings, text='Введите номер строки').grid(
+            row=4, column=2, padx=0, pady=(5, 0), sticky='ns'
+        )
+
+        self.ent_configure_costs = ttk.Entry(
+            self.panel_settings,
+            width=18
+        )
+        self.ent_configure_costs.grid(
+            row=5,
+            column=2,
+            padx=10,
+            pady=0,
+            sticky='ew'
+        )
+
+        # Кнопка открытия дочернего окна с матрицей стоимостей
+        self.btn_matrix_run = ttk.Button(
+            self.panel_settings,
+            text="Таблица стоимостей",
+            command=self.run_matrix_window
+        )
+        self.btn_matrix_run.grid(
+            row=5, column=3, padx=(10, 10), pady=15, sticky='nsew',
+            columnspan=1)
 
         # Кнопка закрытия окна
         self.btn_destroy = ttk.Button(
-            self.panel_2,
+            self.panel_settings,
             text="Выход",
             command=self.destroy_child
         )
         self.btn_destroy.grid(
-            row=5, column=3, padx=(5, 10), pady=5, sticky='nsew')
-
-        # Кнопка открытия дочернего окна с матрицей стоимостей
-        self.btn_matrix_run = ttk.Button(
-            self.panel_2,
-            text="Конфигурация стоимости",
-            command=self.run_matrix_window
-        )
-        self.btn_matrix_run.grid(
-            row=6, column=2, padx=(5, 10), pady=(5, 25), sticky='nsew',
-            columnspan=2)
+            row=5, column=4, padx=(0, 10), pady=15, sticky='nsew')
 
     def add_bind_child(self):
 
         # Установка фонового текста в полях ввода
-        BindEntry(self.name_mat)
-        BindEntry(self.width_mat)
-        BindEntry(self.height_mat)
-        BindEntry(self.price_mat)
-        BindEntry(self.delete_data)
+        BindEntry(self.ent_name_mat)
+        BindEntry(self.ent_width_mat)
+        BindEntry(self.ent_height_mat)
+        BindEntry(self.ent_price_mat)
+        BindEntry(self.ent_delete_data)
+        BindEntry(self.ent_configure_costs)
 
     def get_data_child(self):  # Обновление списка материалов для таблицы
         self.data = list()
@@ -234,10 +291,10 @@ class ChildMaterials:
     def click_add_data(self):  # Метод добавления элемента в таблицу
         temp_new = self.config_material_data.material_config
         # Считывание данных с полей ввода
-        new_name = self.name_mat.get()
-        new_width = self.width_mat.get()
-        new_height = self.height_mat.get()
-        new_price = self.price_mat.get()
+        new_name = self.ent_name_mat.get()
+        new_width = self.ent_width_mat.get()
+        new_height = self.ent_height_mat.get()
+        new_price = self.ent_price_mat.get()
 
         # Если поля не заполнены - вызов сообщения об ошибке
         if (new_name == '' or new_width == '' or new_height == '' or
@@ -279,22 +336,22 @@ class ChildMaterials:
             self.child_root.update()
 
             # Очистка и установка фонового текста в полях ввода
-            self.name_mat.delete(0, tk.END)
-            self.width_mat.delete(0, tk.END)
-            self.height_mat.delete(0, tk.END)
-            self.price_mat.delete(0, tk.END)
+            self.ent_name_mat.delete(0, tk.END)
+            self.ent_width_mat.delete(0, tk.END)
+            self.ent_height_mat.delete(0, tk.END)
+            self.ent_price_mat.delete(0, tk.END)
 
-            BindEntry(self.name_mat).to_add_entry_child()
-            BindEntry(self.width_mat).to_add_entry_child()
-            BindEntry(self.height_mat).to_add_entry_child()
-            BindEntry(self.price_mat).to_add_entry_child()
+            BindEntry(self.ent_name_mat).to_add_entry_child()
+            BindEntry(self.ent_width_mat).to_add_entry_child()
+            BindEntry(self.ent_height_mat).to_add_entry_child()
+            BindEntry(self.ent_price_mat).to_add_entry_child()
 
             self.child_root.update()
 
     def click_del_data(self):  # Удаление выбранной строки из таблицы
         deleted_data_config = self.config_material_data.material_config
         # Получение строки для удаления
-        deleted_data = self.delete_data.get()
+        deleted_data = self.ent_delete_data.get()
 
         # Проверка на пустое текстовое поле
         if deleted_data == '':
@@ -347,8 +404,8 @@ class ChildMaterials:
                                            values=temp_list)
             self.child_root.update()
             #  Очистка и установка фонового текста в поле ввода
-            self.delete_data.delete(0, tk.END)
-            BindEntry(self.delete_data).to_add_entry_child()
+            self.ent_delete_data.delete(0, tk.END)
+            BindEntry(self.ent_delete_data).to_add_entry_child()
 
         del deleted_data_config
 
@@ -386,6 +443,7 @@ class ChildMaterials:
         self.child_root.destroy()
 
     def run_matrix_window(self):  # Метод открытия дочернего окна матрицы
+        print(self.material_table.item(self.material_table.focus()))
         self.child_root.CHILD = ChildMatrixMaterial(
             self.child_root,
             700,

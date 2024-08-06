@@ -827,8 +827,8 @@ class Window:
     def run_child_materials(self):  # Открытие дочернего окна листового мат-ла.
         self.root.CHILD = ChildMaterials(
             self.root,
-            820,
-            500,
+            900,
+            450,
             theme=self.theme,
             icon="resources/Company_logo.ico"
         )
