@@ -18,11 +18,13 @@ class BindEntry:
     def to_add_entry_child(self, event=None):
         if self.widget.get() == "":
             self.widget.insert(0, self.text)
+            self.widget.config(foreground='grey')
         self.not_use_child = event
 
     def erase_entry_child(self, event=None):
         if self.widget.get() == self.text:
             self.widget.delete(0, 'end')
+            self.widget.config(foreground='black')
         self.not_use_child = event
 
 
@@ -34,9 +36,10 @@ class BalloonTips:
         :param text: Текст, который выводится при наведении на виджет.
         """
         # A80000 - Яркий контрастный цвет
+        # eeeeee - Серенький
         CustomTooltipLabel(anchor_widget=widget,
                            text=text,
-                           background="#eeeeee",
+                           background="white",
                            foreground='grey',
                            relief='flat'
                            )

@@ -4,6 +4,7 @@ from tkinter import messagebox
 from tkinter.messagebox import askokcancel
 from materials import Materials
 from binds import BindEntry
+from binds import BalloonTips
 
 
 class ChildMaterials:
@@ -74,20 +75,18 @@ class ChildMaterials:
             selectmode="extended",
             yscrollcommand=tree_scroll.set,
             height=8,
-            columns=('#0', '#1', '#2', '#3', '#4'),
+            columns=('#0', '#1', '#2', '#3'),
             show="headings"
         )
-        self.material_table.column(0, width=0, anchor="w")
-        self.material_table.column(1, width=195, anchor="w")
+        self.material_table.column(0, width=195, anchor="w")
+        self.material_table.column(1, width=100, anchor="center")
         self.material_table.column(2, width=100, anchor="center")
         self.material_table.column(3, width=100, anchor="center")
-        self.material_table.column(4, width=100, anchor="center")
 
-        self.material_table.heading(0, text="", anchor="center")
-        self.material_table.heading(1, text="Материал", anchor="center")
-        self.material_table.heading(2, text="Ширина, мм", anchor="center")
-        self.material_table.heading(3, text="Высота, мм", anchor="center")
-        self.material_table.heading(4, text="Стоимость, руб.",
+        self.material_table.heading(0, text="Материал", anchor="center")
+        self.material_table.heading(1, text="Ширина, мм", anchor="center")
+        self.material_table.heading(2, text="Высота, мм", anchor="center")
+        self.material_table.heading(3, text="Стоимость, руб.",
                                     anchor="center")
         self.material_table.selection()
         self.material_table.configure(yscrollcommand=tree_scroll.set)
@@ -99,57 +98,39 @@ class ChildMaterials:
 
         # Добавление данных в таблицу
         self.get_data_child()
-        self.i_data = -1
-        for data in self.data:
-            self.i_data += 1
-            temp_list = list()
-            temp_list.append(f'{self.i_data}:')
-            temp_list.extend(data)
-            self.material_table.insert('', index='end', values=temp_list)
 
         # Создание окон ввода новой данных в таблицу
         # Окно ввода -Названия материала-
-        ttk.Label(self.panel_settings, text='Название материала').grid(
-            row=0, column=0, padx=0, pady=5, sticky='ns'
-        )
         self.ent_name_mat = ttk.Entry(
             self.panel_settings,
             width=18
         )
-        self.ent_name_mat.grid(row=1, column=0, padx=10, pady=5, sticky='nsew')
+        self.ent_name_mat.grid(row=0, column=0, padx=10, pady=15,
+                               sticky='nsew', rowspan=2)
 
         # Окно ввода -Ширина листа-
-        ttk.Label(self.panel_settings, text='Ширина листа, мм').grid(
-            row=0, column=1, padx=0, pady=5, sticky='ns'
-        )
         self.ent_width_mat = ttk.Entry(
             self.panel_settings,
             width=18
         )
-        self.ent_width_mat.grid(row=1, column=1, padx=10, pady=5,
-                                sticky='nsew')
+        self.ent_width_mat.grid(row=0, column=1, padx=10, pady=15,
+                                sticky='nsew', rowspan=2)
 
         # Окно ввода -Высота листа-
-        ttk.Label(self.panel_settings, text='Высота листа, мм').grid(
-            row=0, column=2, padx=0, pady=5, sticky='ns'
-        )
         self.ent_height_mat = ttk.Entry(
             self.panel_settings,
             width=18
         )
-        self.ent_height_mat.grid(row=1, column=2, padx=10, pady=5,
-                                 sticky='nsew')
+        self.ent_height_mat.grid(row=0, column=2, padx=10, pady=15,
+                                 sticky='nsew', rowspan=2)
 
         # Окно ввода -Стоимость материала-
-        ttk.Label(self.panel_settings, text='Стоимость, руб').grid(
-            row=0, column=3, padx=0, pady=5, sticky='ns'
-        )
         self.ent_price_mat = ttk.Entry(
             self.panel_settings,
             width=18
         )
-        self.ent_price_mat.grid(row=1, column=3, padx=10, pady=5,
-                                sticky='nsew')
+        self.ent_price_mat.grid(row=0, column=3, padx=10, pady=15,
+                                sticky='nsew', rowspan=2)
 
         # Кнопка добавления материала в таблицу
         self.btn_add = ttk.Button(
@@ -162,66 +143,47 @@ class ChildMaterials:
                           columnspan=4)
 
         # Форма с переключателем типа лазера и ее конфигурация
-        ttk.Label(self.panel_settings, text='Тип лазера').grid(
-            row=0, column=4, padx=0, pady=5, sticky='ns'
-        )
         self.panel_laser_type = ttk.Frame(self.panel_settings, padding=0)
-        self.panel_laser_type.grid(row=1, column=4, padx=0, pady=(0, 0),
-                                   sticky="nsew")
-        self.panel_laser_type.columnconfigure(index=0, weight=1)
-        self.panel_laser_type.columnconfigure(index=1, weight=1)
+        self.panel_laser_type.grid(row=0, column=4, padx=0, pady=(0, 0),
+                                   sticky="nsew", rowspan=2)
+        self.panel_laser_type.rowconfigure(index=0, weight=1)
+        self.panel_laser_type.rowconfigure(index=1, weight=1)
 
         # Переключатели
         self.rb_laser_type = tk.IntVar(value=1)
 
         self.rbt_solid = ttk.Radiobutton(
             self.panel_laser_type,
-            text="ТД",
+            text="Диодный лазер",
             variable=self.rb_laser_type,
             value=1
         )
-        self.rbt_solid.grid(row=0, column=0, padx=(35, 0), pady=(5, 0),
-                            sticky="w")
+        self.rbt_solid.grid(row=0, column=0, padx=15, pady=(5, 0),
+                            sticky="nsew")
         self.rbt_co2 = ttk.Radiobutton(
             self.panel_laser_type,
-            text="СО2",
+            text="Газовый лазер",
             variable=self.rb_laser_type,
             value=2
         )
-        self.rbt_co2.grid(row=0, column=1, padx=(0, 40), pady=(5, 0),
-                          sticky="e")
+        self.rbt_co2.grid(row=1, column=0, padx=15, pady=(5, 0),
+                          sticky="nsew")
 
         # Разделительная черта
         ttk.Separator(self.panel_settings).grid(
             row=3, column=0, columnspan=5, pady=(5, 0), sticky='ew'
         )
 
-        # Поле ввода для удаления из таблицы
-        ttk.Label(self.panel_settings, text='Введите номер строки').grid(
-            row=4, column=0, padx=0, pady=(5, 0), sticky='ns'
-        )
-        self.ent_delete_data = ttk.Entry(
-            self.panel_settings,
-            width=18
-        )
-        self.ent_delete_data.grid(
-            row=5,
-            column=0,
-            padx=10,
-            pady=0,
-            sticky='ew'
-        )
-
-        # Кнопка удаления материала из таблицы
+        # Кнопка удаления выбранного материала из таблицы
         self.btn_del = ttk.Button(
             self.panel_settings,
             width=3,
-            text="Удалить материал",
+            text="Удалить выбранный материал",
             command=self.click_del_data
         )
         self.btn_del.grid(
-            row=5, column=1, padx=10, pady=15, sticky='nsew',
-            columnspan=1)
+            row=5, column=0, padx=10, pady=15, sticky='nsew',
+            columnspan=2)
 
         # Кнопка сброса таблицы "по умолчанию"
         self.btn_get_default = ttk.Button(
@@ -232,32 +194,15 @@ class ChildMaterials:
         self.btn_get_default.grid(
             row=2, column=4, padx=(0, 10), pady=15, sticky='nsew')
 
-        # Поле ввода номера строки для конфигурации матрицы стоимостей
-        ttk.Label(self.panel_settings, text='Введите номер строки').grid(
-            row=4, column=2, padx=0, pady=(5, 0), sticky='ns'
-        )
-
-        self.ent_configure_costs = ttk.Entry(
-            self.panel_settings,
-            width=18
-        )
-        self.ent_configure_costs.grid(
-            row=5,
-            column=2,
-            padx=10,
-            pady=0,
-            sticky='ew'
-        )
-
         # Кнопка открытия дочернего окна с матрицей стоимостей
         self.btn_matrix_run = ttk.Button(
             self.panel_settings,
-            text="Таблица стоимостей",
+            text="Редактировать таблицу стоимостей",
             command=self.run_matrix_window
         )
         self.btn_matrix_run.grid(
-            row=5, column=3, padx=(10, 10), pady=15, sticky='nsew',
-            columnspan=1)
+            row=5, column=2, padx=(10, 10), pady=15, sticky='nsew',
+            columnspan=2)
 
         # Кнопка закрытия окна
         self.btn_destroy = ttk.Button(
@@ -271,12 +216,16 @@ class ChildMaterials:
     def add_bind_child(self):
 
         # Установка фонового текста в полях ввода
-        BindEntry(self.ent_name_mat)
-        BindEntry(self.ent_width_mat)
-        BindEntry(self.ent_height_mat)
-        BindEntry(self.ent_price_mat)
-        BindEntry(self.ent_delete_data)
-        BindEntry(self.ent_configure_costs)
+        BindEntry(self.ent_name_mat, text='Материал')
+        BindEntry(self.ent_width_mat, text='Ширина, мм')
+        BindEntry(self.ent_height_mat, text='Высота, мм')
+        BindEntry(self.ent_price_mat, text='Цена, руб')
+
+        # Установка подсказок
+        BalloonTips(self.btn_del,
+                    text=f'Выделите строку в таблице.')
+        BalloonTips(self.btn_matrix_run,
+                    text=f'Выделите строку в таблице.')
 
     def get_data_child(self):  # Обновление списка материалов для таблицы
         self.data = list()
@@ -285,6 +234,8 @@ class ChildMaterials:
             temp = [k]
             temp.extend([x for x in v.split(',')])
             self.data.append(temp)
+        for data in self.data:
+            self.material_table.insert('', index='end', values=data)
 
         del temp_data, temp
 
@@ -295,6 +246,7 @@ class ChildMaterials:
         new_width = self.ent_width_mat.get()
         new_height = self.ent_height_mat.get()
         new_price = self.ent_price_mat.get()
+        type_of_laser = 'solid' if self.rb_laser_type.get() == 1 else 'gas'
 
         # Если поля не заполнены - вызов сообщения об ошибке
         if (new_name == '' or new_width == '' or new_height == '' or
@@ -305,7 +257,7 @@ class ChildMaterials:
         elif (new_width.isdigit() is False) or (
                 new_height.isdigit() is False) or (
                 new_price.isdigit() is False) or (
-                new_name == '-'
+                new_name == 'Материал'
         ):
             tk.messagebox.showerror(
                 'Ошибка записи',
@@ -315,25 +267,16 @@ class ChildMaterials:
         # Иначе запись в файл
         else:
             temp_new['MAIN'][new_name] = (f'{new_width}, {new_height},'
-                                          f' {new_price}')
+                                          f' {new_price}, {type_of_laser}')
             self.config_material_data.update_materials(some_new=temp_new)
 
             # Обновление данных в таблице
             # Очистка таблицы
             for item in self.material_table.get_children():
                 self.material_table.delete(item)
-            self.get_data_child()
 
             # Запись новых данных в таблицу
-            self.i_data = -1
-            for data in self.data:
-                self.i_data += 1
-                temp_list = list()
-                temp_list.append(f'{self.i_data}:')
-                temp_list.extend(data)
-                self.material_table.insert('', index='end',
-                                           values=temp_list)
-            self.child_root.update()
+            self.get_data_child()
 
             # Очистка и установка фонового текста в полях ввода
             self.ent_name_mat.delete(0, tk.END)
@@ -341,48 +284,28 @@ class ChildMaterials:
             self.ent_height_mat.delete(0, tk.END)
             self.ent_price_mat.delete(0, tk.END)
 
-            BindEntry(self.ent_name_mat).to_add_entry_child()
-            BindEntry(self.ent_width_mat).to_add_entry_child()
-            BindEntry(self.ent_height_mat).to_add_entry_child()
-            BindEntry(self.ent_price_mat).to_add_entry_child()
+            BindEntry(
+                self.ent_name_mat, text='Материал').to_add_entry_child()
+            BindEntry(
+                self.ent_width_mat, text='Ширина, мм').to_add_entry_child()
+            BindEntry(
+                self.ent_height_mat, text='Высота, мм').to_add_entry_child()
+            BindEntry(
+                self.ent_price_mat, text='Цена, руб').to_add_entry_child()
 
             self.child_root.update()
 
     def click_del_data(self):  # Удаление выбранной строки из таблицы
         deleted_data_config = self.config_material_data.material_config
-        # Получение строки для удаления
-        deleted_data = self.ent_delete_data.get()
-
-        # Проверка на пустое текстовое поле
-        if deleted_data == '':
-            tk.messagebox.showerror(
-                'Ошибка удаления',
-                'Введите номер строки'
-            )
-
-        # Если ввели не число
-        elif deleted_data.isdigit() is False:
-            tk.messagebox.showerror(
-                'Ошибка удаления',
-                'Введенная вами строка не является числом'
-            )
-
-        # Если такой строки нет
-        elif len(self.material_table.get_children()) < int(deleted_data) + 1:
-            tk.messagebox.showerror(
-                'Ошибка удаления',
-                'Введен отсутствующий номер строки'
-            )
 
         # Удаление выбранной строки
-        else:
-            # Считывание удаляемого элемента
-            deleted_item = None
-            for item in self.material_table.get_children():
-                if deleted_data+':' == self.material_table.set(item, 0):
-                    deleted_item = self.material_table.set(item, 1)
+        try:  # Проверка на то, что пользователь выбрал материал
+            deleted_data = self.material_table.item(
+                self.material_table.focus())
+
             # Удаление выбранного элемента
-            deleted_data_config.remove_option('MAIN', deleted_item)
+            deleted_data_config.remove_option('MAIN',
+                                              str(deleted_data['values'][0]))
             # Обновление данных в файле конфигурации
             self.config_material_data.update_materials(
                 some_new=deleted_data_config)
@@ -391,21 +314,15 @@ class ChildMaterials:
             # Очистка таблицы
             for item in self.material_table.get_children():
                 self.material_table.delete(item)
-            self.get_data_child()
 
             # Запись новых данных в таблицу
-            self.i_data = -1
-            for data in self.data:
-                self.i_data += 1
-                temp_list = list()
-                temp_list.append(f'{self.i_data}:')
-                temp_list.extend(data)
-                self.material_table.insert('', index='end',
-                                           values=temp_list)
-            self.child_root.update()
-            #  Очистка и установка фонового текста в поле ввода
-            self.ent_delete_data.delete(0, tk.END)
-            BindEntry(self.ent_delete_data).to_add_entry_child()
+            self.get_data_child()
+
+        except (ValueError, KeyboardInterrupt, IndexError):
+            tk.messagebox.showerror(
+                'Ошибка удаления!',
+                'Выберите в таблице удаляемую строку.'
+            )
 
         del deleted_data_config
 
@@ -421,18 +338,9 @@ class ChildMaterials:
         # Очистка таблицы
         for item in self.material_table.get_children():
             self.material_table.delete(item)
-        self.get_data_child()
+
         # Запись новых данных в таблицу
-        self.i_data = -1
-        for data in self.data:
-            self.i_data += 1
-            temp_list = list()
-            temp_list.append(f'{self.i_data}:')
-            temp_list.extend(data)
-            self.material_table.insert('', index='end',
-                                       values=temp_list)
-            self.child_root.update()
-        self.child_root.update()
+        self.get_data_child()
 
     def grab_focus(self):  # Метод сохранения фокуса на дочернем окне
         self.child_root.grab_set()
@@ -443,16 +351,26 @@ class ChildMaterials:
         self.child_root.destroy()
 
     def run_matrix_window(self):  # Метод открытия дочернего окна матрицы
-        print(self.material_table.item(self.material_table.focus()))
-        self.child_root.CHILD = ChildMatrixMaterial(
-            self.child_root,
-            700,
-            450,
-            laser_type='Твердотельный лазер',
-            theme='forest-light',
-            icon="resources/Company_logo.ico"
-        )
-        self.child_root.CHILD.grab_focus()
+        # Считывание название материала
+        try:
+            matrix_material_name = self.material_table.item(
+                    self.material_table.focus())['values'][0]
+            self.child_root.CHILD = ChildMatrixMaterial(
+                self.child_root,
+                700,
+                450,
+                laser_type='Твердотельный лазер',
+                theme='forest-light',
+                icon="resources/Company_logo.ico",
+                material_name=matrix_material_name
+            )
+            self.child_root.CHILD.grab_focus()
+
+        except (ValueError, KeyboardInterrupt, IndexError):
+            tk.messagebox.showerror(
+                'Ошибка конфигурирования!',
+                'Выберите в таблице строку.'
+            )
 
 
 class ChildMatrixMaterial:

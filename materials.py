@@ -19,20 +19,29 @@ class Materials:
     def get_mat(self):  # Метод, возвращающий словарь Название-стоимость
         my_price = dict()
         for k, v in self.material_config['MAIN'].items():
-            my_price[k] = [float(x) for x in v.split(',')][-1]
+            temp = [x for x in v.split(',')]
+            my_price[k] = [float(x) for x in temp[0:3:1]][-1]
         return my_price
 
     def get_gab_width(self):  # Метод, возвращающий словарь Название-ширина
         mat_gab_width = dict()
         for k, v in self.material_config['MAIN'].items():
-            mat_gab_width[k] = [float(x) for x in v.split(',')][0]
+            temp = [x for x in v.split(',')]
+            mat_gab_width[k] = [float(x) for x in temp[0:3:1]][0]
         return mat_gab_width
 
     def get_gab_height(self):  # Метод, возвращающий словарь Название-высота
         mat_gab_height = dict()
         for k, v in self.material_config['MAIN'].items():
-            mat_gab_height[k] = [float(x) for x in v.split(',')][1]
+            temp = [x for x in v.split(',')]
+            mat_gab_height[k] = [float(x) for x in temp[0:3:1]][1]
         return mat_gab_height
+
+    def get_type_of_laser(self):  # Метод, возвращающий словарь Название-лазер
+        mat_type_of_laser = dict()
+        for k, v in self.material_config['MAIN'].items():
+            mat_type_of_laser[k] = [x for x in v.split(',')][-1]
+        return mat_type_of_laser
 
     def update_materials(self, some_new=None):  # Обновление файла конфигурации
         if some_new:
