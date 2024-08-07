@@ -229,12 +229,6 @@ class Window:
         ttk.Label(self.panel_1, text='Размер области гравировки').grid(
             row=2, column=0, columnspan=2, padx=5, pady=2, sticky='ns'
         )
-        ttk.Label(self.panel_1, text='Ширина, мм.').grid(
-            row=3, column=0, padx=5, pady=2, sticky='ns'
-        )
-        ttk.Label(self.panel_1, text='Высота, мм.').grid(
-            row=3, column=1, padx=5, pady=2, sticky='ns'
-        )
 
         # Поля ввода габаритов изделия
         self.ent_width_grav = ttk.Entry(self.panel_1, width=30)
@@ -1352,8 +1346,8 @@ class Window:
         self.root.bind('<Return>', self.get_return_by_keyboard)
 
         # Установка фонового текста в поля ввода
-        BindEntry(self.ent_width_grav)
-        BindEntry(self.ent_height_grav)
+        BindEntry(self.ent_width_grav, text='Ширина, мм')
+        BindEntry(self.ent_height_grav, text='Высота, мм')
         BindEntry(self.ent_num)
         BindEntry(self.ent_width)
         BindEntry(self.ent_height)
