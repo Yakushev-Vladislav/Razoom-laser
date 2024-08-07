@@ -304,25 +304,29 @@ class ChildMaterials:
                 self.material_table.focus())
 
             # Удаление выбранного элемента
-            deleted_data_config.remove_option('MAIN',
-                                              str(deleted_data['values'][0]))
-            # Обновление данных в файле конфигурации
-            self.config_material_data.update_materials(
-                some_new=deleted_data_config)
+            if askokcancel('Удаление элемента',
+                           f'Вы действительно хотите удалить:\n'
+                           f'"{str(deleted_data["values"][0])}"'):
+                self.config_material_data.get_default()
+                deleted_data_config.remove_option(
+                    'MAIN', str(deleted_data['values'][0]))
 
-            # Обновление данных в таблице
-            # Очистка таблицы
-            for item in self.material_table.get_children():
-                self.material_table.delete(item)
-
-            # Запись новых данных в таблицу
-            self.get_data_child()
+                # Обновление данных в файле конфигурации
+                self.config_material_data.update_materials(
+                    some_new=deleted_data_config)
 
         except (ValueError, KeyboardInterrupt, IndexError):
             tk.messagebox.showerror(
                 'Ошибка удаления!',
                 'Выберите в таблице удаляемую строку.'
             )
+        # Обновление данных в таблице
+        # Очистка таблицы
+        for item in self.material_table.get_children():
+            self.material_table.delete(item)
+
+        # Запись новых данных в таблицу
+        self.get_data_child()
 
         del deleted_data_config
 

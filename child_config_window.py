@@ -41,298 +41,303 @@ class ChildConfigSet:
         self.not_use = None
         # Создание вкладок окна
         self.child_tabs_control = ttk.Notebook(self.child_root)
-        self.tab_1 = ttk.Frame(self.child_tabs_control)
-        self.tab_2 = ttk.Frame(self.child_tabs_control)
-        self.tab_3 = ttk.Frame(self.child_tabs_control)
+        self.tab_main_settings = ttk.Frame(self.child_tabs_control)
+        self.tab_sheet_materials = ttk.Frame(self.child_tabs_control)
+        self.tab_industrial_settings = ttk.Frame(self.child_tabs_control)
 
         # Конфигурация отзывчивости вкладок окна
-        self.tab_1.columnconfigure(index=0, weight=1)
-        self.tab_1.columnconfigure(index=1, weight=1)
-        self.tab_1.columnconfigure(index=2, weight=1)
-        self.tab_1.columnconfigure(index=3, weight=1)
-        self.tab_1.rowconfigure(index=0, weight=1)
-        self.tab_1.rowconfigure(index=1, weight=1)
-        self.tab_1.rowconfigure(index=2, weight=1)
-        self.tab_1.rowconfigure(index=3, weight=1)
-        self.tab_1.rowconfigure(index=4, weight=1)
-        self.tab_1.rowconfigure(index=5, weight=1)
-        self.tab_1.rowconfigure(index=6, weight=1)
-        self.tab_1.rowconfigure(index=7, weight=1)
-        self.tab_1.rowconfigure(index=8, weight=1)
-        self.tab_1.rowconfigure(index=9, weight=1)
-        self.tab_1.rowconfigure(index=10, weight=1)
-        self.tab_1.rowconfigure(index=11, weight=1)
-        self.tab_1.rowconfigure(index=12, weight=1)
-        self.tab_1.rowconfigure(index=13, weight=1)
-        self.tab_1.rowconfigure(index=14, weight=1)
+        self.tab_main_settings.columnconfigure(index=0, weight=1)
+        self.tab_main_settings.columnconfigure(index=1, weight=1)
+        self.tab_main_settings.columnconfigure(index=2, weight=1)
+        self.tab_main_settings.columnconfigure(index=3, weight=1)
+        self.tab_main_settings.rowconfigure(index=0, weight=1)
+        self.tab_main_settings.rowconfigure(index=1, weight=1)
+        self.tab_main_settings.rowconfigure(index=2, weight=1)
+        self.tab_main_settings.rowconfigure(index=3, weight=1)
+        self.tab_main_settings.rowconfigure(index=4, weight=1)
+        self.tab_main_settings.rowconfigure(index=5, weight=1)
+        self.tab_main_settings.rowconfigure(index=6, weight=1)
+        self.tab_main_settings.rowconfigure(index=7, weight=1)
+        self.tab_main_settings.rowconfigure(index=8, weight=1)
+        self.tab_main_settings.rowconfigure(index=9, weight=1)
+        self.tab_main_settings.rowconfigure(index=10, weight=1)
+        self.tab_main_settings.rowconfigure(index=11, weight=1)
+        self.tab_main_settings.rowconfigure(index=12, weight=1)
+        self.tab_main_settings.rowconfigure(index=13, weight=1)
+        self.tab_main_settings.rowconfigure(index=14, weight=1)
 
-        self.tab_2.columnconfigure(index=0, weight=1)
-        self.tab_2.columnconfigure(index=1, weight=50)
-        self.tab_2.columnconfigure(index=2, weight=1)
-        self.tab_2.rowconfigure(index=0, weight=1)
-        self.tab_2.rowconfigure(index=1, weight=2)
+        self.tab_sheet_materials.columnconfigure(index=0, weight=1)
+        self.tab_sheet_materials.columnconfigure(index=1, weight=50)
+        self.tab_sheet_materials.columnconfigure(index=2, weight=1)
+        self.tab_sheet_materials.rowconfigure(index=0, weight=2)
+        self.tab_sheet_materials.rowconfigure(index=1, weight=1)
 
         # Конфигурация форм вкладок
-        self.tab_2_panel_1 = ttk.Frame(self.tab_2, padding=(0, 0, 0, 0))
-        self.tab_2_panel_1.grid(row=0, column=0, padx=0, pady=(0, 0),
-                                sticky="nsew")
-        self.tab_2_panel_2 = ttk.Frame(self.tab_2, padding=(0, 0, 0, 0))
-        self.tab_2_panel_2.grid(row=1, column=0, padx=0, pady=(0, 0),
-                                sticky="nsew", columnspan=3)
+        self.tab_2_panel_table = ttk.Frame(
+            self.tab_sheet_materials, padding=(0, 0, 0, 0))
+        self.tab_2_panel_table.grid(row=0, column=0, padx=0, pady=(0, 0),
+                                    sticky="nsew")
+        self.tab_2_panel_widgets = ttk.Frame(
+            self.tab_sheet_materials, padding=(0, 0, 0, 0))
+        self.tab_2_panel_widgets.grid(row=1, column=0, padx=0, pady=(0, 0),
+                                      sticky="nsew", columnspan=3)
 
         # Конфигурация отзывчивости форм
-        self.tab_2_panel_2.columnconfigure(index=0, weight=1)
-        self.tab_2_panel_2.columnconfigure(index=1, weight=1)
-        self.tab_2_panel_2.columnconfigure(index=2, weight=1)
-        self.tab_2_panel_2.rowconfigure(index=0, weight=1)
-        self.tab_2_panel_2.rowconfigure(index=1, weight=1)
-        self.tab_2_panel_2.rowconfigure(index=2, weight=1)
-        self.tab_2_panel_2.rowconfigure(index=3, weight=1)
-        self.tab_2_panel_2.rowconfigure(index=4, weight=1)
+        self.tab_2_panel_widgets.columnconfigure(index=0, weight=1)
+        self.tab_2_panel_widgets.columnconfigure(index=1, weight=1)
+        self.tab_2_panel_widgets.columnconfigure(index=2, weight=1)
+        self.tab_2_panel_widgets.rowconfigure(index=0, weight=1)
+        self.tab_2_panel_widgets.rowconfigure(index=1, weight=1)
+        self.tab_2_panel_widgets.rowconfigure(index=2, weight=1)
 
         # Добавление вкладок в набор
-        self.child_tabs_control.add(self.tab_1, text='Частные лица')
-        self.child_tabs_control.add(self.tab_2, text='Стандартные изделия')
-        self.child_tabs_control.add(self.tab_3, text='Оптовый расчет')
+        self.child_tabs_control.add(
+            self.tab_main_settings, text='Частные лица')
+        self.child_tabs_control.add(
+            self.tab_sheet_materials, text='Стандартные изделия')
+        self.child_tabs_control.add(
+            self.tab_industrial_settings, text='Оптовый расчет')
 
         # Упаковка вкладок
         self.child_tabs_control.pack(fill='both', expand=True)
 
         # ___ Создание виджетов 1 вкладки ___
         # Информация по первому блоку
-        ttk.Label(self.tab_1, text='Блок настройки базовых цен, руб.',
-                  foreground='red').grid(
+        ttk.Label(
+            self.tab_main_settings, text='Блок настройки базовых цен, руб.',
+            foreground='red').grid(
             row=0, column=0, padx=0, pady=0, sticky='ns', columnspan=4
         )
 
         # Окно ввода __ Минимальная стоимость работы __
-        ttk.Label(self.tab_1, text='Мин. стоимость').grid(
+        ttk.Label(self.tab_main_settings, text='Мин. стоимость').grid(
             row=1, column=0, padx=0, pady=0, sticky='ns'
         )
         self.ent_minimum = ttk.Entry(
-            self.tab_1,
+            self.tab_main_settings,
             width=20
         )
         self.ent_minimum.grid(row=2, column=0, padx=5, pady=5,
                               sticky='nsew')
 
         # Окно ввода __ Доп стоимость за прицел __
-        ttk.Label(self.tab_1, text='Стоимость доп. прицела').grid(
+        ttk.Label(self.tab_main_settings, text='Стоимость доп. прицела').grid(
             row=1, column=1, padx=0, pady=0, sticky='ns'
         )
         self.ent_additional = ttk.Entry(
-            self.tab_1,
+            self.tab_main_settings,
             width=20
         )
         self.ent_additional.grid(row=2, column=1, padx=5, pady=5,
                                  sticky='nsew')
 
         # Окно ввода __ Стоимость часа работы __
-        ttk.Label(self.tab_1, text='Стоимость часа работы').grid(
+        ttk.Label(self.tab_main_settings, text='Стоимость часа работы').grid(
             row=1, column=2, padx=0, pady=0, sticky='ns'
         )
         self.ent_one_hour = ttk.Entry(
-            self.tab_1,
+            self.tab_main_settings,
             width=20
         )
         self.ent_one_hour.grid(row=2, column=2, padx=5, pady=5,
                                sticky='nsew')
 
         # Окно ввода __ Степень градации __
-        ttk.Label(self.tab_1, text='Степень градации').grid(
+        ttk.Label(self.tab_main_settings, text='Степень градации').grid(
             row=1, column=3, padx=0, pady=0, sticky='ns'
         )
         self.ent_many_items = ttk.Entry(
-            self.tab_1,
+            self.tab_main_settings,
             width=20
         )
         self.ent_many_items.grid(row=2, column=3, padx=5, pady=5,
                                  sticky='nsew')
 
         # Разделительная черта
-        ttk.Separator(self.tab_1).grid(
+        ttk.Separator(self.tab_main_settings).grid(
             row=3, column=0, columnspan=4, pady=0, sticky='ew'
         )
 
         # Информация по второму блоку
-        ttk.Label(self.tab_1,
+        ttk.Label(self.tab_main_settings,
                   text='Блок настройки весовых коэффициентов',
                   foreground='red').grid(
             row=4, column=0, padx=0, pady=0, sticky='ns', columnspan=4
         )
 
         # Окно ввода ratio_laser_gas __Тип лазера__
-        ttk.Label(self.tab_1, text='СО2 лазер').grid(
+        ttk.Label(self.tab_main_settings, text='СО2 лазер').grid(
             row=5, column=0, padx=0, pady=0, sticky='ns'
         )
         self.ent_ratio_laser_gas = ttk.Entry(
-            self.tab_1,
+            self.tab_main_settings,
             width=20
         )
         self.ent_ratio_laser_gas.grid(row=6, column=0, padx=5, pady=5,
                                       sticky='nsew')
 
         # Окно ввода ratio_rotation __Вращатель__
-        ttk.Label(self.tab_1, text='Вращатель').grid(
+        ttk.Label(self.tab_main_settings, text='Вращатель').grid(
             row=5, column=1, padx=0, pady=0, sticky='ns'
         )
         self.ent_ratio_rotation = ttk.Entry(
-            self.tab_1,
+            self.tab_main_settings,
             width=20
         )
         self.ent_ratio_rotation.grid(row=6, column=1, padx=5, pady=5,
                                      sticky='nsew')
 
         # Окно ввода ratio_timing __Срочность__
-        ttk.Label(self.tab_1, text='Срочность').grid(
+        ttk.Label(self.tab_main_settings, text='Срочность').grid(
             row=5, column=2, padx=0, pady=0, sticky='ns'
         )
         self.ent_ratio_timing = ttk.Entry(
-            self.tab_1,
+            self.tab_main_settings,
             width=20
         )
         self.ent_ratio_timing.grid(row=6, column=2, padx=5, pady=5,
                                    sticky='nsew')
 
         # Окно ввода ratio_attention __Повышенное внимание__
-        ttk.Label(self.tab_1, text='Повышенное внимание').grid(
+        ttk.Label(self.tab_main_settings, text='Повышенное внимание').grid(
             row=5, column=3, padx=0, pady=0, sticky='ns'
         )
         self.ent_ratio_attention = ttk.Entry(
-            self.tab_1,
+            self.tab_main_settings,
             width=20
         )
         self.ent_ratio_attention.grid(row=6, column=3, padx=5, pady=5,
                                       sticky='nsew')
 
         # Окно ввода ratio_packing __Распаковка/Запаковка__
-        ttk.Label(self.tab_1, text='Распаковка/Запаковка').grid(
+        ttk.Label(self.tab_main_settings, text='Распаковка/Запаковка').grid(
             row=7, column=0, padx=0, pady=0, sticky='ns'
         )
         self.ent_ratio_packing = ttk.Entry(
-            self.tab_1,
+            self.tab_main_settings,
             width=20
         )
         self.ent_ratio_packing.grid(row=8, column=0, padx=5, pady=5,
                                     sticky='nsew')
 
         # Окно ввода ratio_hand_job __Ручные работы__
-        ttk.Label(self.tab_1, text='Ручные работы').grid(
+        ttk.Label(self.tab_main_settings, text='Ручные работы').grid(
             row=7, column=1, padx=0, pady=0, sticky='ns'
         )
         self.ent_ratio_hand_job = ttk.Entry(
-            self.tab_1,
+            self.tab_main_settings,
             width=20
         )
         self.ent_ratio_hand_job.grid(row=8, column=1, padx=5, pady=5,
                                      sticky='nsew')
 
         # Окно ввода ratio_docking __Стыковка элементов__
-        ttk.Label(self.tab_1, text='Стыковка элементов').grid(
+        ttk.Label(self.tab_main_settings, text='Стыковка элементов').grid(
             row=7, column=2, padx=0, pady=0, sticky='ns'
         )
         self.ent_ratio_docking = ttk.Entry(
-            self.tab_1,
+            self.tab_main_settings,
             width=20
         )
         self.ent_ratio_docking.grid(row=8, column=2, padx=5, pady=5,
                                     sticky='nsew')
 
         # Окно ввода ratio_oversize __Негабаритное изделие__
-        ttk.Label(self.tab_1, text='Негабаритное изделие').grid(
+        ttk.Label(self.tab_main_settings, text='Негабаритное изделие').grid(
             row=7, column=3, padx=0, pady=0, sticky='ns'
         )
         self.ent_ratio_oversize = ttk.Entry(
-            self.tab_1,
+            self.tab_main_settings,
             width=20
         )
         self.ent_ratio_oversize.grid(row=8, column=3, padx=5, pady=5,
                                      sticky='nsew')
 
         # Окно ввода ratio_different_layouts __Разные макеты__
-        ttk.Label(self.tab_1, text='Разные макеты').grid(
+        ttk.Label(self.tab_main_settings, text='Разные макеты').grid(
             row=9, column=0, padx=0, pady=0, sticky='ns'
         )
         self.ent_ratio_different_layouts = ttk.Entry(
-            self.tab_1,
+            self.tab_main_settings,
             width=20
         )
         self.ent_ratio_different_layouts.grid(row=10, column=0, padx=5, pady=5,
                                               sticky='nsew')
         # Окно ввода ratio_numbering __Счетчик__
-        ttk.Label(self.tab_1, text='Счетчик').grid(
+        ttk.Label(self.tab_main_settings, text='Счетчик').grid(
             row=9, column=1, padx=0, pady=0, sticky='ns'
         )
         self.ent_ratio_numbering = ttk.Entry(
-            self.tab_1,
+            self.tab_main_settings,
             width=20
         )
         self.ent_ratio_numbering.grid(row=10, column=1, padx=5, pady=5,
                                       sticky='nsew')
 
         # Окно ввода ratio_thermal_graving __Гравировка термовлиянием__
-        ttk.Label(self.tab_1, text='Термовлияние').grid(
+        ttk.Label(self.tab_main_settings, text='Термовлияние').grid(
             row=9, column=2, padx=0, pady=0, sticky='ns'
         )
         self.ent_ratio_thermal_graving = ttk.Entry(
-            self.tab_1,
+            self.tab_main_settings,
             width=20
         )
         self.ent_ratio_thermal_graving.grid(row=10, column=2, padx=5, pady=5,
                                             sticky='nsew')
 
         # Окно ввода ratio_taxation __Оплата с НДС__
-        ttk.Label(self.tab_1, text='Оплата по счету: ООО, ИП').grid(
+        ttk.Label(
+            self.tab_main_settings, text='Оплата по счету: ООО, ИП').grid(
             row=9, column=3, padx=0, pady=0, sticky='ns'
         )
         self.ent_ratio_taxation = ttk.Entry(
-            self.tab_1,
+            self.tab_main_settings,
             width=20
         )
         self.ent_ratio_taxation.grid(row=10, column=3, padx=5, pady=5,
                                      sticky='nsew')
 
         # Окно ввода gradation_difficult __Сложность установки__
-        ttk.Label(self.tab_1, text='Сложность установки').grid(
+        ttk.Label(self.tab_main_settings, text='Сложность установки').grid(
             row=11, column=0, padx=0, pady=0, sticky='ns', columnspan=1
         )
         self.ent_gradation_difficult = ttk.Entry(
-            self.tab_1,
+            self.tab_main_settings,
             width=20
         )
         self.ent_gradation_difficult.grid(row=12, column=0, padx=5, pady=5,
                                           sticky='nsew', columnspan=1)
 
         # Окно ввода gradation_depth __Глубина гравировки__
-        ttk.Label(self.tab_1, text='Глубина гравировки').grid(
+        ttk.Label(self.tab_main_settings, text='Глубина гравировки').grid(
             row=11, column=1, padx=0, pady=0, sticky='ns', columnspan=1
         )
         self.ent_gradation_depth = ttk.Entry(
-            self.tab_1,
+            self.tab_main_settings,
             width=20
         )
         self.ent_gradation_depth.grid(row=12, column=1, padx=5, pady=5,
                                       sticky='nsew', columnspan=1)
 
         # Окно ввода gradation_area __Коэффициенты площади__
-        ttk.Label(self.tab_1, text='Коэффициенты площади').grid(
+        ttk.Label(self.tab_main_settings, text='Коэффициенты площади').grid(
             row=11, column=2, padx=0, pady=0, sticky='ns', columnspan=1
         )
         self.ent_gradation_area = ttk.Entry(
-            self.tab_1,
+            self.tab_main_settings,
             width=20
         )
         self.ent_gradation_area.grid(row=12, column=2, padx=5, pady=5,
                                      sticky='nsew', columnspan=1)
 
         # Разделительная черта
-        ttk.Separator(self.tab_1).grid(
+        ttk.Separator(self.tab_main_settings).grid(
             row=13, column=0, columnspan=4, pady=5, sticky='ew'
         )
 
         # Создание кнопки обновления коэффициентов в программе
         self.btn_update_settings = ttk.Button(
-            self.tab_1,
+            self.tab_main_settings,
             width=10,
             text="Сохранить настройки",
             command=self.click_update_settings
@@ -343,7 +348,7 @@ class ChildConfigSet:
 
         # Создание кнопки сброса настроек "По умолчанию"
         self.btn_default_settings = ttk.Button(
-            self.tab_1,
+            self.tab_main_settings,
             width=10,
             text="Сбросить настройки",
             command=self.click_default_settings
@@ -354,7 +359,7 @@ class ChildConfigSet:
 
         # Создание кнопки закрытия дочернего окна
         self.btn_destroy = ttk.Button(
-            self.tab_1,
+            self.tab_main_settings,
             width=10,
             text="Выход",
             command=self.destroy_child
@@ -365,11 +370,11 @@ class ChildConfigSet:
 
         # ___ Создание виджетов 2 вкладки ___
         # Создание и конфигурация таблицы
-        tree_scroll = ttk.Scrollbar(self.tab_2)
+        tree_scroll = ttk.Scrollbar(self.tab_sheet_materials)
         tree_scroll.grid(row=0, column=2, padx=0, pady=0,
                          sticky="nsew")
         self.standard_table = ttk.Treeview(
-            self.tab_2,
+            self.tab_sheet_materials,
             selectmode="extended",
             yscrollcommand=tree_scroll.set,
             height=4,
@@ -391,79 +396,61 @@ class ChildConfigSet:
         )
 
         # Добавление данных в таблицу
-        self.data_table = self.get_standard_costs()
-        for data in self.data_table:
-            self.standard_table.insert('', index='end', values=data)
+        self.get_standard_costs()
 
         # Окно ввода __ Название работы __
-        ttk.Label(self.tab_2_panel_2, text='Название работы').grid(
-            row=0, column=0, padx=0, pady=(5, 0), sticky='ns'
-        )
         self.ent_name = ttk.Entry(
-            self.tab_2_panel_2,
+            self.tab_2_panel_widgets,
             width=10
         )
-        self.ent_name.grid(row=1, column=0, padx=5, pady=(5, 10),
+        self.ent_name.grid(row=0, column=0, padx=5, pady=(5, 10),
                            sticky='nsew', columnspan=1)
 
         # Окно ввода __ Стоимость работы __
-        ttk.Label(self.tab_2_panel_2,
-                  text='Стоимость работы').grid(
-            row=0, column=1, padx=0, pady=5, sticky='ns'
-        )
         self.ent_cost = ttk.Entry(
-            self.tab_2_panel_2,
+            self.tab_2_panel_widgets,
             width=10
         )
-        self.ent_cost.grid(row=1, column=1, padx=5, pady=(5, 10),
+        self.ent_cost.grid(row=0, column=1, padx=5, pady=(5, 10),
                            sticky='nsew')
 
         # Создание кнопки добавления работы
         self.btn_add_new_element = ttk.Button(
-            self.tab_2_panel_2,
+            self.tab_2_panel_widgets,
             width=10,
             text="Добавить/изменить работу",
             command=self.click_add_standard
         )
         self.btn_add_new_element.grid(
-            row=1, column=2, padx=5, pady=(5, 10), sticky='nsew', columnspan=1)
+            row=0, column=2, padx=5, pady=(5, 10), sticky='nsew', columnspan=1)
 
         # Разделительная черта
-        ttk.Separator(self.tab_2_panel_2).grid(
-            row=2, column=0, columnspan=4, pady=5, sticky='ew'
+        ttk.Separator(self.tab_2_panel_widgets).grid(
+            row=1, column=0, columnspan=4, pady=5, sticky='ew'
         )
 
         # Окно ввода __ Номер удаляемой строки __
-        ttk.Label(self.tab_2_panel_2,
-                  text='Название удаляемого элемента').grid(
-            row=3, column=0, padx=0, pady=0, sticky='ns'
-        )
-        self.ent_delete_element = ttk.Entry(
-            self.tab_2_panel_2,
-            width=10
-        )
-        self.ent_delete_element.grid(row=4, column=0, padx=5, pady=(10, 20),
-                                     sticky='nsew')
 
         # Создание кнопки удаления работы
         self.btn_delete_element = ttk.Button(
-            self.tab_2_panel_2,
+            self.tab_2_panel_widgets,
             width=10,
             text="Удалить элемент",
             command=self.click_delete_element
         )
         self.btn_delete_element.grid(
-            row=4, column=1, padx=5, pady=(10, 20), sticky='nsew')
+            row=2, column=0, padx=5, pady=(10, 20), sticky='nsew',
+            columnspan=2)
 
         # Создание кнопки перехода на начальную вкладку
         self.btn_back_to_tab_1 = ttk.Button(
-            self.tab_2_panel_2,
+            self.tab_2_panel_widgets,
             width=10,
             text="Вернуться",
             command=self.click_back
         )
         self.btn_back_to_tab_1.grid(
-            row=4, column=2, padx=5, pady=(10, 20), sticky='nsew')
+            row=2, column=2, padx=5, pady=(10, 20), sticky='nsew')
 
         # Запись данных в окна ввода
         self.update_data_in_widgets()
@@ -543,18 +530,14 @@ class ChildConfigSet:
         for item in self.standard_table.get_children():
             self.standard_table.delete(item)
 
-        self.data_table = self.get_standard_costs()
-        for data in self.data_table:
-            self.standard_table.insert('', index='end', values=data)
+        self.get_standard_costs()
 
         # Очистка полей ввода второй вкладки
         self.ent_name.delete(0, tk.END)
         self.ent_cost.delete(0, tk.END)
-        self.ent_delete_element.delete(0, tk.END)
 
-        BindEntry(self.ent_name).to_add_entry_child()
-        BindEntry(self.ent_cost).to_add_entry_child()
-        BindEntry(self.ent_delete_element).to_add_entry_child()
+        BindEntry(self.ent_cost, text='Стоимость, руб').to_add_entry_child()
+        BindEntry(self.ent_name, text='Название').to_add_entry_child()
 
         self.child_root.update()
 
@@ -568,10 +551,11 @@ class ChildConfigSet:
         for k, v in costs.items():
             temp = [k, v]
             table_data.append(temp)
-        return table_data
+        for data in table_data:
+            self.standard_table.insert('', index='end', values=data)
 
     def click_back(self):  # Метод возвращения на первую вкладку
-        self.child_tabs_control.select(self.tab_1)
+        self.child_tabs_control.select(self.tab_main_settings)
 
     def click_add_standard(self):  # Метод добавления новой стандартной работы
         # Создание переменной конфигурации
@@ -700,24 +684,32 @@ class ChildConfigSet:
         # Создаем переменную конфигурации
         config_with_deleted_item = self.child_temp_config.config
 
-        # Считывание данных из окна ввода и удаление выбранного элемента
-        config_with_deleted_item.remove_option(
-            'STANDARD', self.ent_delete_element.get()
-        )
-
-        # Обновление данных в файле
-        self.child_temp_config.update_settings(
-            some_new=config_with_deleted_item)
-
+        try:
+            # Считывание данных из окна ввода
+            deleted_item = self.standard_table.item(
+                    self.standard_table.focus())
+            if askokcancel('Удаление элемента',
+                           f'Вы действительно хотите удалить:\n'
+                           f'"{str(deleted_item["values"][0])}"'):
+                # Удаление элемента
+                config_with_deleted_item.remove_option(
+                    'STANDARD', str(deleted_item['values'][0]))
+                # Обновление данных в файле
+                self.child_temp_config.update_settings(
+                    some_new=config_with_deleted_item)
+        except (ValueError, KeyboardInterrupt, IndexError):
+            tk.messagebox.showerror(
+                'Ошибка удаления!',
+                'Выберите в таблице удаляемую строку.'
+            )
         # Обновление данных в таблице
         self.update_data_in_widgets()
 
         del config_with_deleted_item
 
     def add_bind_entry(self):  # Установка фонового текста в полях ввода
-        BindEntry(self.ent_cost)
-        BindEntry(self.ent_name)
-        BindEntry(self.ent_delete_element)
+        BindEntry(self.ent_cost, text='Стоимость, руб')
+        BindEntry(self.ent_name, text='Название')
 
     def grab_focus(self):  # Метод сохранения фокуса на дочернем окне
         self.child_root.grab_set()
