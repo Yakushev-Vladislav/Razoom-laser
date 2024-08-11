@@ -142,25 +142,28 @@ class Interpolation:
                                 encoding='utf-8')
         self.name = file_name
 
-    def get_solid_cost(self, height: int, width: int, num: int):
+    def get_laser_type(self):
         """
-        Метод получения стоимости изделия для твердотельного лазера.
+        Метод возвращает строковое значение типа лазера.
+        :return: Тип лазера.
+        """
+        name = self.name
+        laser_type_config = configparser.ConfigParser()
+        laser_type_config.read('settings/material_data.ini',
+                               encoding='utf-8')
+        laser_type = laser_type_config['MAIN'][name].split(', ')[-1]
+        del laser_type_config
+        return laser_type
+
+    def get_cost(self, height: int, width: int, num: int):
+        """
+        Метод получения стоимости изделия.
         :param height: Высота изделия
         :param width: Ширина изделия
         :param num: Количество изделий
         :return: Стоимость одного изделия
         """
         temp_config = self.matrix_config['MAIN']
-        pass
-
-    def get_gas_cost(self, height: int, width: int, num: int):
-        """
-        Метод получения стоимости изделия для газового лазера.
-        :param height: Высота изделия
-        :param width: Ширина изделия
-        :param num: Количество изделий
-        :return: Стоимость одного изделия
-        """
         pass
 
     def get_lower_and_bigger_key(self, width: int, height: int):
@@ -172,17 +175,12 @@ class Interpolation:
         :return: Список строк (ключей) для ближайшего большего и меньшего
         габаритов.
         """
-        name = self.name
-        laser_type_config = configparser.ConfigParser()
-        laser_type_config.read('settings/material_data.ini',
-                               encoding='utf-8')
-        laser_type = laser_type_config['MAIN'][name].split(', ')[-1]
 
         temp_matrix = self.matrix_config['COSTS']
 
         # Начальные значения верхней и нижней границ
         lower_key = ['маленькие (50х30мм)', '50', '30']
-        if laser_type == 'gas':
+        if self.get_laser_type() == 'gas':
             bigger_key = ['Огромные (600х400мм)', '600', '400']
         else:
             bigger_key = ['негабаритные (300х200мм)', '300', '200']
