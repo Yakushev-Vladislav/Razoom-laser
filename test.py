@@ -1,26 +1,9 @@
-from tkinter import *
-from custom_hovertip import CustomTooltipLabel
+from materials import Interpolation
+import configparser
 
-
-# Create the main application window
-root = Tk()
-root.geometry("300x200")
-root.title("Tooltip Example with Tix")
-
-# Create a label widget
-label1 = Label(root, text="Welcome to GeeksforGeeks")
-label1.pack(pady=20)
-
-CustomTooltipLabel(anchor_widget=label1, text="This is tooltip text.",
-                   )
-
-
-# Create a button widget
-button1 = Button(root, text="Click Me", bg="green", fg="white")
-button1.pack(pady=10)
-
-# Assign tooltips to the widgets
-
-
-# Run the main application loop
-root.mainloop()
+file_name = 'анодированный алюминий 0.5 мм'
+laser_type_config = configparser.ConfigParser()
+laser_type_config.read('settings/material_data.ini',
+                       encoding='utf-8')
+test = Interpolation(file_name)
+print(test.get_lower_and_bigger_key(50, 100))

@@ -128,3 +128,129 @@ class Calculation:
 
     def get_price(self):  # Метод, возвращающий себестоимость материала
         return self.price
+
+
+class Interpolation:
+    def __init__(self, file_name: str):
+        """
+        Класс реализующий интерполяционный расчет стоимости изделия из
+        выбранного материала.
+        :param file_name: Название материала (файла стоимостей)
+        """
+        self.matrix_config = configparser.ConfigParser()
+        self.matrix_config.read(f'settings/materials/{file_name}.ini',
+                                encoding='utf-8')
+        self.name = file_name
+
+    def get_solid_cost(self, height: int, width: int, num: int):
+        """
+        Метод получения стоимости изделия для твердотельного лазера.
+        :param height: Высота изделия
+        :param width: Ширина изделия
+        :param num: Количество изделий
+        :return: Стоимость одного изделия
+        """
+        temp_config = self.matrix_config['MAIN']
+        pass
+
+    def get_gas_cost(self, height: int, width: int, num: int):
+        """
+        Метод получения стоимости изделия для газового лазера.
+        :param height: Высота изделия
+        :param width: Ширина изделия
+        :param num: Количество изделий
+        :return: Стоимость одного изделия
+        """
+        pass
+
+    def get_lower_and_bigger_key(self, width: int, height: int):
+        """
+        Метод получения строк (ключей) для ближайшего большего и меньшего
+        габаритов.
+        :param width: Ширина изделия
+        :param height: Высота изделия
+        :return: Список строк (ключей) для ближайшего большего и меньшего
+        габаритов.
+        """
+        name = self.name
+        laser_type_config = configparser.ConfigParser()
+        laser_type_config.read('settings/material_data.ini',
+                               encoding='utf-8')
+        laser_type = laser_type_config['MAIN'][name].split(', ')[-1]
+
+        temp_matrix = self.matrix_config['COSTS']
+
+        # Начальные значения верхней и нижней границ
+        lower_key = ['маленькие (50х30мм)', '50', '30']
+        if laser_type == 'gas':
+            bigger_key = ['Огромные (600х400мм)', '600', '400']
+        else:
+            bigger_key = ['негабаритные (300х200мм)', '300', '200']
+        area = width * height
+        # Считаем площадь
+        key_get_point = False
+
+        # Получаем для наших габаритов нижнюю и верхнюю границу:
+        for k, v in temp_matrix.items():
+            temp = k.split(', ')
+
+            # Если попали в точку
+            if int(temp[1]) * int(temp[2]) == area:
+                key_get_point = True
+                lower_key = k.split(', ')
+                break
+
+            # Нижняя точка
+            if int(temp[1]) * int(temp[2]) < area and (
+                    (int(temp[1]) * int(temp[2])) >= (int(lower_key[1]) * int(
+                    lower_key[2]))):
+                lower_key = k.split(', ')
+            # Верхняя точка
+            if int(temp[1]) * int(temp[2]) >= area and (
+                    (int(temp[1]) * int(temp[2])) <= (int(bigger_key[1]) * int(
+                    bigger_key[2]))):
+                bigger_key = k.split(', ')
+
+        # Если попали в точку
+        if key_get_point:
+            return ', '.join(lower_key)
+
+        # Если за границами точек
+        elif lower_key == bigger_key:
+            return ', '.join(lower_key)
+
+        # Если в границах точек
+        else:
+            return [', '.join(lower_key), ', '.join(bigger_key)]
+
+    @staticmethod
+    def get_interpolation(point: int, lower_point: list, bigger_point: list):
+        """
+        Метод интерполяции значений между двумя точками.
+        Формула интерполяции имеет вид:
+            result = (|p-x_2|/|x_2-x_1|)*y_1 + (|p-x_1|/|x_2-x_1|)*y_2,
+
+            где (x_1, y_1) - нижняя точка и ее значение;
+                (x_2, y_2) - верхняя точка и ее значение;
+                p - искомая точка.
+        :param point: Передаваемая искомая точка
+        :param lower_point: Ближайшая нижняя точка и ее значение;
+        :param bigger_point: Ближайшая верхняя точка и ее значение;
+        :return: Значение (цены, размера и др.) для искомой точки.
+        """
+        try:
+            lower_diff = abs(
+                int(point) - int(lower_point[0])
+            ) / abs((int(bigger_point[0]) - int(lower_point[0])))
+            bigger_diff = abs(
+                int(point) - int(bigger_point[0])
+            ) / abs((int(bigger_point[0]) - int(lower_point[0])))
+
+            result = (
+                lower_diff * bigger_point[1] + bigger_diff * lower_point[1]
+            )
+        except ValueError:
+            print('Переданы неправильные значения!')
+            result = 0
+
+        return result
