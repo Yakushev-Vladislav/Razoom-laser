@@ -164,7 +164,22 @@ class Interpolation:
         :return: Стоимость одного изделия
         """
         temp_config = self.matrix_config['MAIN']
-        pass
+
+        # Список хранящий количество изделий в партии
+        numbering_list = [1, 5, 15, 50, 150, 500, 1000]
+
+        # Получаем граничные строки для нашего изделия
+        lower_and_bigger_key = self.get_lower_and_bigger_key(height, width)
+
+        # Если попали в точку, либо вне строк (супер маленькое/большое изделие)
+        if len(lower_and_bigger_key) == 1:
+            pass
+
+        # Если наша точка между имеющимися габаритами
+        else:
+            pass
+
+        del temp_config
 
     def get_lower_and_bigger_key(self, width: int, height: int):
         """
