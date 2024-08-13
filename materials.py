@@ -163,7 +163,7 @@ class Interpolation:
         :param num: Количество изделий
         :return: Стоимость одного изделия
         """
-        temp_config = self.matrix_config['MAIN']
+        temp_cost_config = self.matrix_config['COSTS']
 
         # Список хранящий количество изделий в партии
         numbering_list = [1, 5, 15, 50, 150, 500, 1000]
@@ -171,15 +171,55 @@ class Interpolation:
         # Получаем граничные строки для нашего изделия
         lower_and_bigger_key = self.get_lower_and_bigger_key(height, width)
 
+        # Границы количества изделий
+        lower_index = 0
+        bigger_index = -1
+        for item in numbering_list:
+            if numbering_list[lower_index] <= item <= num:
+                lower_index = numbering_list.index(item)
+            if numbering_list[bigger_index] >= item >= num:
+                bigger_index = numbering_list.index(item)
+
         # Если попали в точку, либо вне строк (супер маленькое/большое изделие)
-        if len(lower_and_bigger_key) == 1:
-            pass
+        if type(lower_and_bigger_key) is not list:
+            # Список цен для выбранного габарита (и негабаритного изделия)
+            cost_list = [int(x) for x in temp_cost_config[
+                lower_and_bigger_key].split(', ')]
+
+            return self.get_interpolation(
+                num,
+                [numbering_list[lower_index], cost_list[lower_index]],
+                [numbering_list[bigger_index], cost_list[bigger_index]]
+            )
 
         # Если наша точка между имеющимися габаритами
         else:
-            pass
-
-        del temp_config
+            # Создаем списки цен для большей и меньшей строк (габаритов)
+            cost_lower_list = [int(x) for x in temp_cost_config[
+                lower_and_bigger_key[0]].split(', ')]
+            cost_bigger_list = [int(x) for x in temp_cost_config[
+                lower_and_bigger_key[-1]].split(', ')]
+            # Для списка получаем цену изделия с учетом нужного количества
+            lower_cost = self.get_interpolation(
+                num,
+                [numbering_list[lower_index], cost_lower_list[lower_index]],
+                [numbering_list[bigger_index], cost_lower_list[bigger_index]]
+            )
+            bigger_cost = self.get_interpolation(
+                num,
+                [numbering_list[lower_index], cost_bigger_list[lower_index]],
+                [numbering_list[bigger_index], cost_bigger_list[bigger_index]]
+            )
+            # Интерполируем между строками (габаритами)
+            lower_area = (int(lower_and_bigger_key[0].split(', ')[1]) * int(
+                lower_and_bigger_key[0].split(', ')[-1]))
+            bigger_area = (int(lower_and_bigger_key[1].split(', ')[1]) * int(
+                lower_and_bigger_key[1].split(', ')[-1]))
+            return self.get_interpolation(
+                width*height,
+                [lower_area, lower_cost],
+                [bigger_area, bigger_cost]
+            )
 
     def get_lower_and_bigger_key(self, width: int, height: int):
         """
@@ -252,16 +292,19 @@ class Interpolation:
         :return: Значение (цены, размера и др.) для искомой точки.
         """
         try:
-            lower_diff = abs(
-                int(point) - int(lower_point[0])
-            ) / abs((int(bigger_point[0]) - int(lower_point[0])))
-            bigger_diff = abs(
-                int(point) - int(bigger_point[0])
-            ) / abs((int(bigger_point[0]) - int(lower_point[0])))
+            if lower_point == bigger_point:
+                result = lower_point[1]
+            else:
+                lower_diff = abs(
+                    int(point) - int(lower_point[0])
+                ) / abs((int(bigger_point[0]) - int(lower_point[0])))
+                bigger_diff = abs(
+                    int(point) - int(bigger_point[0])
+                ) / abs((int(bigger_point[0]) - int(lower_point[0])))
 
-            result = (
-                lower_diff * bigger_point[1] + bigger_diff * lower_point[1]
-            )
+                result = (
+                    lower_diff * bigger_point[1] + bigger_diff * lower_point[1]
+                )
         except ValueError:
             print('Переданы неправильные значения!')
             result = 0
