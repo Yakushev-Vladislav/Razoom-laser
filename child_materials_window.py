@@ -391,8 +391,8 @@ class ChildMaterials:
                     self.material_table.focus())['values'][0]
             self.child_root.CHILD = ChildMatrixMaterial(
                 self.child_root,
-                820,
-                300,
+                830,
+                280,
                 theme='forest-light',
                 icon="resources/Company_logo.ico",
                 material_name=matrix_material_name
@@ -430,7 +430,7 @@ class ChildMatrixMaterial:
             self.matrix_root.title(title)
         else:
             self.matrix_root.title(title)
-        self.matrix_root.geometry(f"{width}x{height}+20+20")
+        self.matrix_root.geometry(f"{width}x{height}+50+150")
         self.matrix_root.resizable(resizable[0], resizable[1])
         if icon:
             self.matrix_root.iconbitmap(icon)
@@ -453,6 +453,15 @@ class ChildMatrixMaterial:
         self.ent_little_five_hundred = ttk.Entry(self.matrix_root, width=10)
         self.ent_little_one_thousand = ttk.Entry(self.matrix_root, width=10)
 
+        # Добавляем поля в список для дальнейшего удобного пользования
+        self.little_entries = [self.ent_little_one,
+                               self.ent_little_five,
+                               self.ent_little_fifteen,
+                               self.ent_little_fifty,
+                               self.ent_little_one_hundred_fifty,
+                               self.ent_little_five_hundred,
+                               self.ent_little_one_thousand]
+
         # ___Вторая строка "Средние"___
         self.ent_middle_one = ttk.Entry(self.matrix_root, width=10)
         self.ent_middle_five = ttk.Entry(self.matrix_root, width=10)
@@ -463,6 +472,15 @@ class ChildMatrixMaterial:
         self.ent_middle_five_hundred = ttk.Entry(self.matrix_root, width=10)
         self.ent_middle_one_thousand = ttk.Entry(self.matrix_root, width=10)
 
+        # Добавляем поля в список для дальнейшего удобного пользования
+        self.middle_entries = [self.ent_middle_one,
+                               self.ent_middle_five,
+                               self.ent_middle_fifteen,
+                               self.ent_middle_fifty,
+                               self.ent_middle_one_hundred_fifty,
+                               self.ent_middle_five_hundred,
+                               self.ent_middle_one_thousand]
+
         # ___Третья строка "Большие"___
         self.ent_big_one = ttk.Entry(self.matrix_root, width=10)
         self.ent_big_five = ttk.Entry(self.matrix_root, width=10)
@@ -471,6 +489,15 @@ class ChildMatrixMaterial:
         self.ent_big_one_hundred_fifty = ttk.Entry(self.matrix_root, width=10)
         self.ent_big_five_hundred = ttk.Entry(self.matrix_root, width=10)
         self.ent_big_one_thousand = ttk.Entry(self.matrix_root, width=10)
+
+        # Добавляем поля в список для дальнейшего удобного пользования
+        self.big_entries = [self.ent_big_one,
+                            self.ent_big_five,
+                            self.ent_big_fifteen,
+                            self.ent_big_fifty,
+                            self.ent_big_one_hundred_fifty,
+                            self.ent_big_five_hundred,
+                            self.ent_big_one_thousand]
 
         # ___Четвертая (пятая для СО2) строка "Негабаритные (Огромные)"___
         self.ent_oversize_one = ttk.Entry(self.matrix_root, width=10)
@@ -482,6 +509,15 @@ class ChildMatrixMaterial:
         self.ent_oversize_five_hundred = ttk.Entry(self.matrix_root, width=10)
         self.ent_oversize_one_thousand = ttk.Entry(self.matrix_root, width=10)
 
+        # Добавляем поля в список для дальнейшего удобного пользования
+        self.oversize_entries = [self.ent_oversize_one,
+                                 self.ent_oversize_five,
+                                 self.ent_oversize_fifteen,
+                                 self.ent_oversize_fifty,
+                                 self.ent_oversize_one_hundred_fifty,
+                                 self.ent_oversize_five_hundred,
+                                 self.ent_oversize_one_thousand]
+
         # ___Строка "Очень большие" для СО2___
         self.ent_very_big_one = ttk.Entry(self.matrix_root, width=10)
         self.ent_very_big_five = ttk.Entry(self.matrix_root, width=10)
@@ -491,6 +527,15 @@ class ChildMatrixMaterial:
                                                         width=10)
         self.ent_very_big_five_hundred = ttk.Entry(self.matrix_root, width=10)
         self.ent_very_big_one_thousand = ttk.Entry(self.matrix_root, width=10)
+
+        # Добавляем поля в список для дальнейшего удобного пользования
+        self.very_big_entries = [self.ent_very_big_one,
+                                 self.ent_very_big_five,
+                                 self.ent_very_big_fifteen,
+                                 self.ent_very_big_fifty,
+                                 self.ent_very_big_one_hundred_fifty,
+                                 self.ent_very_big_five_hundred,
+                                 self.ent_very_big_one_thousand]
 
         # Кнопка сохранения результатов
         self.btn_save = ttk.Button(
@@ -522,28 +567,13 @@ class ChildMatrixMaterial:
         self.matrix_root.grid()
 
         # Упаковка виджетов
-        # Подписи строк и столбцов
-        ttk.Label(self.matrix_root, text='1 шт').grid(
-            row=0, column=1, padx=0, pady=0, sticky='ns'
-        )
-        ttk.Label(self.matrix_root, text='5 шт').grid(
-            row=0, column=2, padx=0, pady=0, sticky='ns'
-        )
-        ttk.Label(self.matrix_root, text='15 шт').grid(
-            row=0, column=3, padx=0, pady=0, sticky='ns'
-        )
-        ttk.Label(self.matrix_root, text='50 шт').grid(
-            row=0, column=4, padx=0, pady=0, sticky='ns'
-        )
-        ttk.Label(self.matrix_root, text='150 шт').grid(
-            row=0, column=5, padx=0, pady=0, sticky='ns'
-        )
-        ttk.Label(self.matrix_root, text='500 шт').grid(
-            row=0, column=6, padx=0, pady=0, sticky='ns'
-        )
-        ttk.Label(self.matrix_root, text='1000 шт').grid(
-            row=0, column=7, padx=0, pady=0, sticky='ns'
-        )
+        # Подписи столбцов
+        volume_list = [1, 5, 15, 50, 150, 500, 1000]
+        for i in range(7):
+            ttk.Label(self.matrix_root, text=f'{volume_list[i]} шт').grid(
+                row=0, column=(i+1), padx=0, pady=(15, 0), sticky='ns'
+            )
+        # Подписи строк
         ttk.Label(self.matrix_root, text='Маленькие (50х30мм):').grid(
             row=1, column=0, padx=10, pady=0, sticky='nsew'
         )
@@ -556,95 +586,39 @@ class ChildMatrixMaterial:
 
         # Поля ввода
         # ___Первая строка "Маленькие"___
-        self.ent_little_one.grid(
-            row=1, column=1, padx=0, pady=0, sticky='ns'
-        )
-        self.ent_little_five.grid(
-            row=1, column=2, padx=0, pady=0, sticky='ns'
-        )
-        self.ent_little_fifteen.grid(
-            row=1, column=3, padx=0, pady=0, sticky='ns'
-        )
-        self.ent_little_fifty.grid(
-            row=1, column=4, padx=0, pady=0, sticky='ns'
-        )
-        self.ent_little_one_hundred_fifty.grid(
-            row=1, column=5, padx=0, pady=0, sticky='ns'
-        )
-        self.ent_little_five_hundred.grid(
-            row=1, column=6, padx=0, pady=0, sticky='nsew'
-        )
+        for i in range(7):
+            self.little_entries[i].grid(
+                row=1, column=(i+1), padx=2, pady=2, sticky='ns'
+            )
         self.ent_little_one_thousand.grid(
-            row=1, column=7, padx=(0, 10), pady=0, sticky='nsew'
+            row=1, column=7, padx=(2, 10), pady=2, sticky='nsew'
         )
 
         # ___Вторая строка "Средние"___
-        self.ent_middle_one.grid(
-            row=2, column=1, padx=0, pady=0, sticky='ns'
-        )
-        self.ent_middle_five.grid(
-            row=2, column=2, padx=0, pady=0, sticky='ns'
-        )
-        self.ent_middle_fifteen.grid(
-            row=2, column=3, padx=0, pady=0, sticky='ns'
-        )
-        self.ent_middle_fifty.grid(
-            row=2, column=4, padx=0, pady=0, sticky='ns'
-        )
-        self.ent_middle_one_hundred_fifty.grid(
-            row=2, column=5, padx=0, pady=0, sticky='ns'
-        )
-        self.ent_middle_five_hundred.grid(
-            row=2, column=6, padx=0, pady=0, sticky='nsew'
-        )
+        for i in range(7):
+            self.middle_entries[i].grid(
+                row=2, column=(i + 1), padx=2, pady=2, sticky='ns'
+            )
         self.ent_middle_one_thousand.grid(
-            row=2, column=7, padx=(0, 10), pady=0, sticky='nsew'
+            row=2, column=7, padx=(2, 10), pady=2, sticky='nsew'
         )
 
         # ___Третья строка "Большие"___
-        self.ent_big_one.grid(
-            row=3, column=1, padx=0, pady=0, sticky='ns'
-        )
-        self.ent_big_five.grid(
-            row=3, column=2, padx=0, pady=0, sticky='ns'
-        )
-        self.ent_big_fifteen.grid(
-            row=3, column=3, padx=0, pady=0, sticky='ns'
-        )
-        self.ent_big_fifty.grid(
-            row=3, column=4, padx=0, pady=0, sticky='ns'
-        )
-        self.ent_big_one_hundred_fifty.grid(
-            row=3, column=5, padx=0, pady=0, sticky='ns'
-        )
-        self.ent_big_five_hundred.grid(
-            row=3, column=6, padx=0, pady=0, sticky='nsew'
-        )
+        for i in range(7):
+            self.big_entries[i].grid(
+                row=3, column=(i + 1), padx=2, pady=2, sticky='ns'
+            )
         self.ent_big_one_thousand.grid(
-            row=3, column=7, padx=(0, 10), pady=0, sticky='nsew'
+            row=3, column=7, padx=(2, 10), pady=2, sticky='nsew'
         )
 
         # ___Четвертая строка "Негабаритные"___
-        self.ent_oversize_one.grid(
-            row=4, column=1, padx=0, pady=0, sticky='ns'
-        )
-        self.ent_oversize_five.grid(
-            row=4, column=2, padx=0, pady=0, sticky='ns'
-        )
-        self.ent_oversize_fifteen.grid(
-            row=4, column=3, padx=0, pady=0, sticky='ns'
-        )
-        self.ent_oversize_fifty.grid(
-            row=4, column=4, padx=0, pady=0, sticky='ns'
-        )
-        self.ent_oversize_one_hundred_fifty.grid(
-            row=4, column=5, padx=0, pady=0, sticky='ns'
-        )
-        self.ent_oversize_five_hundred.grid(
-            row=4, column=6, padx=0, pady=0, sticky='nsew'
-        )
+        for i in range(7):
+            self.oversize_entries[i].grid(
+                row=4, column=(i + 1), padx=2, pady=2, sticky='ns'
+            )
         self.ent_oversize_one_thousand.grid(
-            row=4, column=7, padx=(0, 10), pady=0, sticky='nsew'
+            row=4, column=7, padx=(2, 10), pady=2, sticky='nsew'
         )
 
     def draw_solid_widget(self):  # Метод прорисовки виджетов
@@ -664,11 +638,11 @@ class ChildMatrixMaterial:
 
         # Кнопки
         self.btn_save.grid(
-            row=5, column=0, padx=10, pady=10, sticky='nsew', columnspan=4
+            row=5, column=1, padx=(2, 10), pady=10, sticky='nsew', columnspan=7
         )
 
         self.btn_reset.grid(
-            row=5, column=4, padx=10, pady=10, sticky='nsew', columnspan=4
+            row=5, column=0, padx=10, pady=10, sticky='nsew', columnspan=1
         )
 
     def draw_gas_widget(self):  # Метод прорисовки виджетов
@@ -692,35 +666,22 @@ class ChildMatrixMaterial:
         )
 
         # ___Пятая строка "Огромные"___
-        self.ent_very_big_one.grid(
-            row=5, column=1, padx=0, pady=0, sticky='ns'
-        )
-        self.ent_very_big_five.grid(
-            row=5, column=2, padx=0, pady=0, sticky='ns'
-        )
-        self.ent_very_big_fifteen.grid(
-            row=5, column=3, padx=0, pady=0, sticky='ns'
-        )
-        self.ent_very_big_fifty.grid(
-            row=5, column=4, padx=0, pady=0, sticky='ns'
-        )
-        self.ent_very_big_one_hundred_fifty.grid(
-            row=5, column=5, padx=0, pady=0, sticky='ns'
-        )
-        self.ent_very_big_five_hundred.grid(
-            row=5, column=6, padx=0, pady=0, sticky='nsew'
-        )
+        for i in range(7):
+            self.very_big_entries[i].grid(
+                row=5, column=(i + 1), padx=2, pady=2, sticky='ns'
+            )
         self.ent_very_big_one_thousand.grid(
-            row=5, column=7, padx=(0, 10), pady=0, sticky='nsew'
+            row=5, column=7, padx=(2, 10), pady=2, sticky='nsew'
         )
 
         # Кнопки
         self.btn_save.grid(
-            row=6, column=0, padx=10, pady=10, sticky='nsew', columnspan=4
+            row=6, column=1, padx=(2, 10), pady=10, sticky='nsew',
+            columnspan=7
         )
 
         self.btn_reset.grid(
-            row=6, column=4, padx=10, pady=10, sticky='nsew', columnspan=4
+            row=6, column=0, padx=10, pady=10, sticky='nsew', columnspan=1
         )
 
     def click_save_data(self):
