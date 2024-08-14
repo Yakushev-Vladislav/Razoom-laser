@@ -391,8 +391,8 @@ class ChildMaterials:
                     self.material_table.focus())['values'][0]
             self.child_root.CHILD = ChildMatrixMaterial(
                 self.child_root,
-                700,
-                450,
+                820,
+                300,
                 theme='forest-light',
                 icon="resources/Company_logo.ico",
                 material_name=matrix_material_name
@@ -442,19 +442,297 @@ class ChildMatrixMaterial:
         # Создание основной переменной конфигурации для выбранного материала
         self.config_matrix_cost = Interpolation(material_name)
 
-        # Основные виджеты окна
+        # Создание основных виджетов окна (полей ввода)
+        # ___Первая строка "Маленькие"___
+        self.ent_little_one = ttk.Entry(self.matrix_root, width=10)
+        self.ent_little_five = ttk.Entry(self.matrix_root, width=10)
+        self.ent_little_fifteen = ttk.Entry(self.matrix_root, width=10)
+        self.ent_little_fifty = ttk.Entry(self.matrix_root, width=10)
+        self.ent_little_one_hundred_fifty = ttk.Entry(self.matrix_root,
+                                                      width=10)
+        self.ent_little_five_hundred = ttk.Entry(self.matrix_root, width=10)
+        self.ent_little_one_thousand = ttk.Entry(self.matrix_root, width=10)
 
+        # ___Вторая строка "Средние"___
+        self.ent_middle_one = ttk.Entry(self.matrix_root, width=10)
+        self.ent_middle_five = ttk.Entry(self.matrix_root, width=10)
+        self.ent_middle_fifteen = ttk.Entry(self.matrix_root, width=10)
+        self.ent_middle_fifty = ttk.Entry(self.matrix_root, width=10)
+        self.ent_middle_one_hundred_fifty = ttk.Entry(self.matrix_root,
+                                                      width=10)
+        self.ent_middle_five_hundred = ttk.Entry(self.matrix_root, width=10)
+        self.ent_middle_one_thousand = ttk.Entry(self.matrix_root, width=10)
 
-        # Прорисовка окна в зависимости от типа оборудования
+        # ___Третья строка "Большие"___
+        self.ent_big_one = ttk.Entry(self.matrix_root, width=10)
+        self.ent_big_five = ttk.Entry(self.matrix_root, width=10)
+        self.ent_big_fifteen = ttk.Entry(self.matrix_root, width=10)
+        self.ent_big_fifty = ttk.Entry(self.matrix_root, width=10)
+        self.ent_big_one_hundred_fifty = ttk.Entry(self.matrix_root, width=10)
+        self.ent_big_five_hundred = ttk.Entry(self.matrix_root, width=10)
+        self.ent_big_one_thousand = ttk.Entry(self.matrix_root, width=10)
+
+        # ___Четвертая (пятая для СО2) строка "Негабаритные (Огромные)"___
+        self.ent_oversize_one = ttk.Entry(self.matrix_root, width=10)
+        self.ent_oversize_five = ttk.Entry(self.matrix_root, width=10)
+        self.ent_oversize_fifteen = ttk.Entry(self.matrix_root, width=10)
+        self.ent_oversize_fifty = ttk.Entry(self.matrix_root, width=10)
+        self.ent_oversize_one_hundred_fifty = ttk.Entry(self.matrix_root,
+                                                        width=10)
+        self.ent_oversize_five_hundred = ttk.Entry(self.matrix_root, width=10)
+        self.ent_oversize_one_thousand = ttk.Entry(self.matrix_root, width=10)
+
+        # ___Строка "Очень большие" для СО2___
+        self.ent_very_big_one = ttk.Entry(self.matrix_root, width=10)
+        self.ent_very_big_five = ttk.Entry(self.matrix_root, width=10)
+        self.ent_very_big_fifteen = ttk.Entry(self.matrix_root, width=10)
+        self.ent_very_big_fifty = ttk.Entry(self.matrix_root, width=10)
+        self.ent_very_big_one_hundred_fifty = ttk.Entry(self.matrix_root,
+                                                        width=10)
+        self.ent_very_big_five_hundred = ttk.Entry(self.matrix_root, width=10)
+        self.ent_very_big_one_thousand = ttk.Entry(self.matrix_root, width=10)
+
+        # Кнопка сохранения результатов
+        self.btn_save = ttk.Button(
+            self.matrix_root,
+            width=4,
+            text="Сохранить",
+            command=self.click_save_data
+        )
+        # Кнопка сброса изменений
+        self.btn_reset = ttk.Button(
+            self.matrix_root,
+            width=4,
+            text="Сброс",
+            command=self.click_reset_data
+        )
+        # Прорисовка интерфейса окна (виджетов)
+        self.draw_widgets()
+
+    def draw_widgets(self):
+        """
+        Метод прорисовки основных виджетов окна с учетом типа оборудования.
+        """
         if self.config_matrix_cost.get_laser_type() == 'solid':
             self.draw_solid_widget()
         else:
             self.draw_gas_widget()
 
+        # Упаковка формы
+        self.matrix_root.grid()
+
+        # Упаковка виджетов
+        # Подписи строк и столбцов
+        ttk.Label(self.matrix_root, text='1 шт').grid(
+            row=0, column=1, padx=0, pady=0, sticky='ns'
+        )
+        ttk.Label(self.matrix_root, text='5 шт').grid(
+            row=0, column=2, padx=0, pady=0, sticky='ns'
+        )
+        ttk.Label(self.matrix_root, text='15 шт').grid(
+            row=0, column=3, padx=0, pady=0, sticky='ns'
+        )
+        ttk.Label(self.matrix_root, text='50 шт').grid(
+            row=0, column=4, padx=0, pady=0, sticky='ns'
+        )
+        ttk.Label(self.matrix_root, text='150 шт').grid(
+            row=0, column=5, padx=0, pady=0, sticky='ns'
+        )
+        ttk.Label(self.matrix_root, text='500 шт').grid(
+            row=0, column=6, padx=0, pady=0, sticky='ns'
+        )
+        ttk.Label(self.matrix_root, text='1000 шт').grid(
+            row=0, column=7, padx=0, pady=0, sticky='ns'
+        )
+        ttk.Label(self.matrix_root, text='Маленькие (50х30мм):').grid(
+            row=1, column=0, padx=10, pady=0, sticky='nsew'
+        )
+        ttk.Label(self.matrix_root, text='Средние (100х50мм):').grid(
+            row=2, column=0, padx=10, pady=0, sticky='nsew'
+        )
+        ttk.Label(self.matrix_root, text='Большие (200х150мм):').grid(
+            row=3, column=0, padx=10, pady=0, sticky='nsew'
+        )
+
+        # Поля ввода
+        # ___Первая строка "Маленькие"___
+        self.ent_little_one.grid(
+            row=1, column=1, padx=0, pady=0, sticky='ns'
+        )
+        self.ent_little_five.grid(
+            row=1, column=2, padx=0, pady=0, sticky='ns'
+        )
+        self.ent_little_fifteen.grid(
+            row=1, column=3, padx=0, pady=0, sticky='ns'
+        )
+        self.ent_little_fifty.grid(
+            row=1, column=4, padx=0, pady=0, sticky='ns'
+        )
+        self.ent_little_one_hundred_fifty.grid(
+            row=1, column=5, padx=0, pady=0, sticky='ns'
+        )
+        self.ent_little_five_hundred.grid(
+            row=1, column=6, padx=0, pady=0, sticky='nsew'
+        )
+        self.ent_little_one_thousand.grid(
+            row=1, column=7, padx=(0, 10), pady=0, sticky='nsew'
+        )
+
+        # ___Вторая строка "Средние"___
+        self.ent_middle_one.grid(
+            row=2, column=1, padx=0, pady=0, sticky='ns'
+        )
+        self.ent_middle_five.grid(
+            row=2, column=2, padx=0, pady=0, sticky='ns'
+        )
+        self.ent_middle_fifteen.grid(
+            row=2, column=3, padx=0, pady=0, sticky='ns'
+        )
+        self.ent_middle_fifty.grid(
+            row=2, column=4, padx=0, pady=0, sticky='ns'
+        )
+        self.ent_middle_one_hundred_fifty.grid(
+            row=2, column=5, padx=0, pady=0, sticky='ns'
+        )
+        self.ent_middle_five_hundred.grid(
+            row=2, column=6, padx=0, pady=0, sticky='nsew'
+        )
+        self.ent_middle_one_thousand.grid(
+            row=2, column=7, padx=(0, 10), pady=0, sticky='nsew'
+        )
+
+        # ___Третья строка "Большие"___
+        self.ent_big_one.grid(
+            row=3, column=1, padx=0, pady=0, sticky='ns'
+        )
+        self.ent_big_five.grid(
+            row=3, column=2, padx=0, pady=0, sticky='ns'
+        )
+        self.ent_big_fifteen.grid(
+            row=3, column=3, padx=0, pady=0, sticky='ns'
+        )
+        self.ent_big_fifty.grid(
+            row=3, column=4, padx=0, pady=0, sticky='ns'
+        )
+        self.ent_big_one_hundred_fifty.grid(
+            row=3, column=5, padx=0, pady=0, sticky='ns'
+        )
+        self.ent_big_five_hundred.grid(
+            row=3, column=6, padx=0, pady=0, sticky='nsew'
+        )
+        self.ent_big_one_thousand.grid(
+            row=3, column=7, padx=(0, 10), pady=0, sticky='nsew'
+        )
+
+        # ___Четвертая строка "Негабаритные"___
+        self.ent_oversize_one.grid(
+            row=4, column=1, padx=0, pady=0, sticky='ns'
+        )
+        self.ent_oversize_five.grid(
+            row=4, column=2, padx=0, pady=0, sticky='ns'
+        )
+        self.ent_oversize_fifteen.grid(
+            row=4, column=3, padx=0, pady=0, sticky='ns'
+        )
+        self.ent_oversize_fifty.grid(
+            row=4, column=4, padx=0, pady=0, sticky='ns'
+        )
+        self.ent_oversize_one_hundred_fifty.grid(
+            row=4, column=5, padx=0, pady=0, sticky='ns'
+        )
+        self.ent_oversize_five_hundred.grid(
+            row=4, column=6, padx=0, pady=0, sticky='nsew'
+        )
+        self.ent_oversize_one_thousand.grid(
+            row=4, column=7, padx=(0, 10), pady=0, sticky='nsew'
+        )
+
     def draw_solid_widget(self):  # Метод прорисовки виджетов
-        pass
+        """
+        Метод прорисовки виджетов для твердотельного лазера.
+        """
+        # Конфигурация формы
+        for i in range(8):
+            self.matrix_root.columnconfigure(index=i, weight=1)
+        for j in range(6):
+            self.matrix_root.rowconfigure(index=j, weight=1)
+
+        # Подписи данных (строк)
+        ttk.Label(self.matrix_root, text='Негабаритные (300х200мм):').grid(
+            row=4, column=0, padx=10, pady=0, sticky='nsew'
+        )
+
+        # Кнопки
+        self.btn_save.grid(
+            row=5, column=0, padx=10, pady=10, sticky='nsew', columnspan=4
+        )
+
+        self.btn_reset.grid(
+            row=5, column=4, padx=10, pady=10, sticky='nsew', columnspan=4
+        )
 
     def draw_gas_widget(self):  # Метод прорисовки виджетов
+        """
+        Метод прорисовки виджетов для газового лазера.
+        """
+        # Конфигурация формы
+        for i in range(8):
+            self.matrix_root.columnconfigure(index=i, weight=1)
+        for j in range(7):
+            self.matrix_root.rowconfigure(index=j, weight=1)
+
+        # Подписи данных (строк)
+        ttk.Label(self.matrix_root,
+                  text='Очень большие (300х250мм):').grid(
+            row=4, column=0, padx=10, pady=0, sticky='nsew'
+        )
+        ttk.Label(self.matrix_root,
+                  text='Огромные (600х400мм):').grid(
+            row=5, column=0, padx=10, pady=0, sticky='nsew'
+        )
+
+        # ___Пятая строка "Огромные"___
+        self.ent_very_big_one.grid(
+            row=5, column=1, padx=0, pady=0, sticky='ns'
+        )
+        self.ent_very_big_five.grid(
+            row=5, column=2, padx=0, pady=0, sticky='ns'
+        )
+        self.ent_very_big_fifteen.grid(
+            row=5, column=3, padx=0, pady=0, sticky='ns'
+        )
+        self.ent_very_big_fifty.grid(
+            row=5, column=4, padx=0, pady=0, sticky='ns'
+        )
+        self.ent_very_big_one_hundred_fifty.grid(
+            row=5, column=5, padx=0, pady=0, sticky='ns'
+        )
+        self.ent_very_big_five_hundred.grid(
+            row=5, column=6, padx=0, pady=0, sticky='nsew'
+        )
+        self.ent_very_big_one_thousand.grid(
+            row=5, column=7, padx=(0, 10), pady=0, sticky='nsew'
+        )
+
+        # Кнопки
+        self.btn_save.grid(
+            row=6, column=0, padx=10, pady=10, sticky='nsew', columnspan=4
+        )
+
+        self.btn_reset.grid(
+            row=6, column=4, padx=10, pady=10, sticky='nsew', columnspan=4
+        )
+
+    def click_save_data(self):
+        """
+        Метод сохранения настроек.
+        """
+        pass
+
+    def click_reset_data(self):
+        """
+        Метод сброса настроек "по-умолчанию"
+        """
         pass
 
     def grab_focus(self):  # Метод сохранения фокуса на дочернем окне
