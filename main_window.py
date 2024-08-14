@@ -1272,8 +1272,8 @@ class Window:
 
             # Себестоимость одного изделия
             try:
-                total_1 = Calculation(
-                    gab_width, gab_height, material_name).get_price() / total_3
+                total_1 = Calculation(gab_width, gab_height,
+                                      material_name).get_price() / total_3
             except ZeroDivisionError:
                 total_1 = 0.0
 

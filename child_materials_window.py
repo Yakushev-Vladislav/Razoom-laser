@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinter import messagebox
 from tkinter.messagebox import askokcancel
 from materials import Materials
+from materials import Interpolation
 from binds import BindEntry
 from binds import BalloonTips
 
@@ -214,6 +215,10 @@ class ChildMaterials:
             row=5, column=4, padx=(0, 10), pady=15, sticky='nsew')
 
     def add_bind_child(self):
+        """
+        Метод добавления фонового текста в поля ввода, а также добавление
+        подсказок к элементам интерфейса.
+        """
 
         # Установка фонового текста в полях ввода
         BindEntry(self.ent_name_mat, text='Материал')
@@ -228,6 +233,9 @@ class ChildMaterials:
                     text=f'Выделите строку в таблице.')
 
     def get_data_child(self):  # Обновление списка материалов для таблицы
+        """
+        Метод обновления данных в таблице.
+        """
         self.data = list()
         temp_data = self.config_material_data.material_config['MAIN']
         for k, v in temp_data.items():
@@ -240,6 +248,10 @@ class ChildMaterials:
         del temp_data, temp
 
     def click_add_data(self):  # Метод добавления элемента в таблицу
+        """
+        Метод, реализующий добавление в таблицу элемента из
+        пользовательского интерфейса.
+        """
         temp_new = self.config_material_data.material_config
         # Считывание данных с полей ввода
         new_name = self.ent_name_mat.get()
@@ -296,6 +308,10 @@ class ChildMaterials:
             self.child_root.update()
 
     def click_del_data(self):  # Удаление выбранной строки из таблицы
+        """
+        Метод удаления выделенного в таблице материала (выделенной
+        пользователем строки).
+        """
         deleted_data_config = self.config_material_data.material_config
 
         # Удаление выбранной строки
@@ -331,6 +347,10 @@ class ChildMaterials:
         del deleted_data_config
 
     def get_default_materials(self):
+        """
+        Метод сброса базы материала до настроек "по-умолчанию". После сброса
+        реализуется обновление данных в таблице.
+        """
         if askokcancel('Сброс настроек', 'Вы действительно хотите сбросить '
                                          'настройки по умолчанию?'):
             self.config_material_data.get_default()
@@ -347,14 +367,24 @@ class ChildMaterials:
         self.get_data_child()
 
     def grab_focus(self):  # Метод сохранения фокуса на дочернем окне
+        """
+        Метод захвата фокуса на дочернем окне.
+        """
         self.child_root.grab_set()
         self.child_root.focus_set()
         self.child_root.wait_window()
 
     def destroy_child(self):  # Метод закрытия дочернего окна
+        """
+        Метод, реализующий закрытие окна.
+        """
         self.child_root.destroy()
 
     def run_matrix_window(self):  # Метод открытия дочернего окна матрицы
+        """
+        Метод открытия дочернего окна с редактированием стоимостей изделий
+        для выбранного в таблице материала.
+        """
         # Считывание название материала
         try:
             matrix_material_name = self.material_table.item(
@@ -363,7 +393,6 @@ class ChildMaterials:
                 self.child_root,
                 700,
                 450,
-                laser_type='Твердотельный лазер',
                 theme='forest-light',
                 icon="resources/Company_logo.ico",
                 material_name=matrix_material_name
@@ -379,7 +408,6 @@ class ChildMaterials:
 
 class ChildMatrixMaterial:
     def __init__(self, parent, width: int, height: int, theme: str,
-                 laser_type: str,
                  material_name: str = None,
                  title=f'Матрица стоимостей материала',
                  resizable=(False, False), icon=None):
@@ -394,7 +422,6 @@ class ChildMatrixMaterial:
         :param title: Название окна;
         :param resizable: Возможность растягивания окна;
         :param icon: Иконка окна;
-        :laser_type: Тип оборудования для работы с данным материалом.
         """
         # Создание дочернего окна поверх основного
         self.matrix_root = tk.Toplevel(parent)
@@ -412,10 +439,14 @@ class ChildMatrixMaterial:
         self.style_child = ttk.Style(self.matrix_root)
         self.style_child.theme_use(theme)
 
+        # Создание основной переменной конфигурации для выбранного материала
+        self.config_matrix_cost = Interpolation(material_name)
+
         # Основные виджеты окна
 
+
         # Прорисовка окна в зависимости от типа оборудования
-        if laser_type == 'Твердотельный лазер':
+        if self.config_matrix_cost.get_laser_type() == 'solid':
             self.draw_solid_widget()
         else:
             self.draw_gas_widget()

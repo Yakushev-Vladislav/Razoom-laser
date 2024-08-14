@@ -17,6 +17,10 @@ class Materials:
                                   encoding='utf-8')
 
     def get_mat(self):  # Метод, возвращающий словарь Название-стоимость
+        """
+        Метод возвращения словаря "Название-стоимость"
+        :return: Словарь "название - стоимость листа"
+        """
         my_price = dict()
         for k, v in self.material_config['MAIN'].items():
             temp = [x for x in v.split(',')]
@@ -24,6 +28,10 @@ class Materials:
         return my_price
 
     def get_gab_width(self):  # Метод, возвращающий словарь Название-ширина
+        """
+        Метод возвращения словаря "название - ширина листа"
+        :return: Словарь "название - ширина листа"
+        """
         mat_gab_width = dict()
         for k, v in self.material_config['MAIN'].items():
             temp = [x for x in v.split(',')]
@@ -31,6 +39,10 @@ class Materials:
         return mat_gab_width
 
     def get_gab_height(self):  # Метод, возвращающий словарь Название-высота
+        """
+        Метод возвращения словаря "название - высота листа"
+        :return: Словарь "название - высота листа"
+        """
         mat_gab_height = dict()
         for k, v in self.material_config['MAIN'].items():
             temp = [x for x in v.split(',')]
@@ -38,12 +50,20 @@ class Materials:
         return mat_gab_height
 
     def get_type_of_laser(self):  # Метод, возвращающий словарь Название-лазер
+        """
+        Метод возвращения словаря "название - тип оборудования"
+        :return: Словарь "название - тип оборудования"
+        """
         mat_type_of_laser = dict()
         for k, v in self.material_config['MAIN'].items():
             mat_type_of_laser[k] = [x for x in v.split(',')][-1]
         return mat_type_of_laser
 
     def update_materials(self, some_new=None):  # Обновление файла конфигурации
+        """
+        Метод обновления файла конфигурации.
+        :param some_new: Переменная конфигурации с новыми данными
+        """
         if some_new:
             with (open('settings/material_data.ini', 'w', encoding='utf-8') as
                   configfile):
@@ -55,6 +75,9 @@ class Materials:
 
     @staticmethod
     def get_default():
+        """
+        Метод сброса файла конфигурации "по-умолчанию"
+        """
         destination_path = 'settings/material_data.ini'
         source_path = 'settings/default/material_data.ini'
         if os.path.exists(destination_path):
@@ -63,11 +86,12 @@ class Materials:
 
 
 class Calculation:
-    def __init__(self, w, h, mat_name):
-
+    def __init__(self, width: int, height: int, mat_name: str):
         """
-        Класс, реализующий расчет себестоимости изделия по выбранному
-        материалу.
+        Класс реализующий алгоритм упаковки в контейнере.
+        :param width: Ширина изделия
+        :param height: Высота изделия
+        :param mat_name: Название материала
         """
 
         # Создание переменных
@@ -79,13 +103,17 @@ class Calculation:
         # Получение габаритов листа с учетом коэффициента обрезков
         self.w_big = Materials().get_gab_width()[mat_name] * 0.9
         self.h_big = Materials().get_gab_height()[mat_name]
-        self.width = w
-        self.height = h
+        self.width = width
+        self.height = height
 
         # Получение стоимости выбранного материала (самого листа)
         self.price = Materials().get_mat()[mat_name]
 
     def figure_1(self):  # Первый метод упаковки
+        """
+        Первый метод упаковки.
+        :return: Возможное количество размещенных изделий на листе
+        """
         try:
             # Проверка максимальной вместимости контейнера в строках и столбцах
             self.figure_per_rows = self.w_big // self.width
@@ -106,6 +134,11 @@ class Calculation:
         return self.total_1
 
     def figure_2(self):  # Второй метод упаковки (изделие повернуто на 90 гр.)
+        """
+        Второй метод упаковки. Здесь заменены высота и ширина изделия друг
+        на друга. Соответственно упаковываем повернутое на 90 градусов изделие
+        :return: Возможное количество размещенных изделий на листе
+        """
         try:
             # Проверка максимальной вместимости контейнера в строках и столбцах
             self.figure_per_rows = self.w_big // self.height
@@ -127,6 +160,10 @@ class Calculation:
         return self.total_2
 
     def get_price(self):  # Метод, возвращающий себестоимость материала
+        """
+        Интерфейсный метод возвращения себестоимости материала
+        :return: Себестоимость материала
+        """
         return self.price
 
 
