@@ -347,3 +347,17 @@ class Interpolation:
             result = 0
 
         return result
+
+    def update_matrix(self, some_new=None):  # Обновление файла конфигурации
+        """
+        Метод обновления файла конфигурации.
+        :param some_new: Переменная конфигурации с новыми данными
+        """
+        if some_new:
+            with (open(f'settings/materials/{self.name}.ini', 'w',
+                       encoding='utf-8') as configfile):
+                some_new.write(configfile)
+        else:
+            with (open(f'settings/materials/{self.name}.ini', 'w',
+                       encoding='utf-8') as configfile):
+                self.matrix_config.write(configfile)

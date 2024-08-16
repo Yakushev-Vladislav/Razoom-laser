@@ -111,9 +111,8 @@ class Window:
         self.tab_mian_calculate.rowconfigure(index=2, weight=4)
 
         self.tab_sheet_material.columnconfigure(index=0, weight=1)
-        self.tab_sheet_material.columnconfigure(index=1, weight=50)
-        self.tab_sheet_material.rowconfigure(index=0, weight=2)
-        self.tab_sheet_material.rowconfigure(index=1, weight=1)
+        self.tab_sheet_material.rowconfigure(index=0, weight=1)
+        self.tab_sheet_material.rowconfigure(index=1, weight=2)
 
         self.tab_industrial_calculator.columnconfigure(index=0, weight=1)
         self.tab_industrial_calculator.columnconfigure(index=1, weight=1)
@@ -168,7 +167,6 @@ class Window:
         self.panel_1.rowconfigure(index=5, weight=1)
         self.panel_1.rowconfigure(index=6, weight=1)
         self.panel_1.rowconfigure(index=7, weight=1)
-        self.panel_1.rowconfigure(index=8, weight=1)
 
         self.panel_2.columnconfigure(index=0, weight=1)
         self.panel_2.columnconfigure(index=1, weight=1)
@@ -225,19 +223,14 @@ class Window:
         self.rbt_co2.grid(row=1, column=1, padx=5, pady=0,
                           sticky="ns")
 
-        # Подписи к формам ввода области гравировки
-        ttk.Label(self.panel_1, text='Размер области гравировки').grid(
-            row=2, column=0, columnspan=2, padx=5, pady=2, sticky='ns'
-        )
-
         # Поля ввода габаритов изделия
         self.ent_width_grav = ttk.Entry(self.panel_1, width=30)
         self.ent_width_grav.grid(
-            row=4, column=0, padx=10, pady=0, sticky='nsew'
+            row=3, column=0, padx=10, pady=0, sticky='nsew'
         )
         self.ent_height_grav = ttk.Entry(self.panel_1, width=30)
         self.ent_height_grav.grid(
-            row=4, column=1, padx=10, pady=0, sticky='nsew'
+            row=3, column=1, padx=10, pady=0, sticky='nsew'
         )
 
         # Переключатель вращателя/плоскости
@@ -248,7 +241,7 @@ class Window:
             style="Switch"
         )
         self.switch_rotation.grid(
-            row=5, column=0, padx=5, pady=5, sticky="ns")
+            row=4, column=0, padx=5, pady=5, sticky="ns")
 
         # Переключатель -Разные макеты-
         self.chk_different = ttk.Checkbutton(
@@ -257,26 +250,27 @@ class Window:
             variable=self.bool_different,
             style="Switch"
         )
-        self.chk_different.grid(row=5, column=1, padx=5, pady=5, sticky="ns")
+        self.chk_different.grid(row=4, column=1, padx=5, pady=5, sticky="ns")
 
         # Переключатель количества изделий
         ttk.Label(self.panel_1, text='Количество изделий:').grid(
-            row=6, column=0, padx=0, pady=5, sticky='ns'
+            row=5, column=0, padx=0, pady=5, sticky='ns'
         )
-        self.spin_number = ttk.Spinbox(self.panel_1, from_=1, to=10000)
+        self.spin_number = ttk.Spinbox(self.panel_1, from_=1, to=10000,
+                                       width=25)
         self.spin_number.insert(0, '1')
         self.spin_number.grid(
-            row=6, column=1, padx=0, pady=5, sticky='ns'
+            row=5, column=1, padx=10, pady=5, sticky='ns'
         )
 
         # Переключатель количества прицелов
         ttk.Label(self.panel_1, text='Количество прицелов:').grid(
-            row=7, column=0, padx=0, pady=5, sticky='ns'
+            row=6, column=0, padx=0, pady=5, sticky='ns'
         )
-        self.spin_aim = ttk.Spinbox(self.panel_1, from_=1, to=10000)
+        self.spin_aim = ttk.Spinbox(self.panel_1, from_=1, to=10000, width=25)
         self.spin_aim.insert(0, '1')
         self.spin_aim.grid(
-            row=7, column=1, padx=0, pady=5, sticky='ns'
+            row=6, column=1, padx=10, pady=5, sticky='ns'
         )
 
         # Кнопка запуска расчетов
@@ -286,7 +280,7 @@ class Window:
             command=self.get_calc
         )
         self.btn_calculate.grid(
-            row=8, column=0, padx=10, pady=10, sticky='nsew', columnspan=2
+            row=7, column=0, padx=10, pady=10, sticky='nsew', columnspan=2
         )
 
         # Создание переключателей в форме углубленного расчета
@@ -500,7 +494,7 @@ class Window:
         # Создание формы для виджетов
         self.panel_sheet_materials_widgets = ttk.Frame(self.tab_sheet_material)
         self.panel_sheet_materials_widgets.grid(
-            row=0, column=1, padx=20, pady=(10, 10), sticky="nsew")
+            row=0, column=0, padx=20, pady=(10, 10), sticky="nsew")
 
         # Конфигурация формы виджетов
         self.panel_sheet_materials_widgets.columnconfigure(index=0, weight=1)
@@ -510,13 +504,12 @@ class Window:
         self.panel_sheet_materials_widgets.rowconfigure(index=0, weight=1)
         self.panel_sheet_materials_widgets.rowconfigure(index=1, weight=1)
         self.panel_sheet_materials_widgets.rowconfigure(index=2, weight=1)
-        self.panel_sheet_materials_widgets.rowconfigure(index=3, weight=1)
 
         # Создание формы для вывода результатов
         self.panel_sheet_materials_result = ttk.LabelFrame(
             self.tab_sheet_material, text='Результаты')
         self.panel_sheet_materials_result.grid(
-            row=1, column=1, padx=20, pady=30, sticky="nsew")
+            row=1, column=0, padx=20, pady=30, sticky="nsew")
 
         # Конфигурация формы для вывода результатов
         self.panel_sheet_materials_result.columnconfigure(index=0, weight=1)
@@ -527,14 +520,8 @@ class Window:
         self.panel_sheet_materials_result.rowconfigure(index=3, weight=1)
 
         # Виджеты ввода количества изделий
-        ttk.Label(self.panel_sheet_materials_widgets,
-                  text='Количество изделий:').grid(
-            row=0, column=0, padx=(0, 5), pady=10, sticky='nsew')
-        self.ent_num = ttk.Entry(self.panel_sheet_materials_widgets, width=10)
-        self.ent_num.grid(row=0, column=1, padx=10, pady=20, sticky='nsew')
-        ttk.Label(self.panel_sheet_materials_widgets, text='шт.').grid(
-            row=0, column=2, padx=15, pady=10, sticky='nsew'
-        )
+        self.ent_num = ttk.Entry(self.panel_sheet_materials_widgets, width=20)
+        self.ent_num.grid(row=0, column=0, padx=10, pady=20, sticky='nsew')
 
         # Получение материалов
         self.material_list = list()
@@ -542,9 +529,6 @@ class Window:
             self.material_list.append(n)
 
         # Виджеты выбора материала
-        ttk.Label(self.panel_sheet_materials_widgets,
-                  text='Выберите материал:').grid(
-            row=1, column=0, padx=(0, 5), pady=10, sticky='nsew')
         self.combo_mat = ttk.Combobox(
             self.panel_sheet_materials_widgets,
             width=35,
@@ -552,25 +536,16 @@ class Window:
         )
         self.combo_mat.current(0)
         self.combo_mat.grid(
-            row=1, column=1, padx=10, pady=20, columnspan=4, sticky='nsew'
+            row=1, column=0, padx=10, pady=20, columnspan=3, sticky='nsew'
         )
-
-        # Подписи для полей ввода габаритов изделия
-        ttk.Label(self.panel_sheet_materials_widgets,
-                  text='Введите габариты изделия:').grid(
-            row=3, column=0, padx=(0, 5), pady=10, sticky='nsew')
-        ttk.Label(self.panel_sheet_materials_widgets, text='Ширина, мм').grid(
-            row=2, column=1, padx=(10, 10), pady=5, sticky='ns')
-        ttk.Label(self.panel_sheet_materials_widgets, text='Высота, мм').grid(
-            row=2, column=2, padx=(10, 10), pady=5, sticky='ns')
 
         # Поля ввода габаритов изделия
         self.ent_width = ttk.Entry(
             self.panel_sheet_materials_widgets, width=20)
-        self.ent_width.grid(row=3, column=1, padx=10, pady=20, sticky='nsew')
+        self.ent_width.grid(row=0, column=1, padx=10, pady=20, sticky='nsew')
         self.ent_height = ttk.Entry(
             self.panel_sheet_materials_widgets, width=20)
-        self.ent_height.grid(row=3, column=2, padx=10, pady=20, sticky='nsew')
+        self.ent_height.grid(row=0, column=2, padx=10, pady=20, sticky='nsew')
 
         # Кнопка запуска расчетов
         self.btn_materials = ttk.Button(
@@ -580,7 +555,7 @@ class Window:
             command=self.get_calc_mat
         )
         self.btn_materials.grid(
-            row=3, column=3, padx=10, pady=20, columnspan=3, sticky='nsew'
+            row=1, column=3, padx=10, pady=20, columnspan=3, sticky='nsew'
         )
 
         # Виджеты результатов расчета
@@ -662,7 +637,7 @@ class Window:
             command=self.update_base
         )
         self.btn_update.grid(
-            row=0, column=3, padx=10, pady=20, columnspan=3, sticky='nsew'
+            row=0, column=3, padx=10, pady=20, columnspan=1, sticky='nsew'
         )
 
         # ____________________3 ВКЛАДКА____________________
@@ -1346,11 +1321,11 @@ class Window:
         self.root.bind('<Return>', self.get_return_by_keyboard)
 
         # Установка фонового текста в поля ввода
-        BindEntry(self.ent_width_grav, text='Ширина, мм')
-        BindEntry(self.ent_height_grav, text='Высота, мм')
-        BindEntry(self.ent_num)
-        BindEntry(self.ent_width)
-        BindEntry(self.ent_height)
+        BindEntry(self.ent_width_grav, text='Ширина гравировки, мм')
+        BindEntry(self.ent_height_grav, text='Высота гравировки, мм')
+        BindEntry(self.ent_num, text='Количество изделий, шт')
+        BindEntry(self.ent_width, text='Ширина, мм')
+        BindEntry(self.ent_height, text='Высота, мм')
         BindEntry(self.ent_time_of_work)
         BindEntry(self.ent_items_in_one)
         BindEntry(self.ent_design)

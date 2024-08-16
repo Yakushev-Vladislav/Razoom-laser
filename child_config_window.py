@@ -558,7 +558,7 @@ class ChildConfigSet:
         self.child_tabs_control.select(self.tab_main_settings)
 
     def click_add_standard(self):  # Метод добавления новой стандартной работы
-        # Создание переменной конфигурации
+        # Создание локальной переменной конфигурации
         add_config = self.child_temp_config.config
 
         # Считываем с окон новые данные

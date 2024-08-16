@@ -29,6 +29,9 @@ class ChildMaterials:
         if icon:
             self.child_root.iconbitmap(icon)
 
+        # Создание переменной - ссылки на родителя
+        self.parent = parent
+
         # Установка стиля окна
         self.style_child = ttk.Style(self.child_root)
         self.style_child.theme_use(theme)
@@ -441,6 +444,7 @@ class ChildMatrixMaterial:
 
         # Создание основной переменной конфигурации для выбранного материала
         self.config_matrix_cost = Interpolation(material_name)
+        self.string_name_list = list()
 
         # Создание основных виджетов окна (полей ввода)
         # ___Первая строка "Маленькие"___
@@ -709,13 +713,12 @@ class ChildMatrixMaterial:
         temp_config = self.config_matrix_cost.matrix_config['COSTS']
 
         # Создание списка названий строк
-        string_name_list = list()
         for key in temp_config.keys():
-            string_name_list.append(key)
+            self.string_name_list.append(key)
 
         # Записываем данные в поля ввода
-        for i in range(len(string_name_list)):
-            temp_string = [float(x) for x in temp_config[string_name_list[
+        for i in range(len(self.string_name_list)):
+            temp_string = [float(x) for x in temp_config[self.string_name_list[
                 i]].split(', ')]
             for j in range(len(temp_string)):
                 self.matrix_entries[i][j].delete(0, tk.END)
@@ -723,9 +726,27 @@ class ChildMatrixMaterial:
 
     def click_save_data(self):
         """
-        Метод сохранения настроек.
+        Метод сохранения изменений в файл конфигурации.
         """
-        pass
+        # Создание локальной переменной конфига
+        temp_config = self.config_matrix_cost.matrix_config
+
+        try:
+            if askokcancel('Сохранение',
+                           'Сохранить матрицу стоимостей?'):
+                # Считывание данных
+                for i in range(len(self.string_name_list)):
+                    temp_string = list()
+                    for item in self.matrix_entries[i]:
+                        temp_string.append(item.get())
+                    temp_config['COSTS'][self.string_name_list[i]] =\
+                        ', '.join(temp_string)
+
+            # Запись новых данных в файл
+            self.config_matrix_cost.update_matrix(some_new=temp_config)
+
+        except ValueError:
+            pass
 
     def click_reset_data(self):
         """
