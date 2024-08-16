@@ -453,6 +453,9 @@ class ChildMatrixMaterial:
         self.ent_little_five_hundred = ttk.Entry(self.matrix_root, width=10)
         self.ent_little_one_thousand = ttk.Entry(self.matrix_root, width=10)
 
+        # Создаем матрицу полей ввода
+        self.matrix_entries = list()
+
         # Добавляем поля в список для дальнейшего удобного пользования
         self.little_entries = [self.ent_little_one,
                                self.ent_little_five,
@@ -461,6 +464,8 @@ class ChildMatrixMaterial:
                                self.ent_little_one_hundred_fifty,
                                self.ent_little_five_hundred,
                                self.ent_little_one_thousand]
+
+        self.matrix_entries.append(self.little_entries)
 
         # ___Вторая строка "Средние"___
         self.ent_middle_one = ttk.Entry(self.matrix_root, width=10)
@@ -481,6 +486,8 @@ class ChildMatrixMaterial:
                                self.ent_middle_five_hundred,
                                self.ent_middle_one_thousand]
 
+        self.matrix_entries.append(self.middle_entries)
+
         # ___Третья строка "Большие"___
         self.ent_big_one = ttk.Entry(self.matrix_root, width=10)
         self.ent_big_five = ttk.Entry(self.matrix_root, width=10)
@@ -498,6 +505,8 @@ class ChildMatrixMaterial:
                             self.ent_big_one_hundred_fifty,
                             self.ent_big_five_hundred,
                             self.ent_big_one_thousand]
+
+        self.matrix_entries.append(self.big_entries)
 
         # ___Четвертая (пятая для СО2) строка "Негабаритные (Огромные)"___
         self.ent_oversize_one = ttk.Entry(self.matrix_root, width=10)
@@ -518,6 +527,8 @@ class ChildMatrixMaterial:
                                  self.ent_oversize_five_hundred,
                                  self.ent_oversize_one_thousand]
 
+        self.matrix_entries.append(self.oversize_entries)
+
         # ___Строка "Очень большие" для СО2___
         self.ent_very_big_one = ttk.Entry(self.matrix_root, width=10)
         self.ent_very_big_five = ttk.Entry(self.matrix_root, width=10)
@@ -537,6 +548,8 @@ class ChildMatrixMaterial:
                                  self.ent_very_big_five_hundred,
                                  self.ent_very_big_one_thousand]
 
+        self.matrix_entries.append(self.very_big_entries)
+
         # Кнопка сохранения результатов
         self.btn_save = ttk.Button(
             self.matrix_root,
@@ -553,6 +566,9 @@ class ChildMatrixMaterial:
         )
         # Прорисовка интерфейса окна (виджетов)
         self.draw_widgets()
+
+        # Запись данных в поля ввода
+        self.add_entries_data()
 
     def draw_widgets(self):
         """
@@ -683,6 +699,27 @@ class ChildMatrixMaterial:
         self.btn_reset.grid(
             row=6, column=0, padx=10, pady=10, sticky='nsew', columnspan=1
         )
+
+    def add_entries_data(self):
+        """
+        Метод записи данных в поля ввода. Данные берутся из
+        соответствующего файла конфигурации.
+        """
+        # Создание локальной переменной конфигурации
+        temp_config = self.config_matrix_cost.matrix_config['COSTS']
+
+        # Создание списка названий строк
+        string_name_list = list()
+        for key in temp_config.keys():
+            string_name_list.append(key)
+
+        # Записываем данные в поля ввода
+        for i in range(len(string_name_list)):
+            temp_string = [float(x) for x in temp_config[string_name_list[
+                i]].split(', ')]
+            for j in range(len(temp_string)):
+                self.matrix_entries[i][j].delete(0, tk.END)
+                self.matrix_entries[i][j].insert(0, f'{temp_string[j]:.0f}')
 
     def click_save_data(self):
         """
