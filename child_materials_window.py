@@ -285,6 +285,9 @@ class ChildMaterials:
                                           f' {new_price}, {type_of_laser}')
             self.config_material_data.update_materials(some_new=temp_new)
 
+            # Создание матрицы стоимостей
+            self.config_material_data.add_matrix_file(new_name, type_of_laser)
+
             # Обновление данных в таблице
             # Очистка таблицы
             for item in self.material_table.get_children():
@@ -321,18 +324,21 @@ class ChildMaterials:
         try:  # Проверка на то, что пользователь выбрал материал
             deleted_data = self.material_table.item(
                 self.material_table.focus())
+            material_name = str(deleted_data["values"][0])
 
             # Удаление выбранного элемента
             if askokcancel('Удаление элемента',
                            f'Вы действительно хотите удалить:\n'
-                           f'"{str(deleted_data["values"][0])}"'):
-                self.config_material_data.get_default()
+                           f'"{material_name}"'):
                 deleted_data_config.remove_option(
-                    'MAIN', str(deleted_data['values'][0]))
+                    'MAIN', material_name)
 
                 # Обновление данных в файле конфигурации
                 self.config_material_data.update_materials(
                     some_new=deleted_data_config)
+
+                # Удаление файла с матрицей стоимостей
+                self.config_material_data.del_matrix_file(material_name)
 
         except (ValueError, KeyboardInterrupt, IndexError):
             tk.messagebox.showerror(
@@ -445,6 +451,9 @@ class ChildMatrixMaterial:
         # Создание основной переменной конфигурации для выбранного материала
         self.config_matrix_cost = Interpolation(material_name)
         self.string_name_list = list()
+
+        # Название материала
+        self.material_name = material_name
 
         # Создание основных виджетов окна (полей ввода)
         # ___Первая строка "Маленькие"___
@@ -752,7 +761,12 @@ class ChildMatrixMaterial:
         """
         Метод сброса настроек "по-умолчанию"
         """
-        pass
+        # Создание локальной переменной конфига
+        self.config_matrix_cost.get_default()
+        self.config_matrix_cost = Interpolation(self.material_name)
+
+        # Обновляем данные в полях ввода
+        self.add_entries_data()
 
     def grab_focus(self):  # Метод сохранения фокуса на дочернем окне
         self.matrix_root.grab_set()
