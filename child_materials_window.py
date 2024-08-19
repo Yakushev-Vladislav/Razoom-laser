@@ -223,6 +223,9 @@ class ChildMaterials:
         подсказок к элементам интерфейса.
         """
 
+        # Получение выделенного в таблице материала
+        self.material_table.bind('<Button-1>', self.material_table_bind)
+
         # Установка фонового текста в полях ввода
         BindEntry(self.ent_name_mat, text='Материал')
         BindEntry(self.ent_width_mat, text='Ширина, мм')
@@ -230,10 +233,25 @@ class ChildMaterials:
         BindEntry(self.ent_price_mat, text='Цена, руб')
 
         # Установка подсказок
+        BalloonTips(self.ent_name_mat,
+                    text=f'Выделите строку в таблице,чтобы\n'
+                         f'редактировать существующий материал.')
         BalloonTips(self.btn_del,
                     text=f'Выделите строку в таблице.')
         BalloonTips(self.btn_matrix_run,
                     text=f'Выделите строку в таблице.')
+
+    def material_table_bind(self, event=None):
+        try:  # Проверка на то, что пользователь выбрал материал
+            data = self.material_table.item(
+                self.material_table.focus())
+            material_name = str(data["values"][0])
+            self.ent_name_mat.delete(0, tk.END)
+            BindEntry(self.ent_name_mat, text=material_name)
+        except (ValueError, KeyboardInterrupt, IndexError):
+            self.ent_name_mat.delete(0, tk.END)
+            BindEntry(self.ent_name_mat, text='Материал')
+        self.not_use_child = event
 
     def get_data_child(self):  # Обновление списка материалов для таблицы
         """
@@ -353,6 +371,10 @@ class ChildMaterials:
         # Запись новых данных в таблицу
         self.get_data_child()
 
+        # Сбрасываем поле ввода названия материала
+        self.ent_name_mat.delete(0, tk.END)
+        BindEntry(self.ent_name_mat, text='Материал')
+
         del deleted_data_config
 
     def get_default_materials(self):
@@ -374,6 +396,10 @@ class ChildMaterials:
 
         # Запись новых данных в таблицу
         self.get_data_child()
+
+        # Сбрасываем поле ввода названия материала
+        self.ent_name_mat.delete(0, tk.END)
+        BindEntry(self.ent_name_mat, text='Материал')
 
     def grab_focus(self):  # Метод сохранения фокуса на дочернем окне
         """

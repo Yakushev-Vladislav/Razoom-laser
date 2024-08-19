@@ -92,21 +92,28 @@ class Materials:
         """
         destination_path = f'settings/materials'
         file_new_name = f'settings/materials/{material_name}.ini'
-        if laser_type == 'gas':
-            source_path = 'settings/default/materials/default_gas.ini'
-            file_old_name = 'settings/materials/default_gas.ini'
+
+        # Если редактируем имеющийся материал
+        if os.path.exists(f'settings/materials/{material_name}.ini'):
+            pass
+
+        # Если создаем новый материал
         else:
-            source_path = 'settings/default/materials/default_solid.ini'
-            file_old_name = 'settings/materials/default_solid.ini'
+            if laser_type == 'gas':
+                source_path = 'settings/default/materials/default_gas.ini'
+                file_old_name = 'settings/materials/default_gas.ini'
+            else:
+                source_path = 'settings/default/materials/default_solid.ini'
+                file_old_name = 'settings/materials/default_solid.ini'
 
-        # Копируем файл в папку назначения
-        shutil.copy(
-            source_path,
-            os.path.join(destination_path)
-        )
+            # Копируем файл в папку назначения
+            shutil.copy(
+                source_path,
+                os.path.join(destination_path)
+            )
 
-        # Переименовываем файл
-        os.rename(file_old_name, file_new_name)
+            # Переименовываем файл
+            os.rename(file_old_name, file_new_name)
 
     @staticmethod
     def get_default():

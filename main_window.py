@@ -794,7 +794,7 @@ class Window:
 
         # Конфигурация подменю и меню
         menu_bar.add_cascade(label='Файл', menu=file_menu)
-        menu_bar.add_cascade(label='Вид', menu=view_menu)
+        # Пока уберем: menu_bar.add_cascade(label='Вид', menu=view_menu)
         menu_bar.add_cascade(label='Помощь', menu=help_menu)
         menu_bar.add_command(label='Обновить', command=self.settings_update)
         self.root.configure(menu=menu_bar)
