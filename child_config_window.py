@@ -711,6 +711,20 @@ class ChildConfigSet:
         BindEntry(self.ent_cost, text='Стоимость, руб')
         BindEntry(self.ent_name, text='Название')
 
+        self.standard_table.bind('<Button-1>', self.bind_treeview)
+
+    def bind_treeview(self, event=None):
+        try:  # Проверка на то, что пользователь выбрал материал
+            data = self.standard_table.item(
+                self.standard_table.focus())
+            material_name = str(data["values"][0])
+            self.ent_name.delete(0, tk.END)
+            BindEntry(self.ent_name, text=material_name)
+        except (ValueError, KeyboardInterrupt, IndexError):
+            self.ent_name.delete(0, tk.END)
+            BindEntry(self.ent_name, text='Название').to_add_entry_child()
+        self.not_use = event
+
     def grab_focus(self):  # Метод сохранения фокуса на дочернем окне
         self.child_root.grab_set()
         self.child_root.focus_set()
