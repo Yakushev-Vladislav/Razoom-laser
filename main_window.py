@@ -10,7 +10,7 @@ from tkinter.messagebox import askokcancel
 from math import ceil
 from child_materials_window import ChildMaterials
 from child_power_set_window import ChildPowerSet
-from materials import Materials, Calculation
+from materials import Materials, Calculation, Interpolation
 from child_config_window import ChildConfigSet
 from child_config_window import ConfigSet
 from child_config_window import RatioArea
@@ -1261,6 +1261,16 @@ class Window:
             except ZeroDivisionError:
                 total_4 = 0.0
 
+            try:
+                total_5 = Interpolation(material_name).get_cost(
+                    gab_height,
+                    gab_width,
+                    number_of_products)
+                total_6 = total_5 * number_of_products
+            except (ValueError, ZeroDivisionError):
+                total_5 = 0.0
+                total_6 = 0.0
+
             # Вывод результатов
             self.lbl_result_1.config(
                 text=f"Себестоимость одного изделия:"
@@ -1277,6 +1287,16 @@ class Window:
             self.lbl_result_4.config(
                 text=f"Минимальное количество листов на партию:"
                      f"  {total_4:.0f}  шт."
+            )
+
+            self.lbl_result_5.config(
+                text=f"Стоимость изделия:"
+                     f"  {self.round_result(total_5):.0f}  руб/шт."
+            )
+
+            self.lbl_result_6.config(
+                text=f"Стоимость партии:"
+                     f"  {self.round_result(total_6):.0f}  руб."
             )
 
     def update_base(self):  # Метод обновления списка листового материала
