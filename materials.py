@@ -431,11 +431,26 @@ class Interpolation:
         if os.path.exists(destination_path):
             os.remove(destination_path)
 
-        # Если изделие нестандартное, то меняем путь к файлу по-умолчанию
-        if os.path.exists(source_path) is False:
-            if self.get_laser_type() == 'gas':
-                source_path = f'settings/default/materials/default_gas.ini'
-            else:
-                source_path = f'settings/default/materials/default_solid.ini'
+        # Если изделие стандартное
+        if os.path.exists(source_path):
+            shutil.copy2(source_path, destination_path)
 
-        shutil.copy2(source_path, destination_path)
+        # Если изделие нестандартное, то меняем путь к файлу по-умолчанию
+        else:
+            destination_path = f'settings/materials'
+            file_new_name = f'settings/materials/{self.name}.ini'
+            if self.get_laser_type() == 'gas':
+                source_path = 'settings/default/materials/default_gas.ini'
+                file_old_name = 'settings/materials/default_gas.ini'
+            else:
+                source_path = 'settings/default/materials/default_solid.ini'
+                file_old_name = 'settings/materials/default_solid.ini'
+
+            # Копируем файл в папку назначения
+            shutil.copy(
+                source_path,
+                os.path.join(destination_path)
+            )
+
+            # Переименовываем файл
+            os.rename(file_old_name, file_new_name)

@@ -722,6 +722,7 @@ class ChildMatrixMaterial:
         temp_config = self.config_matrix_cost.matrix_config['COSTS']
 
         # Создание списка названий строк
+        self.string_name_list = list()
         for key in temp_config.keys():
             self.string_name_list.append(key)
 
