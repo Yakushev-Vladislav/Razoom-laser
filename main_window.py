@@ -500,7 +500,6 @@ class Window:
         self.panel_sheet_materials_widgets.columnconfigure(index=0, weight=1)
         self.panel_sheet_materials_widgets.columnconfigure(index=1, weight=1)
         self.panel_sheet_materials_widgets.columnconfigure(index=2, weight=1)
-        self.panel_sheet_materials_widgets.columnconfigure(index=3, weight=1)
         self.panel_sheet_materials_widgets.rowconfigure(index=0, weight=1)
         self.panel_sheet_materials_widgets.rowconfigure(index=1, weight=1)
         self.panel_sheet_materials_widgets.rowconfigure(index=2, weight=1)
@@ -518,10 +517,11 @@ class Window:
         self.panel_sheet_materials_result.rowconfigure(index=1, weight=1)
         self.panel_sheet_materials_result.rowconfigure(index=2, weight=1)
         self.panel_sheet_materials_result.rowconfigure(index=3, weight=1)
+        self.panel_sheet_materials_result.rowconfigure(index=4, weight=1)
 
         # Виджеты ввода количества изделий
         self.ent_num = ttk.Entry(self.panel_sheet_materials_widgets, width=20)
-        self.ent_num.grid(row=0, column=0, padx=10, pady=20, sticky='nsew')
+        self.ent_num.grid(row=1, column=0, padx=10, pady=20, sticky='nsew')
 
         # Получение материалов
         self.material_list = list()
@@ -531,41 +531,64 @@ class Window:
         # Виджеты выбора материала
         self.combo_mat = ttk.Combobox(
             self.panel_sheet_materials_widgets,
-            width=35,
             values=self.material_list
         )
         self.combo_mat.current(0)
         self.combo_mat.grid(
-            row=1, column=0, padx=10, pady=20, columnspan=3, sticky='nsew'
+            row=0, column=0, padx=10, pady=20, columnspan=2, sticky='nsew'
         )
 
         # Поля ввода габаритов изделия
         self.ent_width = ttk.Entry(
             self.panel_sheet_materials_widgets, width=20)
-        self.ent_width.grid(row=0, column=1, padx=10, pady=20, sticky='nsew')
+        self.ent_width.grid(row=1, column=1, padx=10, pady=20, sticky='nsew')
         self.ent_height = ttk.Entry(
             self.panel_sheet_materials_widgets, width=20)
-        self.ent_height.grid(row=0, column=2, padx=10, pady=20, sticky='nsew')
+        self.ent_height.grid(row=1, column=2, padx=10, pady=20, sticky='nsew')
+
+        # Кнопка обновления списка материалов
+        self.btn_update = ttk.Button(
+            self.panel_sheet_materials_widgets,
+            width=20,
+            text="Обновить список",
+            command=self.update_base
+        )
+        self.btn_update.grid(
+            row=0, column=2, padx=10, pady=20, columnspan=1, sticky='nsew'
+        )
 
         # Кнопка запуска расчетов
-        self.btn_materials = ttk.Button(
+        self.btn_geet_cost_materials = ttk.Button(
             self.panel_sheet_materials_widgets,
-            width=15,
+            width=20,
             text="Рассчитать",
             command=self.get_calc_mat
         )
-        self.btn_materials.grid(
-            row=1, column=3, padx=10, pady=20, columnspan=3, sticky='nsew'
+        self.btn_geet_cost_materials.grid(
+            row=2, column=2, padx=10, pady=20, columnspan=1, sticky='nsew'
         )
+
+        # Поле ввода доплаты (макетирование и другое)
+        self.ent_draw_overprice = ttk.Entry(
+            self.panel_sheet_materials_widgets, width=20)
+        self.ent_draw_overprice.grid(
+            row=2, column=0, padx=10, pady=20, sticky='nsew')
+
+        # Переключатель скидки
+        self.spin_discount_material = ttk.Spinbox(
+            self.panel_sheet_materials_widgets, from_=0, to=30, width=20)
+        self.spin_discount_material.insert(0, '0')
+        self.spin_discount_material.configure(state='readonly')
+        self.spin_discount_material.grid(
+            row=2, column=1, padx=10, pady=20, sticky='nsew')
 
         # Виджеты результатов расчета
         # Виджет -Себестоимость одного изделия-
         self.lbl_result_1 = ttk.Label(
             self.panel_sheet_materials_result,
             text=f"Себестоимость одного изделия:"
-                 f"  {0:.0f}  руб.",
+                 f"  {0:.0f}  руб/шт.",
             font='Arial 12',
-            foreground='#217346'
         )
         self.lbl_result_1.grid(
             row=0, column=0, padx=10, pady=10, sticky='nsew'
@@ -577,7 +600,6 @@ class Window:
             text=f"Себестоимость партии:"
                  f"  {0:.0f}  руб.",
             font='Arial 12',
-            foreground='#217346'
         )
         self.lbl_result_2.grid(
             row=1, column=0, padx=10, pady=10, sticky='nsew'
@@ -591,7 +613,7 @@ class Window:
             font='Arial 12'
         )
         self.lbl_result_3.grid(
-            row=2, column=1, padx=10, pady=10, sticky='nsew'
+            row=0, column=1, padx=10, pady=10, sticky='nsew'
         )
 
         # Виджет -Количество листов на партию-
@@ -602,7 +624,7 @@ class Window:
             font='Arial 12'
         )
         self.lbl_result_4.grid(
-            row=3, column=1, padx=10, pady=10, sticky='nsew'
+            row=1, column=1, padx=10, pady=10, sticky='nsew'
         )
 
         # Виджет -Стоимость одного изделия партии-
@@ -610,12 +632,28 @@ class Window:
             self.panel_sheet_materials_result,
             text=f"Стоимость изделия:"
                  f"  {0:.0f}  руб/шт.",
-            font='Arial 15 bold',
+            font='Arial 14 bold',
             foreground='#217346'
         )
         self.lbl_result_5.grid(
             row=2, column=0, padx=10, pady=10, sticky='nsew'
         )
+
+        # Виджет -Макетирование-
+        self.lbl_result_7 = ttk.Label(
+            self.panel_sheet_materials_result,
+            text=f"Макетирование:"
+                 f"  {0:.0f}  руб.",
+            font='Arial 14 bold',
+            foreground='#217346'
+        )
+        self.lbl_result_7.grid(
+            row=2, column=1, padx=10, pady=10, sticky='nsew'
+        )
+
+        # Разделительная полоса
+        ttk.Separator(self.panel_sheet_materials_result).grid(
+            row=3, column=0, columnspan=2, pady=0, sticky='ew')
 
         # Виджет -Стоимость партии-
         self.lbl_result_6 = ttk.Label(
@@ -626,18 +664,7 @@ class Window:
             foreground='#217346'
         )
         self.lbl_result_6.grid(
-            row=3, column=0, padx=10, pady=10, sticky='nsew'
-        )
-
-        # Кнопка обновления списка материалов
-        self.btn_update = ttk.Button(
-            self.panel_sheet_materials_widgets,
-            width=15,
-            text="Обновить список",
-            command=self.update_base
-        )
-        self.btn_update.grid(
-            row=0, column=3, padx=10, pady=20, columnspan=1, sticky='nsew'
+            row=4, column=0, padx=10, pady=(0, 20), sticky='nsew'
         )
 
         # ____________________3 ВКЛАДКА____________________
@@ -1225,18 +1252,20 @@ class Window:
         number_of_products = self.ent_num.get()
         gab_width = self.ent_width.get()
         gab_height = self.ent_height.get()
+        discount = self.spin_discount_material.get()
+        design_cost = self.ent_draw_overprice.get()
 
-        # Проверка введенных данных
-        if (number_of_products.isdigit() is False) or (
-                gab_width.isdigit() is False) or (
-                gab_height.isdigit() is False):
-            pass
-
-        else:  # Если поля заполнены верно, выполняем расчет
-            # Переводим данные в число
+        # Если поля заполнены верно, выполняем расчет
+        try:
+            # Проверка и перевод введенных данных
             number_of_products = int(number_of_products)
-            gab_width = int(gab_width)
-            gab_height = int(gab_height)
+            gab_width = int(float(gab_width))
+            gab_height = int(float(gab_height))
+            discount = int(discount)
+            try:
+                design_cost = int(float(design_cost))
+            except (ValueError, TypeError):
+                design_cost = 0
 
             # Подсчет результатов
             # Количество изделий с листа
@@ -1266,7 +1295,11 @@ class Window:
                     gab_height,
                     gab_width,
                     number_of_products)
-                total_6 = total_5 * number_of_products
+
+                total_5 = self.round_result(total_5 * ((100-discount) / 100))
+
+                total_6 = total_5 * number_of_products + design_cost
+
             except (ValueError, ZeroDivisionError):
                 total_5 = 0.0
                 total_6 = 0.0
@@ -1274,7 +1307,7 @@ class Window:
             # Вывод результатов
             self.lbl_result_1.config(
                 text=f"Себестоимость одного изделия:"
-                     f"  {total_1:.0f}  руб."
+                     f"  {total_1:.0f}  руб/шт."
             )
             self.lbl_result_2.config(
                 text=f"Себестоимость партии:"
@@ -1291,12 +1324,22 @@ class Window:
 
             self.lbl_result_5.config(
                 text=f"Стоимость изделия:"
-                     f"  {self.round_result(total_5):.0f}  руб/шт."
+                     f"  {total_5:.0f}  руб/шт."
             )
 
             self.lbl_result_6.config(
                 text=f"Стоимость партии:"
-                     f"  {self.round_result(total_6):.0f}  руб."
+                     f"  {total_6:.0f}  руб."
+            )
+            self.lbl_result_7.config(
+                text=f"Макетирование:"
+                     f"  {design_cost:.0f}  руб."
+            )
+
+        except ValueError:
+            tk.messagebox.showerror(
+                'Ошибка ввода данных!',
+                'Данные не введены или введены некорректно.'
             )
 
     def update_base(self):  # Метод обновления списка листового материала
@@ -1349,6 +1392,8 @@ class Window:
         BindEntry(self.ent_time_of_work)
         BindEntry(self.ent_items_in_one)
         BindEntry(self.ent_design)
+        BindEntry(self.ent_draw_overprice, text='Доп. плата / Макетирование, '
+                                                'руб')
 
         # Установка подсказок для элементов в форме углубленного расчета
         BalloonTips(self.chk_ratio_timing,
@@ -1400,6 +1445,8 @@ class Window:
                          f'3: Гравировка  до 150 проходов;\n'
                          f'4: Гравировка  до 300 проходов;\n'
                          f'5: Гравировка  более 300 проходов.')
+        BalloonTips(self.spin_discount_material,
+                    text=f'Скидка оператора, %')
 
     def get_return_by_keyboard(self, event=None):  # Метод расчета от Enter
         if self.tabs_control.tabs().index(self.tabs_control.select()) == 0:
