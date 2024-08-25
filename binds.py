@@ -29,7 +29,7 @@ class BindEntry:
 
 
 class BalloonTips:
-    def __init__(self, widget, text=None):
+    def __init__(self, widget, text=None, delay=800):
         """
         Класс реализующий подсказки к элементам интерфейса
         :param widget: Виджет, на который устанавливается подсказка.
@@ -41,5 +41,6 @@ class BalloonTips:
                            text=text,
                            background="white",
                            foreground='grey',
-                           relief='flat'
+                           relief='flat',
+                           hover_delay=delay
                            )

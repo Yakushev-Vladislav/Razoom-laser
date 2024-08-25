@@ -234,24 +234,50 @@ class ChildMaterials:
 
         # Установка подсказок
         BalloonTips(self.ent_name_mat,
-                    text=f'Выделите строку в таблице,чтобы\n'
-                         f'редактировать существующий материал.')
+                    text=f'Название материала.\n\n'
+                         f'Выделите двойным нажатием строку в таблице,\n'
+                         f'чтобы редактировать существующий материал.')
+        BalloonTips(self.ent_width_mat, text='Ширина, мм')
+        BalloonTips(self.ent_height_mat, text='Высота, мм')
+        BalloonTips(self.ent_price_mat, text='Цена, руб')
         BalloonTips(self.btn_del,
-                    text=f'Выделите строку в таблице.')
+                    text=f'Для удаления выделите строку в таблице.')
         BalloonTips(self.btn_matrix_run,
-                    text=f'Выделите строку в таблице.')
+                    text=f'Для редактирования выделите строку в таблице.')
+        BalloonTips(self.btn_get_default, text='Сброс настроек '
+                                               '"по-умолчанию".')
 
     def material_table_bind(self, event=None):
         try:  # Проверка на то, что пользователь выбрал материал
             data = self.material_table.item(
                 self.material_table.focus())
             material_name = str(data["values"][0])
+            material_width = str(data["values"][1])
+            material_height = str(data["values"][2])
+            material_cost = str(data["values"][3])
+
             self.ent_name_mat.delete(0, tk.END)
             BindEntry(self.ent_name_mat, text=material_name)
+            self.ent_width_mat.delete(0, tk.END)
+            BindEntry(self.ent_width_mat, text=material_width)
+            self.ent_height_mat.delete(0, tk.END)
+            BindEntry(self.ent_height_mat, text=material_height)
+            self.ent_price_mat.delete(0, tk.END)
+            BindEntry(self.ent_price_mat, text=material_cost)
         except (ValueError, KeyboardInterrupt, IndexError):
-            self.ent_name_mat.delete(0, tk.END)
-            BindEntry(self.ent_name_mat, text='Материал')
+            self.reset_entries_data()
         self.not_use_child = event
+
+    def reset_entries_data(self):
+        """
+        Метод удаления текста из полей ввода и установка фонового текста.
+        """
+        # Сбрасываем поля ввода
+        self.ent_name_mat.delete(0, tk.END)
+        self.ent_width_mat.delete(0, tk.END)
+        self.ent_height_mat.delete(0, tk.END)
+        self.ent_price_mat.delete(0, tk.END)
+        self.add_bind_child()
 
     def get_data_child(self):  # Обновление списка материалов для таблицы
         """
@@ -371,9 +397,8 @@ class ChildMaterials:
         # Запись новых данных в таблицу
         self.get_data_child()
 
-        # Сбрасываем поле ввода названия материала
-        self.ent_name_mat.delete(0, tk.END)
-        BindEntry(self.ent_name_mat, text='Материал')
+        # Сбрасываем поля ввода
+        self.reset_entries_data()
 
         del deleted_data_config
 
@@ -397,9 +422,8 @@ class ChildMaterials:
         # Запись новых данных в таблицу
         self.get_data_child()
 
-        # Сбрасываем поле ввода названия материала
-        self.ent_name_mat.delete(0, tk.END)
-        BindEntry(self.ent_name_mat, text='Материал')
+        # Сбрасываем поля ввода
+        self.reset_entries_data()
 
     def grab_focus(self):  # Метод сохранения фокуса на дочернем окне
         """
@@ -427,7 +451,7 @@ class ChildMaterials:
             self.child_root.CHILD = ChildMatrixMaterial(
                 self.child_root,
                 830,
-                280,
+                310,
                 theme='forest-light',
                 icon="resources/Company_logo.ico",
                 material_name=matrix_material_name
@@ -707,6 +731,8 @@ class ChildMatrixMaterial:
         self.ent_oversize_one_thousand.grid(
             row=5, column=7, padx=(2, 10), pady=2, sticky='nsew'
         )
+
+        BalloonTips(self.btn_reset, text='Сброс настроек "по-умолчанию".')
 
     def draw_solid_widget(self):  # Метод прорисовки виджетов
         """
