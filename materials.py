@@ -335,13 +335,21 @@ class Interpolation:
         temp_matrix = self.matrix_config['COSTS']
 
         # Начальные значения верхней и нижней границ
-        lower_key = ['маленькие (50х30мм)', '50', '30']
-        if self.get_laser_type() == 'gas':
-            bigger_key = ['Огромные (600х400мм)', '600', '400']
-        else:
-            bigger_key = ['негабаритные (300х200мм)', '300', '200']
-        area = width * height
+        lower_key = ['', '1_000_000', '1_000_000']
+        bigger_key = ['', '0', '0']
+
+        # Принимаем из файла значения верхней и нижней границы для материала
+        for key in temp_matrix.keys():
+            temp_key = key.split(', ')
+            if float(temp_key[1]) * float(temp_key[2]) <= (
+                    float(lower_key[1]) * float(lower_key[2])):
+                lower_key = key.split(', ')
+            if float(temp_key[1]) * float(temp_key[2]) >= (
+                    float(bigger_key[1]) * float(bigger_key[2])):
+                bigger_key = key.split(', ')
+
         # Считаем площадь
+        area = width * height
         key_get_point = False
 
         # Получаем для наших габаритов нижнюю и верхнюю границу:

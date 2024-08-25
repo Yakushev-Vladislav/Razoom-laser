@@ -482,6 +482,29 @@ class ChildMatrixMaterial:
         self.material_name = material_name
 
         # Создание основных виджетов окна (полей ввода)
+        # Создаем матрицу полей ввода
+        self.matrix_entries = list()
+
+        # ___Нулевая строка "Мелкие"___
+        self.ent_tiny_one = ttk.Entry(self.matrix_root, width=10)
+        self.ent_tiny_five = ttk.Entry(self.matrix_root, width=10)
+        self.ent_tiny_fifteen = ttk.Entry(self.matrix_root, width=10)
+        self.ent_tiny_fifty = ttk.Entry(self.matrix_root, width=10)
+        self.ent_tiny_one_hundred_fifty = ttk.Entry(self.matrix_root, width=10)
+        self.ent_tiny_five_hundred = ttk.Entry(self.matrix_root, width=10)
+        self.ent_tiny_one_thousand = ttk.Entry(self.matrix_root, width=10)
+
+        # Добавляем поля в список для дальнейшего удобного пользования
+        self.tiny_entries = [self.ent_tiny_one,
+                             self.ent_tiny_five,
+                             self.ent_tiny_fifteen,
+                             self.ent_tiny_fifty,
+                             self.ent_tiny_one_hundred_fifty,
+                             self.ent_tiny_five_hundred,
+                             self.ent_tiny_one_thousand]
+
+        self.matrix_entries.append(self.tiny_entries)
+
         # ___Первая строка "Маленькие"___
         self.ent_little_one = ttk.Entry(self.matrix_root, width=10)
         self.ent_little_five = ttk.Entry(self.matrix_root, width=10)
@@ -491,9 +514,6 @@ class ChildMatrixMaterial:
                                                       width=10)
         self.ent_little_five_hundred = ttk.Entry(self.matrix_root, width=10)
         self.ent_little_one_thousand = ttk.Entry(self.matrix_root, width=10)
-
-        # Создаем матрицу полей ввода
-        self.matrix_entries = list()
 
         # Добавляем поля в список для дальнейшего удобного пользования
         self.little_entries = [self.ent_little_one,
@@ -629,51 +649,63 @@ class ChildMatrixMaterial:
                 row=0, column=(i+1), padx=0, pady=(15, 0), sticky='ns'
             )
         # Подписи строк
-        ttk.Label(self.matrix_root, text='Маленькие (50х30мм):').grid(
+        ttk.Label(self.matrix_root, text='Мелкие (10х10мм):').grid(
             row=1, column=0, padx=10, pady=0, sticky='nsew'
         )
-        ttk.Label(self.matrix_root, text='Средние (100х50мм):').grid(
+        ttk.Label(self.matrix_root, text='Маленькие (50х30мм):').grid(
             row=2, column=0, padx=10, pady=0, sticky='nsew'
         )
-        ttk.Label(self.matrix_root, text='Большие (200х150мм):').grid(
+        ttk.Label(self.matrix_root, text='Средние (100х50мм):').grid(
             row=3, column=0, padx=10, pady=0, sticky='nsew'
+        )
+        ttk.Label(self.matrix_root, text='Большие (200х150мм):').grid(
+            row=4, column=0, padx=10, pady=0, sticky='nsew'
         )
 
         # Поля ввода
+        # Нулевая строка "Мелкие"___
+        for i in range(7):
+            self.tiny_entries[i].grid(
+                row=1, column=(i + 1), padx=2, pady=2, sticky='ns'
+            )
+        self.ent_tiny_one_thousand.grid(
+            row=1, column=7, padx=(2, 10), pady=2, sticky='nsew'
+        )
+
         # ___Первая строка "Маленькие"___
         for i in range(7):
             self.little_entries[i].grid(
-                row=1, column=(i+1), padx=2, pady=2, sticky='ns'
+                row=2, column=(i+1), padx=2, pady=2, sticky='ns'
             )
         self.ent_little_one_thousand.grid(
-            row=1, column=7, padx=(2, 10), pady=2, sticky='nsew'
+            row=2, column=7, padx=(2, 10), pady=2, sticky='nsew'
         )
 
         # ___Вторая строка "Средние"___
         for i in range(7):
             self.middle_entries[i].grid(
-                row=2, column=(i + 1), padx=2, pady=2, sticky='ns'
+                row=3, column=(i + 1), padx=2, pady=2, sticky='ns'
             )
         self.ent_middle_one_thousand.grid(
-            row=2, column=7, padx=(2, 10), pady=2, sticky='nsew'
+            row=3, column=7, padx=(2, 10), pady=2, sticky='nsew'
         )
 
         # ___Третья строка "Большие"___
         for i in range(7):
             self.big_entries[i].grid(
-                row=3, column=(i + 1), padx=2, pady=2, sticky='ns'
+                row=4, column=(i + 1), padx=2, pady=2, sticky='ns'
             )
         self.ent_big_one_thousand.grid(
-            row=3, column=7, padx=(2, 10), pady=2, sticky='nsew'
+            row=4, column=7, padx=(2, 10), pady=2, sticky='nsew'
         )
 
         # ___Четвертая строка "Негабаритные"___
         for i in range(7):
             self.oversize_entries[i].grid(
-                row=4, column=(i + 1), padx=2, pady=2, sticky='ns'
+                row=5, column=(i + 1), padx=2, pady=2, sticky='ns'
             )
         self.ent_oversize_one_thousand.grid(
-            row=4, column=7, padx=(2, 10), pady=2, sticky='nsew'
+            row=5, column=7, padx=(2, 10), pady=2, sticky='nsew'
         )
 
     def draw_solid_widget(self):  # Метод прорисовки виджетов
@@ -683,21 +715,21 @@ class ChildMatrixMaterial:
         # Конфигурация формы
         for i in range(8):
             self.matrix_root.columnconfigure(index=i, weight=1)
-        for j in range(6):
+        for j in range(7):
             self.matrix_root.rowconfigure(index=j, weight=1)
 
         # Подписи данных (строк)
         ttk.Label(self.matrix_root, text='Негабаритные (300х200мм):').grid(
-            row=4, column=0, padx=10, pady=0, sticky='nsew'
+            row=5, column=0, padx=10, pady=0, sticky='nsew'
         )
 
         # Кнопки
         self.btn_save.grid(
-            row=5, column=1, padx=(2, 10), pady=10, sticky='nsew', columnspan=7
+            row=6, column=1, padx=(2, 10), pady=10, sticky='nsew', columnspan=7
         )
 
         self.btn_reset.grid(
-            row=5, column=0, padx=10, pady=10, sticky='nsew', columnspan=1
+            row=6, column=0, padx=10, pady=10, sticky='nsew', columnspan=1
         )
 
     def draw_gas_widget(self):  # Метод прорисовки виджетов
@@ -707,36 +739,36 @@ class ChildMatrixMaterial:
         # Конфигурация формы
         for i in range(8):
             self.matrix_root.columnconfigure(index=i, weight=1)
-        for j in range(7):
+        for j in range(8):
             self.matrix_root.rowconfigure(index=j, weight=1)
 
         # Подписи данных (строк)
         ttk.Label(self.matrix_root,
                   text='Очень большие (300х250мм):').grid(
-            row=4, column=0, padx=10, pady=0, sticky='nsew'
+            row=5, column=0, padx=10, pady=0, sticky='nsew'
         )
         ttk.Label(self.matrix_root,
                   text='Огромные (600х400мм):').grid(
-            row=5, column=0, padx=10, pady=0, sticky='nsew'
+            row=6, column=0, padx=10, pady=0, sticky='nsew'
         )
 
         # ___Пятая строка "Огромные"___
         for i in range(7):
             self.very_big_entries[i].grid(
-                row=5, column=(i + 1), padx=2, pady=2, sticky='ns'
+                row=6, column=(i + 1), padx=2, pady=2, sticky='ns'
             )
         self.ent_very_big_one_thousand.grid(
-            row=5, column=7, padx=(2, 10), pady=2, sticky='nsew'
+            row=6, column=7, padx=(2, 10), pady=2, sticky='nsew'
         )
 
         # Кнопки
         self.btn_save.grid(
-            row=6, column=1, padx=(2, 10), pady=10, sticky='nsew',
+            row=7, column=1, padx=(2, 10), pady=10, sticky='nsew',
             columnspan=7
         )
 
         self.btn_reset.grid(
-            row=6, column=0, padx=10, pady=10, sticky='nsew', columnspan=1
+            row=7, column=0, padx=10, pady=10, sticky='nsew', columnspan=1
         )
 
     def add_entries_data(self):
@@ -788,12 +820,17 @@ class ChildMatrixMaterial:
         """
         Метод сброса настроек "по-умолчанию"
         """
-        # Создание локальной переменной конфига
-        self.config_matrix_cost.get_default()
-        self.config_matrix_cost = Interpolation(self.material_name)
+        if askokcancel('Сброс',
+                       'Сбросить матрицу стоимостей?'):
+            # Создание локальной переменной конфига
+            self.config_matrix_cost.get_default()
+            self.config_matrix_cost = Interpolation(self.material_name)
 
-        # Обновляем данные в полях ввода
-        self.add_entries_data()
+            # Обновляем данные в полях ввода
+            self.add_entries_data()
+
+        else:
+            pass
 
     def grab_focus(self):  # Метод сохранения фокуса на дочернем окне
         self.matrix_root.grab_set()
