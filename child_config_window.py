@@ -4,7 +4,7 @@ from tkinter.messagebox import askokcancel
 import configparser
 import os
 import shutil
-from binds import BindEntry
+from binds import BindEntry, BalloonTips
 
 
 class ChildConfigSet:
@@ -455,6 +455,7 @@ class ChildConfigSet:
         # Запись данных в окна ввода
         self.update_data_in_widgets()
         self.add_bind_entry()
+        self.add_tips()
 
     def update_data_in_widgets(self):  # Запись/обновление данных в окнах ввода
         # Считывание данных в переменные
@@ -553,6 +554,8 @@ class ChildConfigSet:
             table_data.append(temp)
         for data in table_data:
             self.standard_table.insert('', index='end', values=data)
+
+        del costs
 
     def click_back(self):  # Метод возвращения на первую вкладку
         self.child_tabs_control.select(self.tab_main_settings)
@@ -677,6 +680,11 @@ class ChildConfigSet:
         if askokcancel('Сброс настроек', 'Вы действительно хотите сбросить '
                                          'настройки по умолчанию?'):
             self.child_temp_config.default_settings()
+
+            # Переопределяем переменную конфигурации после сброса
+            self.child_temp_config = ConfigSet()
+
+        # Обновляем данные в полях ввода и таблице
         self.update_data_in_widgets()
         self.child_root.update()
 
@@ -713,16 +721,47 @@ class ChildConfigSet:
 
         self.standard_table.bind('<Button-1>', self.bind_treeview)
 
+    def add_tips(self):
+        """
+        Метод добавления подсказок к элементам интерфейса.
+        """
+        # Виджеты первой вкладки
+        BalloonTips(self.ent_minimum,
+                    text=f'Минимальная стоимость работы, руб.')
+        BalloonTips(self.ent_additional,
+                    text=f'Стоимость доп. установки/прицела, руб.')
+        BalloonTips(self.ent_one_hour,
+                    text=f'Стоимость часа работы оборудования, руб.')
+
+        BalloonTips(self.ent_many_items,
+                    text=f'Степень функции, y=a*x^(-c),\n'
+                         f'{"‾"*70}\n'
+                         f'где y - искомый коэффициент понижения цены;\n'
+                         f'      a - поправка расчета (принято 0.85);\n'
+                         f'      с - степень функции (вводимая величина).')
+
+        # Виджеты второй вкладки
+        BalloonTips(self.ent_name,
+                    text=f'Название изделия/работы.\n\n'
+                    f'Выделите двойным нажатием строку в таблице,\n'
+                    f'чтобы редактировать существующее изделие/работу.')
+        BalloonTips(self.ent_cost,
+                    text=f'Стоимость работы, руб.')
+        BalloonTips(self.btn_delete_element,
+                    text=f'Для удаления выделите строку в таблице.')
+
     def bind_treeview(self, event=None):
         try:  # Проверка на то, что пользователь выбрал материал
             data = self.standard_table.item(
                 self.standard_table.focus())
-            material_name = str(data["values"][0])
             self.ent_name.delete(0, tk.END)
-            BindEntry(self.ent_name, text=material_name)
+            self.ent_cost.delete(0, tk.END)
+            BindEntry(self.ent_name, text=str(data["values"][0]))
+            BindEntry(self.ent_cost, text=str(data["values"][1]))
         except (ValueError, KeyboardInterrupt, IndexError):
             self.ent_name.delete(0, tk.END)
-            BindEntry(self.ent_name, text='Название').to_add_entry_child()
+            self.ent_cost.delete(0, tk.END)
+            self.add_bind_entry()
         self.not_use = event
 
     def grab_focus(self):  # Метод сохранения фокуса на дочернем окне

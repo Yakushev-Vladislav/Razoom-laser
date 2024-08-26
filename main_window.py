@@ -1191,8 +1191,8 @@ class Window:
         self.ent_width_grav.delete(0, tk.END)
 
         BindEntry(self.ent_design).to_add_entry_child()
-        BindEntry(self.ent_height_grav).to_add_entry_child()
-        BindEntry(self.ent_width_grav).to_add_entry_child()
+        BindEntry(self.ent_width_grav, text='Ширина гравировки, мм')
+        BindEntry(self.ent_height_grav, text='Высота гравировки, мм')
 
         # Обнуление выпадающего списка и счетчиков
         self.combo_products.set('Нет')
@@ -1431,7 +1431,7 @@ class Window:
                     text=f'Учет НДС при оплате через кассу.')
         BalloonTips(self.spin_difficult,
                     text=f'Ступенчатая сложность гравировки:\n'
-                         f'{"-"*80}\n'
+                         f'{"‾"*80}\n'
                          f'1 - Привязка к 1 габариту или грани;\n'
                          f'2 - Привязка к координатному расположению,\n'
                          f'рамкам, базовым точкам, попадание по окружности;\n'
@@ -1444,7 +1444,7 @@ class Window:
                          f'на тонкой грани.')
         BalloonTips(self.spin_depth,
                     text=f'Ступенчатая глубина гравировки:\n'
-                         f'{"-"*60}\n'
+                         f'{"‾"*60}\n'
                          f'1 - Типовая гравировка до 25 проходов;\n'
                          f'2 - Гравировка до 50 проходов;\n'
                          f'3 - Гравировка  до 150 проходов;\n'
