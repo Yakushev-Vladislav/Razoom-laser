@@ -128,8 +128,8 @@ class Window:
                               text='Частные лица')
         self.tabs_control.add(self.tab_sheet_material,
                               text='Листовой материал')
-        self.tabs_control.add(self.tab_industrial_calculator,
-                              text='Оптовый расчёт')
+        # Пока уберем: self.tabs_control.add(self.tab_industrial_calculator,
+        # Пока уберем:                       text='Оптовый расчёт')
         # Упаковка вкладок
         self.tabs_control.pack(fill='both', expand=True)
 
@@ -561,13 +561,13 @@ class Window:
         )
 
         # Кнопка запуска расчетов
-        self.btn_geet_cost_materials = ttk.Button(
+        self.btn_get_cost_materials = ttk.Button(
             self.panel_sheet_materials_widgets,
             width=20,
             text="Рассчитать",
             command=self.get_calc_mat
         )
-        self.btn_geet_cost_materials.grid(
+        self.btn_get_cost_materials.grid(
             row=2, column=2, padx=10, pady=20, columnspan=1, sticky='nsew'
         )
 
@@ -771,9 +771,11 @@ class Window:
 
         # Создаем первое подменю -Файл-
         file_menu = tk.Menu(menu_bar)
-        file_menu.add_command(label='Сохранить отчет')
+        file_menu.add_command(label='Сохранить отчет',
+                              state='disabled')  # Пока уберем
         file_menu.add_command(label='Подобрать режим',
-                              command=self.power_set)
+                              command=self.power_set,
+                              state='disabled')  # Пока уберем
         file_menu.add_command(label='Листовой материал',
                               command=self.base_of_materials)
         file_menu.add_command(label='Предварительные настройки программы',
@@ -798,7 +800,7 @@ class Window:
         # Конфигурация подменю и меню
         menu_bar.add_cascade(label='Файл', menu=file_menu)
         # Пока уберем: menu_bar.add_cascade(label='Вид', menu=view_menu)
-        menu_bar.add_cascade(label='Помощь', menu=help_menu)
+        # Пока уберем: menu_bar.add_cascade(label='Помощь', menu=help_menu)
         menu_bar.add_command(label='Обновить', command=self.settings_update)
         self.root.configure(menu=menu_bar)
 
@@ -1382,7 +1384,10 @@ class Window:
         elif not self.bool_ratio_taxation_ip.get():
             self.chk_ratio_taxation_ooo.config(state='enabled')
 
-    def add_bind(self):  # Установка подсказок и других binds
+    def add_bind(self):
+        """
+        Метод установки фонового текста в поля ввода основного окна.
+        """
         # Расчет стоимости при нажатии на Enter в главном окне (1 и 2 вкладки)
         self.root.bind('<Return>', self.get_return_by_keyboard)
 
@@ -1390,17 +1395,23 @@ class Window:
         BindEntry(self.ent_width_grav, text='Ширина гравировки, мм')
         BindEntry(self.ent_height_grav, text='Высота гравировки, мм')
         BindEntry(self.ent_num, text='Количество изделий, шт')
-        BindEntry(self.ent_width, text='Ширина, мм')
-        BindEntry(self.ent_height, text='Высота, мм')
+        BindEntry(self.ent_width, text='Ширина изделия, мм')
+        BindEntry(self.ent_height, text='Высота изделия, мм')
         BindEntry(self.ent_time_of_work)
         BindEntry(self.ent_items_in_one)
         BindEntry(self.ent_design)
         BindEntry(self.ent_draw_overprice, text='Доп. плата / Макетирование, '
                                                 'руб')
 
+    def add_tips(self):
+        """
+        Метод добавления подсказок к элементам интерфейса.
+        """
         # Установка подсказок для элементов в форме углубленного расчета
+        BalloonTips(self.combo_products,
+                    text=f'Выбор стандартного типа работы.')
         BalloonTips(self.chk_ratio_timing,
-                    text=f'Выход в выходной день\n'
+                    text=f'Работа в выходной день\n'
                     f'или работа сверх очереди.')
         BalloonTips(self.chk_ratio_packing,
                     text=f'Большие затраты времени\n'
@@ -1452,6 +1463,23 @@ class Window:
                          f'5 - Гравировка  более 300 проходов.')
         BalloonTips(self.spin_discount_material,
                     text=f'Скидка оператора, %')
+        BalloonTips(self.ent_width, text=f'Ширина изделия, мм')
+        BalloonTips(self.ent_height, text=f'Высота изделия, мм')
+        BalloonTips(self.ent_num, text=f'Количество изделий, шт')
+        BalloonTips(self.ent_draw_overprice, text=f'Макетирование или '
+                                                  f'стоимость\n'
+                                                  f'дополнительных работ, руб')
+        BalloonTips(self.btn_add_calculate,
+                    text=f'Расчет дополнительного изделия\n'
+                         f'к основному.')
+        BalloonTips(self.btn_reset,
+                    text='Сбросить существующие расчеты.')
+        BalloonTips(self.btn_calculate,
+                    text=f'Для расчета можно использовать\n'
+                         f'клавишу <Enter>.')
+        BalloonTips(self.btn_get_cost_materials,
+                    text=f'Для расчета можно использовать\n'
+                         f'клавишу <Enter>.')
 
     def get_return_by_keyboard(self, event=None):  # Метод расчета от Enter
         if self.tabs_control.tabs().index(self.tabs_control.select()) == 0:
@@ -1464,6 +1492,7 @@ class Window:
     def run(self):  # Метод, реализующий запуск программы
         # Прорисовка виджетов и окна
         self.add_bind()
+        self.add_tips()
         self.draw_menu()
         self.root.mainloop()
 
