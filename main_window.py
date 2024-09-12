@@ -68,6 +68,7 @@ class Window:
         self.not_use = None
 
         # Переменные коэффициентов сложности и дополнительная стоимость
+        self.total_cost = 0
         self.past_cost = 0
         self.past_cost_text = ''
         self.present_cost = 0
@@ -765,7 +766,11 @@ class Window:
             row=3, column=0, padx=(10, 10), pady=(0, 10), sticky="ns",
             columnspan=2)
 
-    def draw_menu(self):  # Метод прорисовки вкладок основного меню
+    def draw_menu(self):
+        """
+        Метод прорисовки строки и вкладок меню.
+        """
+
         # Создаем полосу меню в окне
         menu_bar = tk.Menu(self.root)
 
@@ -804,7 +809,11 @@ class Window:
         menu_bar.add_command(label='Обновить', command=self.settings_update)
         self.root.configure(menu=menu_bar)
 
-    def settings_update(self):  # Метод обновления окна
+    def settings_update(self):
+        """
+        Метод обновления окна. Здесь осуществляется обновление переменной
+        конфигурации программы. Реализуется после изменения настроек.
+        """
         # Обновление переменной конфигурации
         self.main_settings = ConfigSet().config
 
@@ -825,7 +834,10 @@ class Window:
 
         self.root.update()
 
-    def run_child_materials(self):  # Открытие дочернего окна листового мат-ла.
+    def run_child_materials(self):
+        """
+        Открытие дочернего окна редактирования листового материала.
+        """
         self.root.CHILD = ChildMaterials(
             self.root,
             900,
@@ -836,7 +848,11 @@ class Window:
         self.root.CHILD.add_bind_child()
         self.root.CHILD.grab_focus()
 
-    def run_child_power(self):  # Открытие дочернего окна подбора режимов
+    def run_child_power(self):
+        """
+        Открытие дочернего окна подбора режимов для выбранного изделия
+        (материала), а также выбор оборудования для выполнения работы.
+        """
         self.root.CHILD = ChildPowerSet(
             self.root,
             540,
@@ -847,6 +863,9 @@ class Window:
         self.root.CHILD.grab_focus()
 
     def run_config_window(self):
+        """
+        Открытие дочернего окна предварительной настройки программы.
+        """
         self.root.CHILD = ChildConfigSet(
             self.root,
             700,
@@ -856,13 +875,23 @@ class Window:
         )
         self.root.CHILD.grab_focus()
 
-    def base_of_materials(self):  # Запуск дочернего окна листового материала
+    def base_of_materials(self):
+        """
+        Запуск дочернего окна настройки листового материала из
+        соответствующей вкладки меню.
+        """
         self.run_child_materials()
 
-    def power_set(self):  # Запуск дочернего окна подбора режимов
+    def power_set(self):
+        """
+        Запуск дочернего окна подбора режимов из соответствующей вкладки меню.
+        """
         self.run_child_power()
 
-    def change_theme(self):  # Метод смены темы приложения
+    def change_theme(self):
+        """
+        Метод смены темы приложения (на данный момент эта функция отключена).
+        """
         if self.theme == 'forest-light':
             self.theme = 'forest-dark'
             self.style.theme_use(self.theme)
@@ -871,7 +900,10 @@ class Window:
             self.style.theme_use(self.theme)
         self.root.update()
 
-    def get_time_calc(self):  # Расчет по времени работы оборудования
+    def get_time_calc(self):
+        """
+        Метод, реализующий расчет стоимости от времени работы оборудования.
+        """
         try:  # Проверяем на то, что введено корректное число
             cost = (
                 float(self.ent_time_of_work.get()) *
@@ -890,7 +922,12 @@ class Window:
                      f"  {0:.0f}  руб/шт."
             )
 
-    def get_calculate_items(self):  # Метод расчета по количеству установок
+    def get_calculate_items(self):
+        """
+        Метод расчета стоимости партии с учетом установки изделий группой.
+        Например, партия 1000 штук, но работы выполняется по 20 штук за одну
+        установку в рабочее поле оборудования.
+        """
         try:
             result = float(self.ent_items_in_one.get())
 
@@ -904,7 +941,11 @@ class Window:
                      f" {0:.0f}  руб."
             )
 
-    def get_calc(self):  # Метод основного и углубленного расчета
+    def get_calc(self):
+        """
+        Метод основного и углубленного расчета.
+        :return: Заполнение меток вывода результатов расчета.
+        """
 
         # Формирование начальной стоимости
         if self.combo_products.get() == "Нет":  # Если не выбрано изделие
@@ -947,9 +988,10 @@ class Window:
             text=f"Текущий расчет = {all_cost:.0f} руб."
         )
         self.present_cost = all_cost
+
         self.lbl_result_cost.config(
             text=f"ИТОГОВАЯ СТОИМОСТЬ:"
-                 f"  {self.past_cost + self.present_cost:.0f}  руб."
+                 f"  {self.total_cost + self.present_cost:.0f}  руб."
         )
         self.lbl_result_design.config(
             text=f"Стоимость макетирования:"
@@ -1139,10 +1181,13 @@ class Window:
         except ValueError:
             self.ratio_discount = 1
 
-    def add_new_calc(self):  # Метод добавления расчета
+    def add_new_calc(self):
+        """
+        Метод добавления расчета в рамках одного заказа
+        """
         # Сохраняем данные прошлых расчетов
         self.past_cost = self.present_cost
-        self.present_cost = 0
+        self.total_cost += self.present_cost
         if self.past_cost_text == "":
             self.past_cost_text += f'{self.past_cost:.0f}'
         else:
@@ -1169,7 +1214,10 @@ class Window:
         # Обнуление переключателей и окон ввода
         self.reset_tab_mian_calculate()
 
-    def reset_tab_mian_calculate(self):  # Обнуления переключателей и полей
+    def reset_tab_mian_calculate(self):
+        """
+        Обнуления переключателей и полей
+        """
         # Обнуление переключателей
         self.bool_rotation.set(False)
         self.bool_different.set(False)
@@ -1224,7 +1272,10 @@ class Window:
         self.spin_discount.insert(0, '0')
         self.spin_discount.configure(state='readonly')
 
-    def get_reset_results(self):  # Метод обнуления результатов и окна
+    def get_reset_results(self):
+        """
+        Метод обнуления результатов расчета, а также обнуление виджетов окна
+        """
         # Обнуление результатов расчета
         self.past_cost = 0
         self.past_cost_text = ''
@@ -1250,7 +1301,11 @@ class Window:
         # Обнуляем переключатели
         self.reset_tab_mian_calculate()
 
-    def get_calc_mat(self):  # Метод расчета себестоимости изделий
+    def get_calc_mat(self):
+        """
+        Расчет себестоимости и стоимости изделий из листового материала.
+        :return: Заполняет метки вывода результатов значениями.
+        """
 
         # Получение данных с интерфейса
         material_name = self.combo_mat.get()
@@ -1347,7 +1402,11 @@ class Window:
                 'Данные не введены или введены некорректно.'
             )
 
-    def update_base(self):  # Метод обновления списка листового материала
+    def update_base(self):
+        """
+        Метод обновления списка (базы) листового материала после изменений
+        в настройках.
+        """
         self.material_list = list()
         for n in Materials().get_mat():
             self.material_list.append(n)
@@ -1356,7 +1415,12 @@ class Window:
         self.root.update()
 
     @staticmethod
-    def round_result(cost):  # Метод округления результатов расчета
+    def round_result(cost: (int, float)) -> int:
+        """
+        Метод округления результатов
+        :param cost: Число, передаваемое для округления.
+        :return: Округленное число
+        """
         # Непосредственно округление
         if cost >= 800:
             return round(cost/50) * 50
@@ -1368,9 +1432,12 @@ class Window:
         else:
             return cost
 
-    def disable_taxation(self):  # Метод зависимости способов оплаты
-        # Если активируется способ оплаты одним методом, то происходит
-        # деактивация возможности выбора второго
+    def disable_taxation(self):
+        """
+        Метод зависимости способов оплаты.
+        Если активируется способ оплаты одним методом, то происходит
+        деактивация возможности выбора второго.
+        """
 
         if self.bool_ratio_taxation_ao.get():
             self.chk_ratio_taxation_ip.config(state='disabled')
@@ -1481,7 +1548,11 @@ class Window:
                     text=f'Для расчета можно использовать\n'
                          f'клавишу <Enter>.')
 
-    def get_return_by_keyboard(self, event=None):  # Метод расчета от Enter
+    def get_return_by_keyboard(self, event=None):
+        """
+        Выполнение расчетов при нажатии Return (клавиша Enter)
+        :param event: Нажатие клавиши Enter а клавиатуре
+        """
         if self.tabs_control.tabs().index(self.tabs_control.select()) == 0:
             self.get_calc()
         elif self.tabs_control.tabs().index(self.tabs_control.select()) == 1:
@@ -1489,14 +1560,20 @@ class Window:
 
         self.not_use = event
 
-    def run(self):  # Метод, реализующий запуск программы
+    def run(self):
+        """
+        Прорисовка окна (запуск программы)
+        """
         # Прорисовка виджетов и окна
         self.add_bind()
         self.add_tips()
         self.draw_menu()
         self.root.mainloop()
 
-    def destroy(self):  # Метод, реализующий закрытие программы
+    def destroy(self):
+        """
+        Разрушение окна (закрытие программы).
+        """
         choice = askokcancel('Выход', 'Вы действительно хотите выйти?')
         if choice:
             self.root.destroy()
