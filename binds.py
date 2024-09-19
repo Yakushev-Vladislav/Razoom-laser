@@ -16,12 +16,21 @@ class BindEntry:
         self.widget.bind('<FocusOut>', self.to_add_entry_child)
 
     def to_add_entry_child(self, event=None):
+        """
+        Метод заполнения фоновым текстом при пустом поле ввода.
+        :param event: Считывает выход из пустого поля ввода
+        """
         if self.widget.get() == "":
             self.widget.insert(0, self.text)
             self.widget.config(foreground='grey')
         self.not_use_child = event
 
     def erase_entry_child(self, event=None):
+        """
+        Метод удаления фонового текста и добавления текста, введенного
+        пользователем.
+        :param event: Считывает выход из заполненного поля ввода
+        """
         if self.widget.get() == self.text:
             self.widget.delete(0, 'end')
             self.widget.config(foreground='black')
@@ -29,7 +38,7 @@ class BindEntry:
 
 
 class BalloonTips:
-    def __init__(self, widget, text=None, delay=800):
+    def __init__(self, widget, text=None, delay: int = 400):
         """
         Класс реализующий подсказки к элементам интерфейса
         :param widget: Виджет, на который устанавливается подсказка.
