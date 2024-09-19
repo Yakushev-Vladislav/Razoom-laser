@@ -2,10 +2,12 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from tkinter.messagebox import askokcancel
+
 from materials import Materials
 from materials import Interpolation
 from binds import BindEntry
 from binds import BalloonTips
+from path_getting import PathName
 
 
 class ChildMaterials:
@@ -27,7 +29,7 @@ class ChildMaterials:
         self.child_root.geometry(f"{width}x{height}+20+20")
         self.child_root.resizable(resizable[0], resizable[1])
         if icon:
-            self.child_root.iconbitmap(icon)
+            self.child_root.iconbitmap(PathName.resource_path(icon))
 
         # Создание переменной - ссылки на родителя
         self.parent = parent
@@ -453,7 +455,7 @@ class ChildMaterials:
                 830,
                 310,
                 theme='forest-light',
-                icon="resources/Company_logo.ico",
+                icon=PathName.resource_path("resources\\Company_logo.ico"),
                 material_name=matrix_material_name
             )
             self.child_root.CHILD.grab_focus()
@@ -492,7 +494,7 @@ class ChildMatrixMaterial:
         self.matrix_root.geometry(f"{width}x{height}+50+150")
         self.matrix_root.resizable(resizable[0], resizable[1])
         if icon:
-            self.matrix_root.iconbitmap(icon)
+            self.matrix_root.iconbitmap(PathName.resource_path(icon))
 
         # Установка стиля окна
         self.style_child = ttk.Style(self.matrix_root)

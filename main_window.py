@@ -3,20 +3,20 @@
 специально по заказу компании "Разум".
 
 """
+from math import ceil
+from textwrap import wrap
 
 import tkinter as tk
 from tkinter import ttk
 from tkinter.messagebox import askokcancel
-from math import ceil
+
 from child_materials_window import ChildMaterials
 from child_power_set_window import ChildPowerSet
 from materials import Materials, Calculation, Interpolation
-from child_config_window import ChildConfigSet
-from child_config_window import ConfigSet
-from child_config_window import RatioArea
+from child_config_window import ChildConfigSet, ConfigSet, RatioArea
 from binds import BindEntry
 from binds import BalloonTips
-from textwrap import wrap
+from path_getting import PathName
 
 
 class Window:
@@ -26,7 +26,9 @@ class Window:
         self.root = tk.Tk()
         self.root.title("Расчет стоимости работы")
         self.root.option_add("*tearOff", False)
-        self.root.iconbitmap("resources/Company_logo.ico")
+        self.root.iconbitmap(
+            PathName.resource_path("resources\\Company_logo.ico")
+        )
         self.root.resizable(True, True)
 
         # Минимальные размеры окна и расположение
@@ -38,8 +40,10 @@ class Window:
         # Создание стиля и его конфигурация
         self.style = ttk.Style(self.root)
         self.theme = 'forest-light'
-        self.root.tk.call("source", "resources/forest-dark.tcl")
-        self.root.tk.call("source", "resources/forest-light.tcl")
+        self.root.tk.call("source", PathName.resource_path(
+            "resources\\forest-dark.tcl"))
+        self.root.tk.call("source", PathName.resource_path(
+            "resources\\forest-light.tcl"))
         self.style.theme_use(self.theme)
         # Стилизуем текст кнопки основного расчета
         self.style.configure('my.TButton', font='Arial 13',)
@@ -847,7 +851,7 @@ class Window:
             900,
             450,
             theme=self.theme,
-            icon="resources/Company_logo.ico"
+            icon=PathName.resource_path("resources\\Company_logo.ico")
         )
         self.root.CHILD.add_bind_child()
         self.root.CHILD.grab_focus()
@@ -862,7 +866,7 @@ class Window:
             540,
             450,
             theme=self.theme,
-            icon="resources/Company_logo.ico"
+            icon=PathName.resource_path("resources\\Company_logo.ico")
         )
         self.root.CHILD.grab_focus()
 
@@ -875,7 +879,7 @@ class Window:
             700,
             450,
             theme=self.theme,
-            icon="resources/Company_logo.ico"
+            icon=PathName.resource_path("resources\\Company_logo.ico")
         )
         self.root.CHILD.grab_focus()
 

@@ -1,10 +1,13 @@
+import os
+import shutil
+
 import tkinter as tk
 from tkinter import ttk
 from tkinter.messagebox import askokcancel
 import configparser
-import os
-import shutil
+
 from binds import BindEntry, BalloonTips
+from path_getting import PathName
 
 
 class ChildConfigSet:
@@ -30,7 +33,7 @@ class ChildConfigSet:
         self.child_root.geometry(f"{width}x{height}+20+20")
         self.child_root.resizable(resizable[0], resizable[1])
         if icon:
-            self.child_root.iconbitmap(icon)
+            self.child_root.iconbitmap(PathName.resource_path(icon))
 
         # Установка стиля окна
         self.style_child = ttk.Style(self.child_root)
@@ -865,22 +868,25 @@ class ConfigSet:
 
         # Чтение файла конфигурации
         self.config = configparser.ConfigParser()
-        self.config.read('settings/settings.ini', encoding='utf-8')
+        self.config.read(
+            PathName.resource_path('settings\\settings.ini'), encoding='utf-8')
 
     def update_settings(self, some_new=None):  # Обновления файла конфигурации
         if some_new:
-            with (open('settings/settings.ini', 'w', encoding='utf-8') as
+            with (open(PathName.resource_path('settings\\settings.ini'),
+                       'w', encoding='utf-8') as
                   configfile):
                 some_new.write(configfile)
         else:
-            with (open('settings/settings.ini', 'w', encoding='utf-8') as
+            with (open(PathName.resource_path('settings\\settings.ini'), 'w',
+                       encoding='utf-8') as
                   configfile):
                 self.config.write(configfile)
 
     @staticmethod
     def default_settings():  # Метод сброса настроек программы до базовых
-        destination_path = 'settings/settings.ini'
-        source_path = 'settings/default/settings.ini'
+        destination_path = PathName.resource_path('settings\\settings.ini')
+        source_path = PathName.resource_path('settings\\default\\settings.ini')
         if os.path.exists(destination_path):
             os.remove(destination_path)
         shutil.copy2(source_path, destination_path)

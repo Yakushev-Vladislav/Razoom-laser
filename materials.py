@@ -2,6 +2,8 @@ import configparser
 import os
 import shutil
 
+from path_getting import PathName
+
 
 class Materials:
     def __init__(self):
@@ -13,8 +15,8 @@ class Materials:
 
         # Создание файла конфигурации
         self.material_config = configparser.ConfigParser()
-        self.material_config.read('settings/material_data.ini',
-                                  encoding='utf-8')
+        self.material_config.read(PathName.resource_path(
+            'settings\\material_data.ini'), encoding='utf-8')
 
     def get_mat(self):  # Метод, возвращающий словарь Название-стоимость
         """
@@ -65,12 +67,12 @@ class Materials:
         :param some_new: Переменная конфигурации с новыми данными
         """
         if some_new:
-            with (open('settings/material_data.ini', 'w', encoding='utf-8') as
-                  configfile):
+            with (open(PathName.resource_path('settings\\material_data.ini'),
+                       'w', encoding='utf-8') as configfile):
                 some_new.write(configfile)
         else:
-            with (open('settings/material_data.ini', 'w', encoding='utf-8') as
-                  configfile):
+            with (open(PathName.resource_path('settings\\material_data.ini'),
+                       'w', encoding='utf-8') as configfile):
                 self.material_config.write(configfile)
 
     @staticmethod
@@ -79,7 +81,8 @@ class Materials:
         Метод удаления файла конфигурации с матрицей стоимости материала.
         :param material_name: Название материала/файла конфигурации.
         """
-        file_path = f'settings/materials/{material_name}.ini'
+        file_path = PathName.resource_path(
+            f'settings/materials\\{material_name}.ini')
         if os.path.isfile(file_path):
             os.remove(file_path)
 
@@ -90,21 +93,27 @@ class Materials:
         :param material_name: Название материала
         :param laser_type: Тип лазера
         """
-        destination_path = f'settings/materials'
-        file_new_name = f'settings/materials/{material_name}.ini'
+        destination_path = PathName.resource_path(f'settings\\materials')
+        file_new_name = PathName.resource_path(
+            f'settings\\materials\\{material_name}.ini')
 
         # Если редактируем имеющийся материал
-        if os.path.exists(f'settings/materials/{material_name}.ini'):
+        if os.path.exists(PathName.resource_path(
+                f'settings\\materials\\{material_name}.ini')):
             pass
 
         # Если создаем новый материал
         else:
             if laser_type == 'gas':
-                source_path = 'settings/default/materials/default_gas.ini'
-                file_old_name = 'settings/materials/default_gas.ini'
+                source_path = PathName.resource_path(
+                    'settings\\default\\materials\\default_gas.ini')
+                file_old_name = PathName.resource_path(
+                    'settings\\materials\\default_gas.ini')
             else:
-                source_path = 'settings/default/materials/default_solid.ini'
-                file_old_name = 'settings/materials/default_solid.ini'
+                source_path = PathName.resource_path(
+                    'settings\\default\\materials\\default_solid.ini')
+                file_old_name = PathName.resource_path(
+                    'settings\\materials\\default_solid.ini')
 
             # Копируем файл в папку назначения
             shutil.copy(
@@ -122,29 +131,34 @@ class Materials:
         """
 
         # Сброс основного файла конфигурации со списком материалов
-        destination_path = 'settings/material_data.ini'
-        source_path = 'settings/default/material_data.ini'
+        destination_path = PathName.resource_path(
+            'settings\\material_data.ini')
+        source_path = PathName.resource_path(
+            'settings\\default\\material_data.ini')
         if os.path.exists(destination_path):
             os.remove(destination_path)
         shutil.copy2(source_path, destination_path)
 
         # Сброс файлов с матрицами стоимостей
-        destination_path = 'settings/materials/'
-        source_path = 'settings/default/materials/'
+        destination_path = PathName.resource_path('settings\\materials\\')
+        source_path = PathName.resource_path('settings\\default\\materials\\')
         deleted_files = os.listdir(destination_path)
         new_files = os.listdir(source_path)
         for file in deleted_files:
-            os.remove(f'settings/materials/{file}')
+            os.remove(PathName.resource_path(f'settings\\materials\\{file}'))
         for filename in new_files:
             shutil.copy(
-                f'settings/default/materials/{filename}',
-                f'settings/materials/{filename}'
+                PathName.resource_path(
+                    f'settings\\default\\materials\\{filename}'),
+                PathName.resource_path(
+                    f'settings\\materials\\{filename}')
             )
 
         # Удаление дефолтных файлов стоимостей для типов лазера
         laser_types = ['default_gas', 'default_solid']
         for item in laser_types:
-            file_path = f'settings/materials/{item}.ini'
+            file_path = PathName.resource_path(
+                f'settings\\materials\\{item}.ini')
             if os.path.isfile(file_path):
                 os.remove(file_path)
 
@@ -239,9 +253,9 @@ class Interpolation:
         :param file_name: Название материала (файла стоимостей)
         """
         self.matrix_config = configparser.ConfigParser()
-        self.matrix_config.read(f'settings/materials/{file_name}.ini',
-                                encoding='utf-8')
-        self.name = file_name
+        self.matrix_config.read(PathName.resource_path(
+            f'settings\\materials\\{file_name}.ini'), encoding='utf-8')
+        self.name = str(file_name)
 
     def get_laser_type(self):
         """
@@ -250,9 +264,9 @@ class Interpolation:
         """
         name = self.name
         laser_type_config = configparser.ConfigParser()
-        laser_type_config.read('settings/material_data.ini',
-                               encoding='utf-8')
-        laser_type = laser_type_config['MAIN'][name].split(', ')[-1]
+        laser_type_config.read(PathName.resource_path(
+            'settings\\material_data.ini'), encoding='utf-8')
+        laser_type = laser_type_config['MAIN'][str(name)].split(', ')[-1]
         del laser_type_config
         return laser_type
 
@@ -426,11 +440,13 @@ class Interpolation:
         :param some_new: Переменная конфигурации с новыми данными
         """
         if some_new:
-            with (open(f'settings/materials/{self.name}.ini', 'w',
+            with (open(PathName.resource_path(
+                    f'settings\\materials\\{self.name}.ini'), 'w',
                        encoding='utf-8') as configfile):
                 some_new.write(configfile)
         else:
-            with (open(f'settings/materials/{self.name}.ini', 'w',
+            with (open(PathName.resource_path(
+                    f'settings\\materials\\{self.name}.ini'), 'w',
                        encoding='utf-8') as configfile):
                 self.matrix_config.write(configfile)
 
@@ -439,8 +455,10 @@ class Interpolation:
         Метод сброса матрицы стоимости до настроек "по-умолчанию".
         """
         # Сохраняем в переменные путь к файлам конфигурации
-        destination_path = f'settings/materials/{self.name}.ini'
-        source_path = f'settings/default/materials/{self.name}.ini'
+        destination_path = PathName.resource_path(
+            f'settings\\materials\\{self.name}.ini')
+        source_path = PathName.resource_path(
+            f'settings\\default\\materials\\{self.name}.ini')
 
         # Удаляем действующий файл конфигурации
         if os.path.exists(destination_path):
@@ -452,14 +470,19 @@ class Interpolation:
 
         # Если изделие нестандартное, то меняем путь к файлу по-умолчанию
         else:
-            destination_path = f'settings/materials'
-            file_new_name = f'settings/materials/{self.name}.ini'
+            destination_path = PathName.resource_path(f'settings\\materials')
+            file_new_name = PathName.resource_path(
+                f'settings\\materials\\{self.name}.ini')
             if self.get_laser_type() == 'gas':
-                source_path = 'settings/default/materials/default_gas.ini'
-                file_old_name = 'settings/materials/default_gas.ini'
+                source_path = PathName.resource_path(
+                    'settings\\default\\materials\\default_gas.ini')
+                file_old_name = PathName.resource_path(
+                    'settings\\materials\\default_gas.ini')
             else:
-                source_path = 'settings/default/materials/default_solid.ini'
-                file_old_name = 'settings/materials/default_solid.ini'
+                source_path = PathName.resource_path(
+                    'settings\\default\\materials\\default_solid.ini')
+                file_old_name = PathName.resource_path(
+                    'settings\\materials\\default_solid.ini')
 
             # Копируем файл в папку назначения
             shutil.copy(

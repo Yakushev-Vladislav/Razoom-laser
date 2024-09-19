@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 
+from path_getting import PathName
+
 
 class ChildPowerSet:
     def __init__(self, parent, width, height, theme, title='Подбор режимов',
@@ -11,7 +13,7 @@ class ChildPowerSet:
         self.child_root.geometry(f"{width}x{height}+20+20")
         self.child_root.resizable(resizable[0], resizable[1])
         if icon:
-            self.child_root.iconbitmap(icon)
+            self.child_root.iconbitmap(PathName.resource_path(icon))
 
         # Установка стиля окна
         self.style_child = ttk.Style(self.child_root)
