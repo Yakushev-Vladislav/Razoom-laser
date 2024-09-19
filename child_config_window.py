@@ -401,7 +401,8 @@ class ChildConfigSet:
         # Окно ввода __ Название работы __
         self.ent_name = ttk.Entry(
             self.tab_2_panel_widgets,
-            width=10
+            width=10,
+            takefocus=False
         )
         self.ent_name.grid(row=0, column=0, padx=5, pady=(5, 10),
                            sticky='nsew', columnspan=1)
@@ -409,7 +410,8 @@ class ChildConfigSet:
         # Окно ввода __ Стоимость работы __
         self.ent_cost = ttk.Entry(
             self.tab_2_panel_widgets,
-            width=10
+            width=10,
+            takefocus=False
         )
         self.ent_cost.grid(row=0, column=1, padx=5, pady=(5, 10),
                            sticky='nsew')

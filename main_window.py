@@ -16,6 +16,7 @@ from child_config_window import ConfigSet
 from child_config_window import RatioArea
 from binds import BindEntry
 from binds import BalloonTips
+from textwrap import wrap
 
 
 class Window:
@@ -202,7 +203,8 @@ class Window:
         self.combo_products = ttk.Combobox(
             self.panel_1,
             values=self.combo_list,
-            width=20
+            width=20,
+            takefocus=False
         )
         self.combo_products.current(0)
         self.combo_products.grid(row=0, column=1, padx=5, pady=0,
@@ -524,7 +526,8 @@ class Window:
         self.panel_sheet_materials_result.rowconfigure(index=4, weight=1)
 
         # Виджеты ввода количества изделий
-        self.ent_num = ttk.Entry(self.panel_sheet_materials_widgets, width=20)
+        self.ent_num = ttk.Entry(self.panel_sheet_materials_widgets,
+                                 width=20, takefocus=False)
         self.ent_num.grid(row=1, column=0, padx=10, pady=20, sticky='nsew')
 
         # Получение материалов
@@ -535,7 +538,8 @@ class Window:
         # Виджеты выбора материала
         self.combo_mat = ttk.Combobox(
             self.panel_sheet_materials_widgets,
-            values=self.material_list
+            values=self.material_list,
+            takefocus=False
         )
         self.combo_mat.current(0)
         self.combo_mat.grid(
@@ -544,10 +548,10 @@ class Window:
 
         # Поля ввода габаритов изделия
         self.ent_width = ttk.Entry(
-            self.panel_sheet_materials_widgets, width=20)
+            self.panel_sheet_materials_widgets, width=20, takefocus=False)
         self.ent_width.grid(row=1, column=1, padx=10, pady=20, sticky='nsew')
         self.ent_height = ttk.Entry(
-            self.panel_sheet_materials_widgets, width=20)
+            self.panel_sheet_materials_widgets, width=20, takefocus=False)
         self.ent_height.grid(row=1, column=2, padx=10, pady=20, sticky='nsew')
 
         # Кнопка обновления списка материалов
@@ -1191,11 +1195,15 @@ class Window:
         if self.past_cost_text == "":
             self.past_cost_text += f'{self.past_cost:.0f}'
         else:
-            self.past_cost_text += f'+ {self.past_cost:.0f}'
+            self.past_cost_text += f' + {self.past_cost:.0f}'
 
         # Добавление новых данных в прошлый и текущий расчет
+        temp_past_text = f"Прошлый расчет = {self.past_cost_text} руб."
+        if len(temp_past_text) > 60:
+            temp_past_text = '\n'.join(wrap(temp_past_text, 60))
+
         self.lbl_past_results.config(
-            text=f"Прошлый расчет = {self.past_cost_text} руб."
+            text=temp_past_text
         )
         self.lbl_present_results.config(
             text=f"Текущий расчет = {0:.0f} руб."
