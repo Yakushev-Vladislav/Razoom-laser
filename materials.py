@@ -1,6 +1,7 @@
-import configparser
 import os
 import shutil
+
+import configparser
 
 from path_getting import PathName
 
@@ -18,9 +19,9 @@ class Materials:
         self.material_config.read(PathName.resource_path(
             'settings\\material_data.ini'), encoding='utf-8')
 
-    def get_mat(self):  # Метод, возвращающий словарь Название-стоимость
+    def get_mat_price(self) -> dict:
         """
-        Метод возвращения словаря "Название-стоимость"
+        Метод, возвращающий словарь "Название-стоимость"
         :return: Словарь "название - стоимость листа"
         """
         my_price = dict()
@@ -29,9 +30,9 @@ class Materials:
             my_price[k] = [float(x) for x in temp[0:3:1]][-1]
         return my_price
 
-    def get_gab_width(self):  # Метод, возвращающий словарь Название-ширина
+    def get_gab_width(self) -> dict:
         """
-        Метод возвращения словаря "название - ширина листа"
+        Метод, возвращающий словарь "название - ширина листа"
         :return: Словарь "название - ширина листа"
         """
         mat_gab_width = dict()
@@ -40,9 +41,9 @@ class Materials:
             mat_gab_width[k] = [float(x) for x in temp[0:3:1]][0]
         return mat_gab_width
 
-    def get_gab_height(self):  # Метод, возвращающий словарь Название-высота
+    def get_gab_height(self) -> dict:
         """
-        Метод возвращения словаря "название - высота листа"
+        Метод, возвращающий словарь "название - высота листа"
         :return: Словарь "название - высота листа"
         """
         mat_gab_height = dict()
@@ -51,9 +52,9 @@ class Materials:
             mat_gab_height[k] = [float(x) for x in temp[0:3:1]][1]
         return mat_gab_height
 
-    def get_type_of_laser(self):  # Метод, возвращающий словарь Название-лазер
+    def get_type_of_laser(self) -> dict:
         """
-        Метод возвращения словаря "название - тип оборудования"
+        Метод, возвращающий словарь "название - тип оборудования"
         :return: Словарь "название - тип оборудования"
         """
         mat_type_of_laser = dict()
@@ -61,7 +62,7 @@ class Materials:
             mat_type_of_laser[k] = [x for x in v.split(',')][-1]
         return mat_type_of_laser
 
-    def update_materials(self, some_new=None):  # Обновление файла конфигурации
+    def update_materials(self, some_new=None):
         """
         Метод обновления файла конфигурации.
         :param some_new: Переменная конфигурации с новыми данными
@@ -185,9 +186,9 @@ class Calculation:
         self.height = height
 
         # Получение стоимости выбранного материала (самого листа)
-        self.price = Materials().get_mat()[mat_name]
+        self.price = Materials().get_mat_price()[mat_name]
 
-    def figure_1(self):  # Первый метод упаковки
+    def figure_1(self) -> int:
         """
         Первый метод упаковки.
         :return: Возможное количество размещенных изделий на листе
@@ -211,7 +212,7 @@ class Calculation:
         # Возвращаем количество изделий с листа первым методом
         return self.total_1
 
-    def figure_2(self):  # Второй метод упаковки (изделие повернуто на 90 гр.)
+    def figure_2(self) -> int:
         """
         Второй метод упаковки. Здесь заменены высота и ширина изделия друг
         на друга. Соответственно упаковываем повернутое на 90 градусов изделие
@@ -237,7 +238,7 @@ class Calculation:
         # Возвращаем количество изделий с листа вторым методом
         return self.total_2
 
-    def get_price(self):  # Метод, возвращающий себестоимость материала
+    def get_price(self) -> int | float:
         """
         Интерфейсный метод возвращения себестоимости материала
         :return: Себестоимость материала
@@ -257,7 +258,7 @@ class Interpolation:
             f'settings\\materials\\{file_name}.ini'), encoding='utf-8')
         self.name = str(file_name)
 
-    def get_laser_type(self):
+    def get_laser_type(self) -> str:
         """
         Метод возвращает строковое значение типа лазера.
         :return: Тип лазера.
@@ -270,7 +271,8 @@ class Interpolation:
         del laser_type_config
         return laser_type
 
-    def get_cost(self, height: int, width: int, num: int):
+    def get_cost(self, height: int | float, width: int | float, num: int) ->\
+            float:
         """
         Метод получения стоимости изделия.
         :param height: Высота изделия
@@ -336,7 +338,8 @@ class Interpolation:
                 [bigger_area, bigger_cost]
             )
 
-    def get_lower_and_bigger_key(self, width: int, height: int):
+    def get_lower_and_bigger_key(
+            self, width: int | float, height: int | float) -> str | list:
         """
         Метод получения строк (ключей) для ближайшего большего и меньшего
         габаритов.
@@ -400,7 +403,9 @@ class Interpolation:
             return [', '.join(lower_key), ', '.join(bigger_key)]
 
     @staticmethod
-    def get_interpolation(point: int, lower_point: list, bigger_point: list):
+    def get_interpolation(point: int | float,
+                          lower_point: list,
+                          bigger_point: list) -> float | int:
         """
         Метод интерполяции значений между двумя точками.
         Формула интерполяции имеет вид:
@@ -434,7 +439,7 @@ class Interpolation:
 
         return result
 
-    def update_matrix(self, some_new=None):  # Обновление файла конфигурации
+    def update_matrix(self, some_new=None):
         """
         Метод обновления файла конфигурации.
         :param some_new: Переменная конфигурации с новыми данными

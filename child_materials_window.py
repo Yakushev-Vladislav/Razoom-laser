@@ -11,10 +11,11 @@ from path_getting import PathName
 
 
 class ChildMaterials:
-    def __init__(self, parent, width, height, theme, title='Листовой материал',
-                 resizable=(False, False), icon=None):
+    def __init__(self, parent, width: int, height: int, theme: str,
+                 title: str = 'Листовой материал',
+                 resizable: tuple = (False, False), icon: str | None = None):
         """
-        Дочернее окно редактирования базы листового материала.
+        Конфигурация дочернего окна редактирования базы листового материала.
         :param parent: Класс родительского окна
         :param width: Ширина окна
         :param height: Высота окна
@@ -250,6 +251,12 @@ class ChildMaterials:
                                                '"по-умолчанию".')
 
     def material_table_bind(self, event=None):
+        """
+        Метод, реализующий заполнение полей ввода названия материала и его
+        параметров (ширина, высота, стоимость) при выделении строки в таблице
+        (считывание строки из таблицы).
+        :param event: Считывает выделение пользователем строки в таблице
+        """
         try:  # Проверка на то, что пользователь выбрал материал
             data = self.material_table.item(
                 self.material_table.focus())
@@ -281,7 +288,7 @@ class ChildMaterials:
         self.ent_price_mat.delete(0, tk.END)
         self.add_bind_child()
 
-    def get_data_child(self):  # Обновление списка материалов для таблицы
+    def get_data_child(self):
         """
         Метод обновления данных в таблице.
         """
@@ -296,7 +303,7 @@ class ChildMaterials:
 
         del temp_data, temp
 
-    def click_add_data(self):  # Метод добавления элемента в таблицу
+    def click_add_data(self):
         """
         Метод, реализующий добавление в таблицу элемента из
         пользовательского интерфейса.
@@ -359,7 +366,7 @@ class ChildMaterials:
 
             self.child_root.update()
 
-    def click_del_data(self):  # Удаление выбранной строки из таблицы
+    def click_del_data(self):
         """
         Метод удаления выделенного в таблице материала (выделенной
         пользователем строки).
@@ -427,7 +434,7 @@ class ChildMaterials:
         # Сбрасываем поля ввода
         self.reset_entries_data()
 
-    def grab_focus(self):  # Метод сохранения фокуса на дочернем окне
+    def grab_focus(self):
         """
         Метод захвата фокуса на дочернем окне.
         """
@@ -435,13 +442,13 @@ class ChildMaterials:
         self.child_root.focus_set()
         self.child_root.wait_window()
 
-    def destroy_child(self):  # Метод закрытия дочернего окна
+    def destroy_child(self):
         """
-        Метод, реализующий закрытие окна.
+        Метод, реализующий разрушение (закрытие) окна.
         """
         self.child_root.destroy()
 
-    def run_matrix_window(self):  # Метод открытия дочернего окна матрицы
+    def run_matrix_window(self):
         """
         Метод открытия дочернего окна с редактированием стоимостей изделий
         для выбранного в таблице материала.
@@ -469,9 +476,9 @@ class ChildMaterials:
 
 class ChildMatrixMaterial:
     def __init__(self, parent, width: int, height: int, theme: str,
-                 material_name: str = None,
-                 title=f'Матрица стоимостей материала',
-                 resizable=(False, False), icon=None):
+                 material_name: str | None = None,
+                 title: str = f'Матрица стоимостей материала',
+                 resizable: tuple = (False, False), icon: str | None = None):
         """
         Дочернее окно с таблицей стоимостей изделий из выбранного материала.
         :param parent: Родительское окно (Листовой материал);
@@ -736,7 +743,7 @@ class ChildMatrixMaterial:
 
         BalloonTips(self.btn_reset, text='Сброс настроек "по-умолчанию".')
 
-    def draw_solid_widget(self):  # Метод прорисовки виджетов
+    def draw_solid_widget(self):
         """
         Метод прорисовки виджетов для твердотельного лазера.
         """
@@ -760,7 +767,7 @@ class ChildMatrixMaterial:
             row=6, column=0, padx=10, pady=10, sticky='nsew', columnspan=1
         )
 
-    def draw_gas_widget(self):  # Метод прорисовки виджетов
+    def draw_gas_widget(self):
         """
         Метод прорисовки виджетов для газового лазера.
         """
@@ -860,10 +867,16 @@ class ChildMatrixMaterial:
         else:
             pass
 
-    def grab_focus(self):  # Метод сохранения фокуса на дочернем окне
+    def grab_focus(self):
+        """
+        Метод сохранения фокуса на дочернем окне.
+        """
         self.matrix_root.grab_set()
         self.matrix_root.focus_set()
         self.matrix_root.wait_window()
 
-    def destroy_child(self):  # Метод закрытия дочернего окна
+    def destroy_child(self):
+        """
+        Метод закрытия (разрушения) дочернего окна.
+        """
         self.matrix_root.destroy()

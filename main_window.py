@@ -539,7 +539,7 @@ class Window:
 
         # Получение материалов
         self.material_list = list()
-        for n in Materials().get_mat():
+        for n in Materials().get_mat_price():
             self.material_list.append(n)
 
         # Виджеты выбора материала
@@ -1426,14 +1426,14 @@ class Window:
         в настройках.
         """
         self.material_list = list()
-        for n in Materials().get_mat():
+        for n in Materials().get_mat_price():
             self.material_list.append(n)
         self.combo_mat['values'] = self.material_list
         self.tab_sheet_material.update()
         self.root.update()
 
     @staticmethod
-    def round_result(cost: (int, float)) -> int:
+    def round_result(cost: int | float) -> int:
         """
         Метод округления результатов
         :param cost: Число, передаваемое для округления.
@@ -1441,14 +1441,14 @@ class Window:
         """
         # Непосредственно округление
         if cost >= 800:
-            return round(cost/50) * 50
+            return int(round(cost/50) * 50)
 
         elif 250 <= cost < 800:
-            return round(cost/10) * 10
+            return int(round(cost/10) * 10)
         elif 85 <= cost < 250:
-            return round(cost/5) * 5
+            return int(round(cost/5) * 5)
         else:
-            return cost
+            return int(cost)
 
     def disable_taxation(self):
         """

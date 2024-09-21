@@ -5,9 +5,19 @@ from path_getting import PathName
 
 
 class ChildPowerSet:
-    def __init__(self, parent, width, height, theme, title='Подбор режимов',
-                 resizable=(False, False), icon=None):
-        # Создание дочернего окна поверх основного
+    def __init__(self, parent, width: int, height: int, theme: str,
+                 title: str = 'Подбор режимов',
+                 resizable: tuple = (False, False), icon: str | None = None):
+        """
+        Конфигурация дочернего окна подбора режимов для гравировки / резки
+        :param parent: Класс-родитель
+        :param width: Ширина окна
+        :param height: Высота окна
+        :param theme: Тема окна (приложения)
+        :param title: Название окна
+        :param resizable: Изменяемость окна. По умолчанию: (False, False)
+        :param icon: Иконка окна. По умолчанию: None
+        """
         self.child_root = tk.Toplevel(parent)
         self.child_root.title(title)
         self.child_root.geometry(f"{width}x{height}+20+20")
@@ -19,10 +29,16 @@ class ChildPowerSet:
         self.style_child = ttk.Style(self.child_root)
         self.style_child.theme_use(theme)
 
-    def grab_focus(self):  # Метод сохранения фокуса на дочернем окне
+    def grab_focus(self):
+        """
+        Метод сохранения фокуса на дочернем окне
+        """
         self.child_root.grab_set()
         self.child_root.focus_set()
         self.child_root.wait_window()
 
-    def destroy_child(self):  # Метод закрытия дочернего окна
+    def destroy_child(self):
+        """
+        Метод закрытия (разрушения) дочернего окна
+        """
         self.child_root.destroy()

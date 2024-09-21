@@ -13,7 +13,7 @@ from path_getting import PathName
 class ChildConfigSet:
     def __init__(self, parent, width: int, height: int, theme,
                  title: str = 'Предварительная настройка программы',
-                 resizable=(False, False), icon=None):
+                 resizable: tuple = (False, False), icon: str | None = None):
 
         """
         Дочернее окно предварительных настроек программы, а также изменения
@@ -941,8 +941,8 @@ class ConfigSet:
 
 
 class RatioArea:
-    def __init__(self, area_min: int, area_max: (int, float),
-                 ratio_max: (int, float), ratio_min: (int, float) = 1):
+    def __init__(self, area_min: int | float, area_max: int | float,
+                 ratio_max: int | float, ratio_min: int | float = 1):
         """
         Класс реализующий линейную и квадратичную зависимость для расчета
         коэффициента увеличения стоимости в зависимости от размеров
@@ -958,9 +958,9 @@ class RatioArea:
         self.ratio_max = ratio_max
         self.ratio_min = ratio_min
 
-    def get_linear_ratio(self, area):  # Метод получения линейной зависимости
+    def get_linear_ratio(self, area: int | float) -> float:
         """
-        Обеспечение линейной зависимости по каноническому уравнению прямой
+        Метод реализации линейной зависимости по каноническому уравнению прямой
         :param area: Площадь гравировки
         :return: Коэффициент доплаты
         """
@@ -976,11 +976,11 @@ class RatioArea:
                         self.area_max - self.area_min)) + self.ratio_min
                 )
         except TypeError:
-            return 1
+            return 1.0
 
-    def get_polynomial(self, area):  # Метод получения квадратичной зависимости
+    def get_polynomial(self, area: int | float) -> float:
         """
-        Обеспечение квадратичной зависимости для коэффициента
+        Метод реализации квадратичной зависимости для коэффициента
         :param area: Площадь гравировки
         :return: Коэффициент доплаты
         """
