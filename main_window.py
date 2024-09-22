@@ -51,7 +51,373 @@ class App(tk.Tk):
         # Стилизуем текст кнопки основного расчета
         self.style.configure('my.TButton', font='Arial 13',)
 
-        # Создание переменных
+        # Переменная для bind методов
+        self.not_use = None
+
+        # Создание основных вкладок
+        self.tabs_control = ttk.Notebook(self)
+        self.tab_personal_calculate = PersonalCalculateTab(self.tabs_control,
+                                                           self.round_result,
+                                                           self.destroy_window)
+        self.tab_sheet_material = SheetMaterialsTab(self.tabs_control,
+                                                    self.round_result)
+        self.tab_industrial_calculator = ttk.Frame(self.tabs_control)
+
+        # Конфигурация отзывчивости вкладок
+
+        self.tab_industrial_calculator.columnconfigure(index=0, weight=1)
+        self.tab_industrial_calculator.columnconfigure(index=1, weight=1)
+        self.tab_industrial_calculator.columnconfigure(index=2, weight=1)
+        self.tab_industrial_calculator.rowconfigure(index=0, weight=1)
+        self.tab_industrial_calculator.rowconfigure(index=1, weight=1)
+        self.tab_industrial_calculator.rowconfigure(index=2, weight=1)
+
+        # Добавление вкладок в набор
+        self.tabs_control.add(self.tab_personal_calculate,
+                              text='Частные лица')
+        self.tabs_control.add(self.tab_sheet_material,
+                              text='Листовой материал')
+        # Пока уберем: self.tabs_control.add(self.tab_industrial_calculator,
+        # Пока уберем:                       text='Оптовый расчёт')
+        # Упаковка вкладок
+        self.tabs_control.pack(fill='both', expand=True)
+
+        # ____________________3 ВКЛАДКА____________________
+        # Создание форм вкладки
+        self.panel_1_industrial = ttk.LabelFrame(
+            self.tab_industrial_calculator,
+            text='Углубленный расчет')
+        self.panel_1_industrial.grid(row=0, column=0, padx=20, pady=30,
+                                     sticky="nsew", columnspan=3)
+
+        self.panel_2_industrial = ttk.LabelFrame(
+            self.tab_industrial_calculator,
+            text="Время работы оборудования",
+            padding=5
+        )
+        self.panel_2_industrial.grid(row=1, column=0, padx=(10, 20),
+                                     pady=(10, 20),
+                                     sticky="nsew", columnspan=1)
+
+        self.panel_3_industrial = ttk.LabelFrame(
+            self.tab_industrial_calculator,
+            text="Приближенный расчет времени",
+            padding=5
+        )
+        self.panel_3_industrial.grid(row=1, column=1, padx=(10, 20),
+                                     pady=(10, 20), sticky="nsew",
+                                     columnspan=2)
+
+        self.panel_4_industrial = ttk.LabelFrame(
+            self.tab_industrial_calculator,
+            text="Учет установок в партии",
+            padding=5
+        )
+        self.panel_4_industrial.grid(row=2, column=0, padx=(10, 20),
+                                     pady=(5, 5),
+                                     sticky="nsew")
+
+        # Конфигурация форм вкладки
+
+        self.panel_2_industrial.columnconfigure(index=0, weight=1)
+        self.panel_2_industrial.columnconfigure(index=1, weight=1)
+        self.panel_2_industrial.rowconfigure(index=0, weight=1)
+        self.panel_2_industrial.rowconfigure(index=1, weight=1)
+        self.panel_2_industrial.rowconfigure(index=2, weight=1)
+
+        self.panel_4_industrial.columnconfigure(index=0, weight=1)
+        self.panel_4_industrial.columnconfigure(index=1, weight=1)
+        self.panel_4_industrial.rowconfigure(index=0, weight=1)
+        self.panel_4_industrial.rowconfigure(index=1, weight=1)
+        self.panel_4_industrial.rowconfigure(index=2, weight=1)
+
+        # Виджеты времени работы оборудования
+        ttk.Label(self.panel_2_industrial, text='Время работы, мин.').grid(
+            row=0, column=0, padx=0, pady=0, sticky='ns')
+        self.ent_time_of_work = ttk.Entry(self.panel_2_industrial, width=5)
+        self.ent_time_of_work.grid(row=1, column=0, padx=10, pady=10,
+                                   sticky='nsew')
+        self.btn_time_calculate = ttk.Button(
+            self.panel_2_industrial,
+            text='Расчёт',
+            command=self.get_time_calc
+        )
+        self.btn_time_calculate.grid(
+            row=1, column=1, padx=10, pady=10, sticky='nsew')
+
+        self.lbl_result_time = ttk.Label(
+            self.panel_2_industrial,
+            text=f"Стоимость работы: "
+                 f" {0:.0f}  руб/шт."
+        )
+        self.lbl_result_time.grid(row=3, column=0, padx=(10, 10), pady=(0, 10),
+                                  sticky="ns", columnspan=2)
+
+        # Виджеты расчета партии с количеством изделий в установке
+        ttk.Label(self.panel_4_industrial,
+                  text='Количество изделий за 1 установку, шт.').grid(
+            row=0, column=0, padx=0, pady=0, sticky='ns')
+        self.ent_items_in_one = ttk.Entry(self.panel_4_industrial, width=5)
+        self.ent_items_in_one.grid(row=1, column=0, padx=10, pady=10,
+                                   sticky='nsew')
+        self.btn_items_calculate = ttk.Button(
+            self.panel_4_industrial,
+            text='Расчёт',
+            command=self.get_calculate_items
+        )
+        self.btn_items_calculate.grid(
+            row=1, column=1, padx=10, pady=10, sticky='nsew')
+
+        self.lbl_result_items = ttk.Label(
+            self.panel_4_industrial,
+            text=f"Стоимость работы: "
+                 f" {0:.0f}  руб."
+        )
+        self.lbl_result_items.grid(
+            row=3, column=0, padx=(10, 10), pady=(0, 10), sticky="ns",
+            columnspan=2)
+
+    def draw_menu(self):
+        """
+        Метод прорисовки строки и вкладок меню.
+        """
+
+        # Создаем полосу меню в окне
+        menu_bar = tk.Menu(self)
+
+        # Создаем первое подменю -Файл-
+        file_menu = tk.Menu(menu_bar)
+        file_menu.add_command(label='Сохранить отчет',
+                              state='disabled')  # Пока уберем
+        file_menu.add_command(label='Подобрать режим',
+                              command=self.power_set,
+                              state='disabled')  # Пока уберем
+        file_menu.add_command(label='Листовой материал',
+                              command=self.base_of_materials)
+        file_menu.add_command(label='Предварительные настройки программы',
+                              command=self.run_config_window)
+        file_menu.add_separator()
+        file_menu.add_command(label='Выход', command=self.destroy_window)
+
+        # Создаем второе подменю -Вид-
+        view_menu = tk.Menu(menu_bar)
+        view_menu.add_checkbutton(
+            label='Темная тема',
+            onvalue=1,
+            offvalue=0,
+            command=self.change_theme)
+
+        # Создаем третье подменю
+        help_menu = tk.Menu(menu_bar)
+        help_menu.add_command(label='Справка')
+        help_menu.add_separator()
+        help_menu.add_command(label='О программе')
+
+        # Конфигурация подменю и меню
+        menu_bar.add_cascade(label='Файл', menu=file_menu)
+        # Пока уберем: menu_bar.add_cascade(label='Вид', menu=view_menu)
+        # Пока уберем: menu_bar.add_cascade(label='Помощь', menu=help_menu)
+        menu_bar.add_command(
+            label='Обновить',
+            command=self.tab_personal_calculate.settings_update)
+        self.configure(menu=menu_bar)
+
+    def run_child_materials(self):
+        """
+        Открытие дочернего окна редактирования листового материала.
+        """
+        child = ChildMaterials(
+            self,
+            900,
+            450,
+            theme=self.theme,
+            icon=PathName.resource_path("resources\\Company_logo.ico")
+        )
+        child.add_bind_child()
+        child.grab_focus()
+
+    def run_child_power(self):
+        """
+        Открытие дочернего окна подбора режимов для выбранного изделия
+        (материала), а также выбор оборудования для выполнения работы.
+        """
+        child = ChildPowerSet(
+            self,
+            540,
+            450,
+            theme=self.theme,
+            icon=PathName.resource_path("resources\\Company_logo.ico")
+        )
+        child.grab_focus()
+
+    def run_config_window(self):
+        """
+        Открытие дочернего окна предварительной настройки программы.
+        """
+        child = ChildConfigSet(
+            self,
+            700,
+            450,
+            theme=self.theme,
+            icon=PathName.resource_path("resources\\Company_logo.ico")
+        )
+        child.grab_focus()
+
+    def base_of_materials(self):
+        """
+        Запуск дочернего окна настройки листового материала из
+        соответствующей вкладки меню.
+        """
+        self.run_child_materials()
+
+    def power_set(self):
+        """
+        Запуск дочернего окна подбора режимов из соответствующей вкладки меню.
+        """
+        self.run_child_power()
+
+    def change_theme(self):
+        """
+        Метод смены темы приложения (на данный момент эта функция отключена).
+        """
+        if self.theme == 'forest-light':
+            self.theme = 'forest-dark'
+            self.style.theme_use(self.theme)
+        else:
+            self.theme = 'forest-light'
+            self.style.theme_use(self.theme)
+        self.update()
+
+    def get_time_calc(self):
+        """
+        Метод, реализующий расчет стоимости от времени работы оборудования.
+        """
+        try:  # Проверяем на то, что введено корректное число
+            cost = (
+                float(self.ent_time_of_work.get()) *
+                int(self.tab_personal_calculate.main_settings['MAIN'][
+                        'one_hour_of_work']) / 60
+
+            )
+
+            self.lbl_result_time.config(
+                text=f"Стоимость работы:"
+                     f"  {self.round_result(cost):.0f}  руб/шт."
+            )
+
+        except ValueError:  # Если число некорректно
+            self.lbl_result_time.config(
+                text=f"Стоимость работы:"
+                     f"  {0:.0f}  руб/шт."
+            )
+
+    def get_calculate_items(self):
+        """
+        Метод расчета стоимости партии с учетом установки изделий группой.
+        Например, партия 1000 штук, но работы выполняется по 20 штук за одну
+        установку в рабочее поле оборудования.
+        """
+        try:
+            result = float(self.ent_items_in_one.get())
+
+            self.lbl_result_items.config(
+                text=f"Стоимость работы: "
+                     f" {result:.0f}  руб."
+            )
+        except ValueError:
+            self.lbl_result_items.config(
+                text=f"Стоимость работы: "
+                     f" {0:.0f}  руб."
+            )
+
+    @staticmethod
+    def round_result(cost: int | float) -> int:
+        """
+        Метод округления результатов
+        :param cost: Число, передаваемое для округления.
+        :return: Округленное число
+        """
+        if cost >= 800:
+            return int(round(cost/50) * 50)
+        elif 250 <= cost < 800:
+            return int(round(cost/10) * 10)
+        elif 85 <= cost < 250:
+            return int(round(cost/5) * 5)
+        else:
+            return int(cost)
+
+    def add_bind(self) -> None:
+        """
+        Метод установки фонового текста в поля ввода основного окна.
+        """
+        # Расчет стоимости при нажатии на Enter в главном окне (1 и 2 вкладки)
+        self.bind('<Return>', self.get_return_by_keyboard)
+
+        # Установка фонового текста в поля ввода
+        BindEntry(self.ent_time_of_work)
+        BindEntry(self.ent_items_in_one)
+
+        self.tab_personal_calculate.add_binds()
+        self.tab_sheet_material.add_binds()
+
+    def add_tips(self) -> None:
+        """
+        Метод добавления подсказок к элементам интерфейса.
+        """
+        self.tab_personal_calculate.add_tips()
+        self.tab_sheet_material.add_tips()
+
+    def get_return_by_keyboard(self, event=None):
+        """
+        Выполнение расчетов при нажатии Return (клавиша Enter)
+        :param event: Нажатие клавиши Enter а клавиатуре
+        """
+        if self.tabs_control.tabs().index(self.tabs_control.select()) == 0:
+            self.tab_personal_calculate.get_calc()
+        elif self.tabs_control.tabs().index(self.tabs_control.select()) == 1:
+            self.tab_sheet_material.get_calc_mat()
+
+        self.not_use = event
+
+    def run(self) -> None:
+        """
+        Прорисовка окна (запуск программы)
+        """
+        # Прорисовка виджетов и окна
+        self.add_bind()
+        self.add_tips()
+        self.draw_menu()
+        self.mainloop()
+
+    def destroy_window(self) -> None:
+        """
+        Разрушение окна (закрытие программы).
+        """
+        if askokcancel('Выход', 'Вы действительно хотите выйти?'):
+            self.destroy()
+
+
+class PersonalCalculateTab(ttk.Frame):
+    def __init__(self, parent, round_method, destroy_method):
+        """
+        Класс конфигурации первой вкладки основного окна приложения
+        "Частные лица"
+        :param parent: Экземпляр-родитель Notebook
+        :param round_method: Метод округления результата (из класса App)
+        """
+        # Инициализация и конфигурация отзывчивости вкладки
+        super().__init__(parent)
+        self.columnconfigure(index=0, weight=1)
+        self.columnconfigure(index=1, weight=2)
+        self.rowconfigure(index=0, weight=4)
+        self.rowconfigure(index=1, weight=1)
+        self.rowconfigure(index=2, weight=4)
+
+        # Создание метода округления и закрытия программы
+        self.round_method = round_method
+        self.destroy_method = destroy_method
+
+        # Формирование переменных
         # Переменная настроек (конфигурации) программы
         self.main_settings = ConfigSet().config
 
@@ -71,9 +437,6 @@ class App(tk.Tk):
 
         # Переменная выбора типа оборудования
         self.rb_type_of_laser = tk.IntVar(value=1)
-
-        # Переменная для bind методов
-        self.not_use = None
 
         # Переменные коэффициентов сложности и дополнительная стоимость
         self.total_cost = 0
@@ -108,47 +471,16 @@ class App(tk.Tk):
         self.gradation_depth_max = len(
             self.main_settings['GRADATION']['depth'].split(','))
 
-        # Создание основных вкладок
-        self.tabs_control = ttk.Notebook(self)
-        self.tab_mian_calculate = ttk.Frame(self.tabs_control)
-        self.tab_sheet_material = SheetMaterialsTab(self.tabs_control,
-                                                    self.round_result)
-        self.tab_industrial_calculator = ttk.Frame(self.tabs_control)
-
-        # Конфигурация отзывчивости вкладок
-        self.tab_mian_calculate.columnconfigure(index=0, weight=1)
-        self.tab_mian_calculate.columnconfigure(index=1, weight=2)
-        self.tab_mian_calculate.rowconfigure(index=0, weight=4)
-        self.tab_mian_calculate.rowconfigure(index=1, weight=1)
-        self.tab_mian_calculate.rowconfigure(index=2, weight=4)
-
-        self.tab_industrial_calculator.columnconfigure(index=0, weight=1)
-        self.tab_industrial_calculator.columnconfigure(index=1, weight=1)
-        self.tab_industrial_calculator.columnconfigure(index=2, weight=1)
-        self.tab_industrial_calculator.rowconfigure(index=0, weight=1)
-        self.tab_industrial_calculator.rowconfigure(index=1, weight=1)
-        self.tab_industrial_calculator.rowconfigure(index=2, weight=1)
-
-        # Добавление вкладок в набор
-        self.tabs_control.add(self.tab_mian_calculate,
-                              text='Частные лица')
-        self.tabs_control.add(self.tab_sheet_material,
-                              text='Листовой материал')
-        # Пока уберем: self.tabs_control.add(self.tab_industrial_calculator,
-        # Пока уберем:                       text='Оптовый расчёт')
-        # Упаковка вкладок
-        self.tabs_control.pack(fill='both', expand=True)
-
-        # ____________________1 ВКЛАДКА____________________
+        # Формирование интерфейса вкладки (создание виджетов)
 
         # Создание формы для виджетов основного расчета
-        self.panel_1 = ttk.Frame(self.tab_mian_calculate, padding=(0, 0, 0, 0))
+        self.panel_1 = ttk.Frame(self, padding=(0, 0, 0, 0))
         self.panel_1.grid(row=0, column=0, padx=10, pady=(10, 0),
                           sticky="nsew", rowspan=1)
 
         # Создание формы для переключателей
         self.panel_2 = ttk.LabelFrame(
-            self.tab_mian_calculate,
+            self,
             text="Углубленный расчет",
             padding=10
         )
@@ -157,7 +489,7 @@ class App(tk.Tk):
 
         # Создание формы для вывода результатов
         self.panel_4 = ttk.LabelFrame(
-            self.tab_mian_calculate,
+            self,
             text="Результаты расчета",
             padding=5
         )
@@ -476,7 +808,7 @@ class App(tk.Tk):
         self.btn_close_window = ttk.Button(
             self.panel_4,
             text='Выход',
-            command=self.destroy_window
+            command=self.destroy_method
         )
         self.btn_close_window.grid(
             row=4, column=1, padx=10, pady=10, sticky='nsew')
@@ -500,145 +832,24 @@ class App(tk.Tk):
         self.lbl_past_results.grid(row=2, column=1, padx=10, pady=10,
                                    sticky="ns", columnspan=1)
 
-        # ____________________2 ВКЛАДКА____________________
-
-        # ____________________3 ВКЛАДКА____________________
-        # Создание форм вкладки
-        self.panel_1_industrial = ttk.LabelFrame(
-            self.tab_industrial_calculator,
-            text='Углубленный расчет')
-        self.panel_1_industrial.grid(row=0, column=0, padx=20, pady=30,
-                                     sticky="nsew", columnspan=3)
-
-        self.panel_2_industrial = ttk.LabelFrame(
-            self.tab_industrial_calculator,
-            text="Время работы оборудования",
-            padding=5
-        )
-        self.panel_2_industrial.grid(row=1, column=0, padx=(10, 20),
-                                     pady=(10, 20),
-                                     sticky="nsew", columnspan=1)
-
-        self.panel_3_industrial = ttk.LabelFrame(
-            self.tab_industrial_calculator,
-            text="Приближенный расчет времени",
-            padding=5
-        )
-        self.panel_3_industrial.grid(row=1, column=1, padx=(10, 20),
-                                     pady=(10, 20), sticky="nsew",
-                                     columnspan=2)
-
-        self.panel_4_industrial = ttk.LabelFrame(
-            self.tab_industrial_calculator,
-            text="Учет установок в партии",
-            padding=5
-        )
-        self.panel_4_industrial.grid(row=2, column=0, padx=(10, 20),
-                                     pady=(5, 5),
-                                     sticky="nsew")
-
-        # Конфигурация форм вкладки
-
-        self.panel_2_industrial.columnconfigure(index=0, weight=1)
-        self.panel_2_industrial.columnconfigure(index=1, weight=1)
-        self.panel_2_industrial.rowconfigure(index=0, weight=1)
-        self.panel_2_industrial.rowconfigure(index=1, weight=1)
-        self.panel_2_industrial.rowconfigure(index=2, weight=1)
-
-        self.panel_4_industrial.columnconfigure(index=0, weight=1)
-        self.panel_4_industrial.columnconfigure(index=1, weight=1)
-        self.panel_4_industrial.rowconfigure(index=0, weight=1)
-        self.panel_4_industrial.rowconfigure(index=1, weight=1)
-        self.panel_4_industrial.rowconfigure(index=2, weight=1)
-
-        # Виджеты времени работы оборудования
-        ttk.Label(self.panel_2_industrial, text='Время работы, мин.').grid(
-            row=0, column=0, padx=0, pady=0, sticky='ns')
-        self.ent_time_of_work = ttk.Entry(self.panel_2_industrial, width=5)
-        self.ent_time_of_work.grid(row=1, column=0, padx=10, pady=10,
-                                   sticky='nsew')
-        self.btn_time_calculate = ttk.Button(
-            self.panel_2_industrial,
-            text='Расчёт',
-            command=self.get_time_calc
-        )
-        self.btn_time_calculate.grid(
-            row=1, column=1, padx=10, pady=10, sticky='nsew')
-
-        self.lbl_result_time = ttk.Label(
-            self.panel_2_industrial,
-            text=f"Стоимость работы: "
-                 f" {0:.0f}  руб/шт."
-        )
-        self.lbl_result_time.grid(row=3, column=0, padx=(10, 10), pady=(0, 10),
-                                  sticky="ns", columnspan=2)
-
-        # Виджеты расчета партии с количеством изделий в установке
-        ttk.Label(self.panel_4_industrial,
-                  text='Количество изделий за 1 установку, шт.').grid(
-            row=0, column=0, padx=0, pady=0, sticky='ns')
-        self.ent_items_in_one = ttk.Entry(self.panel_4_industrial, width=5)
-        self.ent_items_in_one.grid(row=1, column=0, padx=10, pady=10,
-                                   sticky='nsew')
-        self.btn_items_calculate = ttk.Button(
-            self.panel_4_industrial,
-            text='Расчёт',
-            command=self.get_calculate_items
-        )
-        self.btn_items_calculate.grid(
-            row=1, column=1, padx=10, pady=10, sticky='nsew')
-
-        self.lbl_result_items = ttk.Label(
-            self.panel_4_industrial,
-            text=f"Стоимость работы: "
-                 f" {0:.0f}  руб."
-        )
-        self.lbl_result_items.grid(
-            row=3, column=0, padx=(10, 10), pady=(0, 10), sticky="ns",
-            columnspan=2)
-
-    def draw_menu(self):
+    def disable_taxation(self):
         """
-        Метод прорисовки строки и вкладок меню.
+        Метод зависимости способов оплаты.
+        Если активируется способ оплаты одним методом, то происходит
+        деактивация возможности выбора второго.
         """
 
-        # Создаем полосу меню в окне
-        menu_bar = tk.Menu(self)
+        if self.bool_ratio_taxation_ao.get():
+            self.chk_ratio_taxation_ip.config(state='disabled')
 
-        # Создаем первое подменю -Файл-
-        file_menu = tk.Menu(menu_bar)
-        file_menu.add_command(label='Сохранить отчет',
-                              state='disabled')  # Пока уберем
-        file_menu.add_command(label='Подобрать режим',
-                              command=self.power_set,
-                              state='disabled')  # Пока уберем
-        file_menu.add_command(label='Листовой материал',
-                              command=self.base_of_materials)
-        file_menu.add_command(label='Предварительные настройки программы',
-                              command=self.run_config_window)
-        file_menu.add_separator()
-        file_menu.add_command(label='Выход', command=self.destroy_window)
+        elif not self.bool_ratio_taxation_ao.get():
+            self.chk_ratio_taxation_ip.config(state='enabled')
 
-        # Создаем второе подменю -Вид-
-        view_menu = tk.Menu(menu_bar)
-        view_menu.add_checkbutton(
-            label='Темная тема',
-            onvalue=1,
-            offvalue=0,
-            command=self.change_theme)
+        if self.bool_ratio_taxation_ip.get():
+            self.chk_ratio_taxation_ooo.config(state='disabled')
 
-        # Создаем третье подменю
-        help_menu = tk.Menu(menu_bar)
-        help_menu.add_command(label='Справка')
-        help_menu.add_separator()
-        help_menu.add_command(label='О программе')
-
-        # Конфигурация подменю и меню
-        menu_bar.add_cascade(label='Файл', menu=file_menu)
-        # Пока уберем: menu_bar.add_cascade(label='Вид', menu=view_menu)
-        # Пока уберем: menu_bar.add_cascade(label='Помощь', menu=help_menu)
-        menu_bar.add_command(label='Обновить', command=self.settings_update)
-        self.configure(menu=menu_bar)
+        elif not self.bool_ratio_taxation_ip.get():
+            self.chk_ratio_taxation_ooo.config(state='enabled')
 
     def settings_update(self):
         """
@@ -664,113 +875,6 @@ class App(tk.Tk):
         self.spin_depth.config(to=self.gradation_depth_max)
 
         self.update()
-
-    def run_child_materials(self):
-        """
-        Открытие дочернего окна редактирования листового материала.
-        """
-        child = ChildMaterials(
-            self,
-            900,
-            450,
-            theme=self.theme,
-            icon=PathName.resource_path("resources\\Company_logo.ico")
-        )
-        child.add_bind_child()
-        child.grab_focus()
-
-    def run_child_power(self):
-        """
-        Открытие дочернего окна подбора режимов для выбранного изделия
-        (материала), а также выбор оборудования для выполнения работы.
-        """
-        child = ChildPowerSet(
-            self,
-            540,
-            450,
-            theme=self.theme,
-            icon=PathName.resource_path("resources\\Company_logo.ico")
-        )
-        child.grab_focus()
-
-    def run_config_window(self):
-        """
-        Открытие дочернего окна предварительной настройки программы.
-        """
-        child = ChildConfigSet(
-            self,
-            700,
-            450,
-            theme=self.theme,
-            icon=PathName.resource_path("resources\\Company_logo.ico")
-        )
-        child.grab_focus()
-
-    def base_of_materials(self):
-        """
-        Запуск дочернего окна настройки листового материала из
-        соответствующей вкладки меню.
-        """
-        self.run_child_materials()
-
-    def power_set(self):
-        """
-        Запуск дочернего окна подбора режимов из соответствующей вкладки меню.
-        """
-        self.run_child_power()
-
-    def change_theme(self):
-        """
-        Метод смены темы приложения (на данный момент эта функция отключена).
-        """
-        if self.theme == 'forest-light':
-            self.theme = 'forest-dark'
-            self.style.theme_use(self.theme)
-        else:
-            self.theme = 'forest-light'
-            self.style.theme_use(self.theme)
-        self.update()
-
-    def get_time_calc(self):
-        """
-        Метод, реализующий расчет стоимости от времени работы оборудования.
-        """
-        try:  # Проверяем на то, что введено корректное число
-            cost = (
-                float(self.ent_time_of_work.get()) *
-                int(self.main_settings['MAIN']['one_hour_of_work']) / 60
-
-            )
-
-            self.lbl_result_time.config(
-                text=f"Стоимость работы:"
-                     f"  {self.round_result(cost):.0f}  руб/шт."
-            )
-
-        except ValueError:  # Если число некорректно
-            self.lbl_result_time.config(
-                text=f"Стоимость работы:"
-                     f"  {0:.0f}  руб/шт."
-            )
-
-    def get_calculate_items(self):
-        """
-        Метод расчета стоимости партии с учетом установки изделий группой.
-        Например, партия 1000 штук, но работы выполняется по 20 штук за одну
-        установку в рабочее поле оборудования.
-        """
-        try:
-            result = float(self.ent_items_in_one.get())
-
-            self.lbl_result_items.config(
-                text=f"Стоимость работы: "
-                     f" {result:.0f}  руб."
-            )
-        except ValueError:
-            self.lbl_result_items.config(
-                text=f"Стоимость работы: "
-                     f" {0:.0f}  руб."
-            )
 
     def get_calc(self):
         """
@@ -811,9 +915,9 @@ class App(tk.Tk):
 
         self.lbl_result_grav.config(
             text=f"Стоимость гравировки:"
-            f"  {self.round_result(main_cost):.0f}  руб/шт."
+            f"  {self.round_method(main_cost):.0f}  руб/шт."
         )
-        all_cost = (self.round_result(main_cost) * int(self.spin_number.get())
+        all_cost = (self.round_method(main_cost) * int(self.spin_number.get())
                     + self.cost_design)
         self.lbl_present_results.config(
             text=f"Текущий расчет = {all_cost:.0f} руб."
@@ -1139,71 +1243,20 @@ class App(tk.Tk):
         # Обнуляем переключатели
         self.reset_tab_mian_calculate()
 
-    @staticmethod
-    def round_result(cost: int | float) -> int:
+    def add_tips(self) -> None:
         """
-        Метод округления результатов
-        :param cost: Число, передаваемое для округления.
-        :return: Округленное число
+        Метод добавления подсказок к элементам интерфейса вкладки 'ЧАСТНЫЕ
+        ЛИЦА'
         """
-        if cost >= 800:
-            return int(round(cost/50) * 50)
-        elif 250 <= cost < 800:
-            return int(round(cost/10) * 10)
-        elif 85 <= cost < 250:
-            return int(round(cost/5) * 5)
-        else:
-            return int(cost)
-
-    def disable_taxation(self):
-        """
-        Метод зависимости способов оплаты.
-        Если активируется способ оплаты одним методом, то происходит
-        деактивация возможности выбора второго.
-        """
-
-        if self.bool_ratio_taxation_ao.get():
-            self.chk_ratio_taxation_ip.config(state='disabled')
-
-        elif not self.bool_ratio_taxation_ao.get():
-            self.chk_ratio_taxation_ip.config(state='enabled')
-
-        if self.bool_ratio_taxation_ip.get():
-            self.chk_ratio_taxation_ooo.config(state='disabled')
-
-        elif not self.bool_ratio_taxation_ip.get():
-            self.chk_ratio_taxation_ooo.config(state='enabled')
-
-    def add_bind(self):
-        """
-        Метод установки фонового текста в поля ввода основного окна.
-        """
-        # Расчет стоимости при нажатии на Enter в главном окне (1 и 2 вкладки)
-        self.bind('<Return>', self.get_return_by_keyboard)
-
-        # Установка фонового текста в поля ввода
-        BindEntry(self.ent_width_grav, text='Ширина гравировки, мм')
-        BindEntry(self.ent_height_grav, text='Высота гравировки, мм')
-        BindEntry(self.ent_time_of_work)
-        BindEntry(self.ent_items_in_one)
-        BindEntry(self.ent_design)
-
-        self.tab_sheet_material.add_binds()
-
-    def add_tips(self):
-        """
-        Метод добавления подсказок к элементам интерфейса.
-        """
-        # Установка подсказок для элементов в форме углубленного расчета
         BalloonTips(self.combo_products,
                     text=f'Выбор стандартного типа работы.')
         BalloonTips(self.chk_ratio_timing,
                     text=f'Работа в выходной день\n'
-                    f'или работа сверх очереди.')
+                         f'или работа сверх очереди.')
         BalloonTips(self.chk_ratio_packing,
                     text=f'Большие затраты времени\n'
-                    f'на распаковку/запаковку '
-                    f'изделий.')
+                         f'на распаковку/запаковку '
+                         f'изделий.')
         BalloonTips(self.chk_ratio_thermal_graving,
                     text=f'Гравировка нанесением\n'
                          f'оксидной пленки.')
@@ -1229,7 +1282,7 @@ class App(tk.Tk):
                     text=f'Учет НДС при оплате через кассу.')
         BalloonTips(self.spin_difficult,
                     text=f'Ступенчатая сложность гравировки:\n'
-                         f'{"‾"*80}\n'
+                         f'{"‾" * 80}\n'
                          f'1 - Привязка к 1 габариту или грани;\n'
                          f'2 - Привязка к координатному расположению,\n'
                          f'рамкам, базовым точкам, попадание по окружности;\n'
@@ -1242,7 +1295,7 @@ class App(tk.Tk):
                          f'на тонкой грани.')
         BalloonTips(self.spin_depth,
                     text=f'Ступенчатая глубина гравировки:\n'
-                         f'{"‾"*60}\n'
+                         f'{"‾" * 60}\n'
                          f'1 - Типовая гравировка до 25 проходов;\n'
                          f'2 - Гравировка до 50 проходов;\n'
                          f'3 - Гравировка  до 150 проходов;\n'
@@ -1258,39 +1311,14 @@ class App(tk.Tk):
                     text=f'Для расчета можно использовать\n'
                          f'клавишу <Enter>.')
 
-    def get_return_by_keyboard(self, event=None):
+    def add_binds(self) -> None:
         """
-        Выполнение расчетов при нажатии Return (клавиша Enter)
-        :param event: Нажатие клавиши Enter а клавиатуре
+        Метод установки фонового текста в поля ввода класса вкладки
+        'ЧАСТНЫЕ ЛИЦА'
         """
-        if self.tabs_control.tabs().index(self.tabs_control.select()) == 0:
-            self.get_calc()
-        elif self.tabs_control.tabs().index(self.tabs_control.select()) == 1:
-            self.tab_sheet_material.get_calc_mat()
-
-        self.not_use = event
-
-    def run(self) -> None:
-        """
-        Прорисовка окна (запуск программы)
-        """
-        # Прорисовка виджетов и окна
-        self.add_bind()
-        self.add_tips()
-        self.draw_menu()
-        self.mainloop()
-
-    def destroy_window(self) -> None:
-        """
-        Разрушение окна (закрытие программы).
-        """
-        if askokcancel('Выход', 'Вы действительно хотите выйти?'):
-            self.destroy()
-
-
-class PersonalCalculateTab(ttk.Frame):
-    def __init__(self, parent):
-        super().__init__()
+        BindEntry(self.ent_width_grav, text='Ширина гравировки, мм')
+        BindEntry(self.ent_height_grav, text='Высота гравировки, мм')
+        BindEntry(self.ent_design)
 
 
 class SheetMaterialsTab(ttk.Frame):
@@ -1298,8 +1326,10 @@ class SheetMaterialsTab(ttk.Frame):
         """
         Класс конфигурации второй вкладки основного окна приложения
         "ЛИСТОВОЙ МАТЕРИАЛ"
-        :param parent: экземпляр-родитель Notebook
+        :param parent: Экземпляр-родитель Notebook
+        :param round_method: Метод округления результата (из класса App)
         """
+        # Инициализация и конфигурация отзывчивости вкладки
         super().__init__(parent)
         self.columnconfigure(index=0, weight=1)
         self.rowconfigure(index=0, weight=1)
