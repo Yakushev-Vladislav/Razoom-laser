@@ -44,8 +44,6 @@ class App(tk.Tk):
         self.style = ttk.Style(self)
         self.theme = 'forest-light'
         self.tk.call("source", PathName.resource_path(
-            "resources\\forest-dark.tcl"))
-        self.tk.call("source", PathName.resource_path(
             "resources\\forest-light.tcl"))
         self.style.theme_use(self.theme)
         # Стилизуем текст кнопки основного расчета
@@ -54,128 +52,33 @@ class App(tk.Tk):
         # Переменная для bind методов
         self.not_use = None
 
+        # Переменная основных настроек (конфигурации) программы
+        self.main_settings = ConfigSet().config
+
         # Создание основных вкладок
         self.tabs_control = ttk.Notebook(self)
-        self.tab_personal_calculate = PersonalCalculateTab(self.tabs_control,
-                                                           self.round_result,
-                                                           self.destroy_window)
-        self.tab_sheet_material = SheetMaterialsTab(self.tabs_control,
-                                                    self.round_result)
-        self.tab_industrial_calculator = ttk.Frame(self.tabs_control)
-
-        # Конфигурация отзывчивости вкладок
-
-        self.tab_industrial_calculator.columnconfigure(index=0, weight=1)
-        self.tab_industrial_calculator.columnconfigure(index=1, weight=1)
-        self.tab_industrial_calculator.columnconfigure(index=2, weight=1)
-        self.tab_industrial_calculator.rowconfigure(index=0, weight=1)
-        self.tab_industrial_calculator.rowconfigure(index=1, weight=1)
-        self.tab_industrial_calculator.rowconfigure(index=2, weight=1)
+        self.tab_personal_calculate = PersonalCalculateTab(
+            self.tabs_control,
+            self.round_result,
+            self.destroy_window,
+            self.main_settings)
+        self.tab_sheet_material = SheetMaterialsTab(
+            self.tabs_control,
+            self.round_result)
+        self.tab_industrial_calculator = IndustrialCalculateTab(
+            self.tabs_control,
+            self.round_result,
+            self.main_settings)
 
         # Добавление вкладок в набор
         self.tabs_control.add(self.tab_personal_calculate,
                               text='Частные лица')
         self.tabs_control.add(self.tab_sheet_material,
                               text='Листовой материал')
-        # Пока уберем: self.tabs_control.add(self.tab_industrial_calculator,
-        # Пока уберем:                       text='Оптовый расчёт')
+        self.tabs_control.add(self.tab_industrial_calculator,
+                              text='Промышленный расчёт')
         # Упаковка вкладок
         self.tabs_control.pack(fill='both', expand=True)
-
-        # ____________________3 ВКЛАДКА____________________
-        # Создание форм вкладки
-        self.panel_1_industrial = ttk.LabelFrame(
-            self.tab_industrial_calculator,
-            text='Углубленный расчет')
-        self.panel_1_industrial.grid(row=0, column=0, padx=20, pady=30,
-                                     sticky="nsew", columnspan=3)
-
-        self.panel_2_industrial = ttk.LabelFrame(
-            self.tab_industrial_calculator,
-            text="Время работы оборудования",
-            padding=5
-        )
-        self.panel_2_industrial.grid(row=1, column=0, padx=(10, 20),
-                                     pady=(10, 20),
-                                     sticky="nsew", columnspan=1)
-
-        self.panel_3_industrial = ttk.LabelFrame(
-            self.tab_industrial_calculator,
-            text="Приближенный расчет времени",
-            padding=5
-        )
-        self.panel_3_industrial.grid(row=1, column=1, padx=(10, 20),
-                                     pady=(10, 20), sticky="nsew",
-                                     columnspan=2)
-
-        self.panel_4_industrial = ttk.LabelFrame(
-            self.tab_industrial_calculator,
-            text="Учет установок в партии",
-            padding=5
-        )
-        self.panel_4_industrial.grid(row=2, column=0, padx=(10, 20),
-                                     pady=(5, 5),
-                                     sticky="nsew")
-
-        # Конфигурация форм вкладки
-
-        self.panel_2_industrial.columnconfigure(index=0, weight=1)
-        self.panel_2_industrial.columnconfigure(index=1, weight=1)
-        self.panel_2_industrial.rowconfigure(index=0, weight=1)
-        self.panel_2_industrial.rowconfigure(index=1, weight=1)
-        self.panel_2_industrial.rowconfigure(index=2, weight=1)
-
-        self.panel_4_industrial.columnconfigure(index=0, weight=1)
-        self.panel_4_industrial.columnconfigure(index=1, weight=1)
-        self.panel_4_industrial.rowconfigure(index=0, weight=1)
-        self.panel_4_industrial.rowconfigure(index=1, weight=1)
-        self.panel_4_industrial.rowconfigure(index=2, weight=1)
-
-        # Виджеты времени работы оборудования
-        ttk.Label(self.panel_2_industrial, text='Время работы, мин.').grid(
-            row=0, column=0, padx=0, pady=0, sticky='ns')
-        self.ent_time_of_work = ttk.Entry(self.panel_2_industrial, width=5)
-        self.ent_time_of_work.grid(row=1, column=0, padx=10, pady=10,
-                                   sticky='nsew')
-        self.btn_time_calculate = ttk.Button(
-            self.panel_2_industrial,
-            text='Расчёт',
-            command=self.get_time_calc
-        )
-        self.btn_time_calculate.grid(
-            row=1, column=1, padx=10, pady=10, sticky='nsew')
-
-        self.lbl_result_time = ttk.Label(
-            self.panel_2_industrial,
-            text=f"Стоимость работы: "
-                 f" {0:.0f}  руб/шт."
-        )
-        self.lbl_result_time.grid(row=3, column=0, padx=(10, 10), pady=(0, 10),
-                                  sticky="ns", columnspan=2)
-
-        # Виджеты расчета партии с количеством изделий в установке
-        ttk.Label(self.panel_4_industrial,
-                  text='Количество изделий за 1 установку, шт.').grid(
-            row=0, column=0, padx=0, pady=0, sticky='ns')
-        self.ent_items_in_one = ttk.Entry(self.panel_4_industrial, width=5)
-        self.ent_items_in_one.grid(row=1, column=0, padx=10, pady=10,
-                                   sticky='nsew')
-        self.btn_items_calculate = ttk.Button(
-            self.panel_4_industrial,
-            text='Расчёт',
-            command=self.get_calculate_items
-        )
-        self.btn_items_calculate.grid(
-            row=1, column=1, padx=10, pady=10, sticky='nsew')
-
-        self.lbl_result_items = ttk.Label(
-            self.panel_4_industrial,
-            text=f"Стоимость работы: "
-                 f" {0:.0f}  руб."
-        )
-        self.lbl_result_items.grid(
-            row=3, column=0, padx=(10, 10), pady=(0, 10), sticky="ns",
-            columnspan=2)
 
     def draw_menu(self):
         """
@@ -187,25 +90,15 @@ class App(tk.Tk):
 
         # Создаем первое подменю -Файл-
         file_menu = tk.Menu(menu_bar)
-        file_menu.add_command(label='Сохранить отчет',
-                              state='disabled')  # Пока уберем
+        file_menu.add_command(label='Сохранить отчет')
         file_menu.add_command(label='Подобрать режим',
-                              command=self.power_set,
-                              state='disabled')  # Пока уберем
+                              command=self.power_set)
         file_menu.add_command(label='Листовой материал',
                               command=self.base_of_materials)
         file_menu.add_command(label='Предварительные настройки программы',
                               command=self.run_config_window)
         file_menu.add_separator()
         file_menu.add_command(label='Выход', command=self.destroy_window)
-
-        # Создаем второе подменю -Вид-
-        view_menu = tk.Menu(menu_bar)
-        view_menu.add_checkbutton(
-            label='Темная тема',
-            onvalue=1,
-            offvalue=0,
-            command=self.change_theme)
 
         # Создаем третье подменю
         help_menu = tk.Menu(menu_bar)
@@ -215,8 +108,7 @@ class App(tk.Tk):
 
         # Конфигурация подменю и меню
         menu_bar.add_cascade(label='Файл', menu=file_menu)
-        # Пока уберем: menu_bar.add_cascade(label='Вид', menu=view_menu)
-        # Пока уберем: menu_bar.add_cascade(label='Помощь', menu=help_menu)
+        menu_bar.add_cascade(label='Помощь', menu=help_menu)
         menu_bar.add_command(
             label='Обновить',
             command=self.tab_personal_calculate.settings_update)
@@ -276,60 +168,6 @@ class App(tk.Tk):
         """
         self.run_child_power()
 
-    def change_theme(self):
-        """
-        Метод смены темы приложения (на данный момент эта функция отключена).
-        """
-        if self.theme == 'forest-light':
-            self.theme = 'forest-dark'
-            self.style.theme_use(self.theme)
-        else:
-            self.theme = 'forest-light'
-            self.style.theme_use(self.theme)
-        self.update()
-
-    def get_time_calc(self):
-        """
-        Метод, реализующий расчет стоимости от времени работы оборудования.
-        """
-        try:  # Проверяем на то, что введено корректное число
-            cost = (
-                float(self.ent_time_of_work.get()) *
-                int(self.tab_personal_calculate.main_settings['MAIN'][
-                        'one_hour_of_work']) / 60
-
-            )
-
-            self.lbl_result_time.config(
-                text=f"Стоимость работы:"
-                     f"  {self.round_result(cost):.0f}  руб/шт."
-            )
-
-        except ValueError:  # Если число некорректно
-            self.lbl_result_time.config(
-                text=f"Стоимость работы:"
-                     f"  {0:.0f}  руб/шт."
-            )
-
-    def get_calculate_items(self):
-        """
-        Метод расчета стоимости партии с учетом установки изделий группой.
-        Например, партия 1000 штук, но работы выполняется по 20 штук за одну
-        установку в рабочее поле оборудования.
-        """
-        try:
-            result = float(self.ent_items_in_one.get())
-
-            self.lbl_result_items.config(
-                text=f"Стоимость работы: "
-                     f" {result:.0f}  руб."
-            )
-        except ValueError:
-            self.lbl_result_items.config(
-                text=f"Стоимость работы: "
-                     f" {0:.0f}  руб."
-            )
-
     @staticmethod
     def round_result(cost: int | float) -> int:
         """
@@ -354,9 +192,7 @@ class App(tk.Tk):
         self.bind('<Return>', self.get_return_by_keyboard)
 
         # Установка фонового текста в поля ввода
-        BindEntry(self.ent_time_of_work)
-        BindEntry(self.ent_items_in_one)
-
+        self.tab_industrial_calculator.add_binds()
         self.tab_personal_calculate.add_binds()
         self.tab_sheet_material.add_binds()
 
@@ -364,6 +200,7 @@ class App(tk.Tk):
         """
         Метод добавления подсказок к элементам интерфейса.
         """
+        self.tab_industrial_calculator.add_tips()
         self.tab_personal_calculate.add_tips()
         self.tab_sheet_material.add_tips()
 
@@ -398,12 +235,14 @@ class App(tk.Tk):
 
 
 class PersonalCalculateTab(ttk.Frame):
-    def __init__(self, parent, round_method, destroy_method):
+    def __init__(self, parent, round_method, destroy_method, settings):
         """
         Класс конфигурации первой вкладки основного окна приложения
         "Частные лица"
         :param parent: Экземпляр-родитель Notebook
         :param round_method: Метод округления результата (из класса App)
+        :param destroy_method: Метод закрытия приложения (из класса App)
+        :param settings: Переменная настроек (конфигурации) программы
         """
         # Инициализация и конфигурация отзывчивости вкладки
         super().__init__(parent)
@@ -419,7 +258,7 @@ class PersonalCalculateTab(ttk.Frame):
 
         # Формирование переменных
         # Переменная настроек (конфигурации) программы
-        self.main_settings = ConfigSet().config
+        self.main_settings = settings
 
         # Переменные для переключателей выбора типа и сложности расчета
         self.bool_rotation = tk.BooleanVar(value=False)
@@ -1659,8 +1498,179 @@ class SheetMaterialsTab(ttk.Frame):
         BindEntry(self.ent_height, text='Высота изделия, мм')
 
 
-class Menu:
-    def __init__(self, parent):
+class IndustrialCalculateTab(ttk.Frame):
+    def __init__(self, parent, round_method, settings):
+        """
+        Класс конфигурации первой вкладки основного окна приложения
+        "Промышленный расчет"
+        :param parent: Экземпляр-родитель Notebook
+        :param round_method: Метод округления результата (из класса App)
+        :param settings: Переменная настроек (конфигурации) программы
+        """
+        # Инициализация и конфигурация отзывчивости вкладки
+        super().__init__(parent)
+
+        self.columnconfigure(index=0, weight=1)
+        self.columnconfigure(index=1, weight=1)
+        self.columnconfigure(index=2, weight=1)
+        self.rowconfigure(index=0, weight=1)
+        self.rowconfigure(index=1, weight=1)
+        self.rowconfigure(index=2, weight=1)
+
+        # Создание переменной-метода округления результатов
+        self.round_method = round_method
+        # Создание переменной настроек программы
+        self.main_settings = settings
+
+        # Создание форм вкладки
+        self.panel_1_industrial = ttk.LabelFrame(
+            self,
+            text='Углубленный расчет')
+        self.panel_1_industrial.grid(row=0, column=0, padx=20, pady=30,
+                                     sticky="nsew", columnspan=3)
+
+        self.panel_2_industrial = ttk.LabelFrame(
+            self,
+            text="Время работы оборудования",
+            padding=5
+        )
+        self.panel_2_industrial.grid(row=1, column=0, padx=(10, 20),
+                                     pady=(10, 20),
+                                     sticky="nsew", columnspan=1)
+
+        self.panel_3_industrial = ttk.LabelFrame(
+            self,
+            text="Приближенный расчет времени",
+            padding=5
+        )
+        self.panel_3_industrial.grid(row=1, column=1, padx=(10, 20),
+                                     pady=(10, 20), sticky="nsew",
+                                     columnspan=2)
+
+        self.panel_4_industrial = ttk.LabelFrame(
+            self,
+            text="Учет установок в партии",
+            padding=5
+        )
+        self.panel_4_industrial.grid(row=2, column=0, padx=(10, 20),
+                                     pady=(5, 5),
+                                     sticky="nsew")
+
+        # Конфигурация форм вкладки
+
+        self.panel_2_industrial.columnconfigure(index=0, weight=1)
+        self.panel_2_industrial.columnconfigure(index=1, weight=1)
+        self.panel_2_industrial.rowconfigure(index=0, weight=1)
+        self.panel_2_industrial.rowconfigure(index=1, weight=1)
+        self.panel_2_industrial.rowconfigure(index=2, weight=1)
+
+        self.panel_4_industrial.columnconfigure(index=0, weight=1)
+        self.panel_4_industrial.columnconfigure(index=1, weight=1)
+        self.panel_4_industrial.rowconfigure(index=0, weight=1)
+        self.panel_4_industrial.rowconfigure(index=1, weight=1)
+        self.panel_4_industrial.rowconfigure(index=2, weight=1)
+
+        # Виджеты времени работы оборудования
+        ttk.Label(self.panel_2_industrial, text='Время работы, мин.').grid(
+            row=0, column=0, padx=0, pady=0, sticky='ns')
+        self.ent_time_of_work = ttk.Entry(self.panel_2_industrial, width=5)
+        self.ent_time_of_work.grid(row=1, column=0, padx=10, pady=10,
+                                   sticky='nsew')
+        self.btn_time_calculate = ttk.Button(
+            self.panel_2_industrial,
+            text='Расчёт',
+            command=self.get_time_calc
+        )
+        self.btn_time_calculate.grid(
+            row=1, column=1, padx=10, pady=10, sticky='nsew')
+
+        self.lbl_result_time = ttk.Label(
+            self.panel_2_industrial,
+            text=f"Стоимость работы: "
+                 f" {0:.0f}  руб/шт."
+        )
+        self.lbl_result_time.grid(row=3, column=0, padx=(10, 10), pady=(0, 10),
+                                  sticky="ns", columnspan=2)
+
+        # Виджеты расчета партии с количеством изделий в установке
+        ttk.Label(self.panel_4_industrial,
+                  text='Количество изделий за 1 установку, шт.').grid(
+            row=0, column=0, padx=0, pady=0, sticky='ns')
+        self.ent_items_in_one = ttk.Entry(self.panel_4_industrial, width=5)
+        self.ent_items_in_one.grid(row=1, column=0, padx=10, pady=10,
+                                   sticky='nsew')
+        self.btn_items_calculate = ttk.Button(
+            self.panel_4_industrial,
+            text='Расчёт',
+            command=self.get_calculate_items
+        )
+        self.btn_items_calculate.grid(
+            row=1, column=1, padx=10, pady=10, sticky='nsew')
+
+        self.lbl_result_items = ttk.Label(
+            self.panel_4_industrial,
+            text=f"Стоимость работы: "
+                 f" {0:.0f}  руб."
+        )
+        self.lbl_result_items.grid(
+            row=3, column=0, padx=(10, 10), pady=(0, 10), sticky="ns",
+            columnspan=2)
+
+    def get_time_calc(self):
+        """
+        Метод, реализующий расчет стоимости от времени работы оборудования.
+        """
+        try:  # Проверяем на то, что введено корректное число
+            cost = (
+                float(self.ent_time_of_work.get()) *
+                int(self.main_settings['MAIN'][
+                        'one_hour_of_work']) / 60
+
+            )
+
+            self.lbl_result_time.config(
+                text=f"Стоимость работы:"
+                     f"  {self.round_method(cost):.0f}  руб/шт."
+            )
+
+        except ValueError:  # Если число некорректно
+            self.lbl_result_time.config(
+                text=f"Стоимость работы:"
+                     f"  {0:.0f}  руб/шт."
+            )
+
+    def get_calculate_items(self):
+        """
+        Метод расчета стоимости партии с учетом установки изделий группой.
+        Например, партия 1000 штук, но работы выполняется по 20 штук за одну
+        установку в рабочее поле оборудования.
+        """
+        try:
+            result = float(self.ent_items_in_one.get())
+
+            self.lbl_result_items.config(
+                text=f"Стоимость работы: "
+                     f" {result:.0f}  руб."
+            )
+        except ValueError:
+            self.lbl_result_items.config(
+                text=f"Стоимость работы: "
+                     f" {0:.0f}  руб."
+            )
+
+    def add_binds(self):
+        """
+        Метод установки фонового текста в поля ввода класса вкладки
+        'ПРОМЫШЛЕННЫЙ РАСЧЕТ'
+        """
+        BindEntry(self.ent_time_of_work)
+        BindEntry(self.ent_items_in_one)
+
+    def add_tips(self):
+        """
+        Метод добавления подсказок к элементам интерфейса вкладки 'ПРОМЫШЛЕННЫЙ
+        РАСЧЕТ'
+        """
         pass
 
 
