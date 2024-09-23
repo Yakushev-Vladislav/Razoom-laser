@@ -80,7 +80,7 @@ class App(tk.Tk):
         # Упаковка вкладок
         self.tabs_control.pack(fill='both', expand=True)
 
-    def draw_menu(self):
+    def draw_menu(self) -> None:
         """
         Метод прорисовки строки и вкладок меню.
         """
@@ -114,7 +114,7 @@ class App(tk.Tk):
             command=self.tab_personal_calculate.settings_update)
         self.configure(menu=menu_bar)
 
-    def run_child_materials(self):
+    def run_child_materials(self) -> None:
         """
         Открытие дочернего окна редактирования листового материала.
         """
@@ -128,7 +128,7 @@ class App(tk.Tk):
         child.add_bind_child()
         child.grab_focus()
 
-    def run_child_power(self):
+    def run_child_power(self) -> None:
         """
         Открытие дочернего окна подбора режимов для выбранного изделия
         (материала), а также выбор оборудования для выполнения работы.
@@ -142,7 +142,7 @@ class App(tk.Tk):
         )
         child.grab_focus()
 
-    def run_config_window(self):
+    def run_config_window(self) -> None:
         """
         Открытие дочернего окна предварительной настройки программы.
         """
@@ -155,14 +155,14 @@ class App(tk.Tk):
         )
         child.grab_focus()
 
-    def base_of_materials(self):
+    def base_of_materials(self) -> None:
         """
         Запуск дочернего окна настройки листового материала из
         соответствующей вкладки меню.
         """
         self.run_child_materials()
 
-    def power_set(self):
+    def power_set(self) -> None:
         """
         Запуск дочернего окна подбора режимов из соответствующей вкладки меню.
         """
@@ -671,7 +671,7 @@ class PersonalCalculateTab(ttk.Frame):
         self.lbl_past_results.grid(row=2, column=1, padx=10, pady=10,
                                    sticky="ns", columnspan=1)
 
-    def disable_taxation(self):
+    def disable_taxation(self) -> None:
         """
         Метод зависимости способов оплаты.
         Если активируется способ оплаты одним методом, то происходит
@@ -690,7 +690,7 @@ class PersonalCalculateTab(ttk.Frame):
         elif not self.bool_ratio_taxation_ip.get():
             self.chk_ratio_taxation_ooo.config(state='enabled')
 
-    def settings_update(self):
+    def settings_update(self) -> None:
         """
         Метод обновления окна. Здесь осуществляется обновление переменной
         конфигурации программы. Реализуется после изменения настроек.
@@ -715,10 +715,9 @@ class PersonalCalculateTab(ttk.Frame):
 
         self.update()
 
-    def get_calc(self):
+    def get_calc(self) -> None:
         """
         Метод основного и углубленного расчета.
-        :return: Заполнение меток вывода результатов расчета.
         """
 
         # Формирование начальной стоимости
@@ -772,7 +771,7 @@ class PersonalCalculateTab(ttk.Frame):
                  f"  {self.cost_design:.0f}  руб."
         )
 
-    def get_ratio_for_calculation(self):
+    def get_ratio_for_calculation(self) -> None:
         """
         Метод формирования коэффициентов на основе получения данных из
         пользовательского интерфейса.
@@ -958,7 +957,7 @@ class PersonalCalculateTab(ttk.Frame):
         except ValueError:
             self.ratio_discount = 1
 
-    def add_new_calc(self):
+    def add_new_calc(self) -> None:
         """
         Метод добавления нового расчета в рамках одного заказа
         """
@@ -969,6 +968,7 @@ class PersonalCalculateTab(ttk.Frame):
             self.past_cost_text += f'{self.past_cost:.0f}'
         else:
             self.past_cost_text += f' + {self.past_cost:.0f}'
+        self.present_cost = 0
 
         # Добавление новых данных в прошлый и текущий расчет
         temp_past_text = f"Прошлый расчет = {self.past_cost_text} руб."
@@ -995,7 +995,7 @@ class PersonalCalculateTab(ttk.Frame):
         # Обнуление переключателей и окон ввода
         self.reset_tab_mian_calculate()
 
-    def reset_tab_mian_calculate(self):
+    def reset_tab_mian_calculate(self) -> None:
         """
         Обнуления переключателей и полей
         """
@@ -1053,7 +1053,7 @@ class PersonalCalculateTab(ttk.Frame):
         self.spin_discount.insert(0, '0')
         self.spin_discount.configure(state='readonly')
 
-    def get_reset_results(self):
+    def get_reset_results(self) -> None:
         """
         Метод обнуления результатов расчета, а также обнуление виджетов окна
         """
@@ -1359,7 +1359,6 @@ class SheetMaterialsTab(ttk.Frame):
     def get_calc_mat(self) -> None:
         """
         Расчет себестоимости и стоимости изделий из листового материала.
-        :return: Заполняет метки вывода результатов значениями.
         """
 
         # Получение данных с интерфейса
@@ -1616,7 +1615,7 @@ class IndustrialCalculateTab(ttk.Frame):
             row=3, column=0, padx=(10, 10), pady=(0, 10), sticky="ns",
             columnspan=2)
 
-    def get_time_calc(self):
+    def get_time_calc(self) -> None:
         """
         Метод, реализующий расчет стоимости от времени работы оборудования.
         """
@@ -1639,7 +1638,7 @@ class IndustrialCalculateTab(ttk.Frame):
                      f"  {0:.0f}  руб/шт."
             )
 
-    def get_calculate_items(self):
+    def get_calculate_items(self) -> None:
         """
         Метод расчета стоимости партии с учетом установки изделий группой.
         Например, партия 1000 штук, но работы выполняется по 20 штук за одну
@@ -1658,7 +1657,7 @@ class IndustrialCalculateTab(ttk.Frame):
                      f" {0:.0f}  руб."
             )
 
-    def add_binds(self):
+    def add_binds(self) -> None:
         """
         Метод установки фонового текста в поля ввода класса вкладки
         'ПРОМЫШЛЕННЫЙ РАСЧЕТ'
@@ -1666,7 +1665,7 @@ class IndustrialCalculateTab(ttk.Frame):
         BindEntry(self.ent_time_of_work)
         BindEntry(self.ent_items_in_one)
 
-    def add_tips(self):
+    def add_tips(self) -> None:
         """
         Метод добавления подсказок к элементам интерфейса вкладки 'ПРОМЫШЛЕННЫЙ
         РАСЧЕТ'

@@ -15,7 +15,7 @@ class BindEntry:
         self.widget.bind('<FocusIn>', self.erase_entry_child)
         self.widget.bind('<FocusOut>', self.to_add_entry_child)
 
-    def to_add_entry_child(self, event=None):
+    def to_add_entry_child(self, event=None) -> None:
         """
         Метод заполнения фоновым текстом при пустом поле ввода.
         :param event: Считывает выход из пустого поля ввода
@@ -25,7 +25,7 @@ class BindEntry:
             self.widget.config(foreground='grey')
         self.not_use_child = event
 
-    def erase_entry_child(self, event=None):
+    def erase_entry_child(self, event=None) -> None:
         """
         Метод удаления фонового текста и добавления текста, введенного
         пользователем.

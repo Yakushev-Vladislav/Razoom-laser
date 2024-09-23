@@ -29,7 +29,7 @@ class ChildPowerSet:
         self.style_child = ttk.Style(self.child_root)
         self.style_child.theme_use(theme)
 
-    def grab_focus(self):
+    def grab_focus(self) -> None:
         """
         Метод сохранения фокуса на дочернем окне
         """
@@ -37,7 +37,7 @@ class ChildPowerSet:
         self.child_root.focus_set()
         self.child_root.wait_window()
 
-    def destroy_child(self):
+    def destroy_child(self) -> None:
         """
         Метод закрытия (разрушения) дочернего окна
         """

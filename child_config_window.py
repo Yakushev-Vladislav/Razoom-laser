@@ -11,7 +11,7 @@ from path_getting import PathName
 
 
 class ChildConfigSet:
-    def __init__(self, parent, width: int, height: int, theme,
+    def __init__(self, parent, width: int, height: int, theme: str,
                  title: str = 'Предварительная настройка программы',
                  resizable: tuple = (False, False), icon: str | None = None):
 
@@ -462,7 +462,7 @@ class ChildConfigSet:
         self.add_bind_entry()
         self.add_tips()
 
-    def update_data_in_widgets(self):
+    def update_data_in_widgets(self) -> None:
         """
         Метод записи (обновления) данных в полях ввода.
         """
@@ -553,7 +553,7 @@ class ChildConfigSet:
         del (update_config, ratio_from_config, main_from_config,
              gradation_from_config)
 
-    def get_standard_costs(self):
+    def get_standard_costs(self) -> None:
         """
         Метод получения данных из файла конфигурации и заполнения таблицы
         полученными данными.
@@ -569,13 +569,13 @@ class ChildConfigSet:
 
         del costs
 
-    def click_back(self):
+    def click_back(self) -> None:
         """
         Метод перехода на первую вкладку.
         """
         self.child_tabs_control.select(self.tab_main_settings)
 
-    def click_add_standard(self):
+    def click_add_standard(self) -> None:
         """
         Метод добавления новой стандартной работы.
         """
@@ -599,7 +599,7 @@ class ChildConfigSet:
 
         del add_config
 
-    def click_update_settings(self):
+    def click_update_settings(self) -> None:
         """
         Метод сохранения введенных пользователем изменений в основных
         настройках программы.
@@ -697,7 +697,7 @@ class ChildConfigSet:
         # Запись в файл конфигурации
         self.child_temp_config.update_settings(some_new=new_config)
 
-    def click_default_settings(self):
+    def click_default_settings(self) -> None:
         """
         Метод сброса настроек "По умолчанию"
         """
@@ -712,7 +712,7 @@ class ChildConfigSet:
         self.update_data_in_widgets()
         self.child_root.update()
 
-    def click_delete_element(self):
+    def click_delete_element(self) -> None:
         """
         Метод удаления стандартной работы из списка стандартных работ.
         """
@@ -742,7 +742,7 @@ class ChildConfigSet:
 
         del config_with_deleted_item
 
-    def add_bind_entry(self):
+    def add_bind_entry(self) -> None:
         """
         Установка фонового текста в полях ввода.
         """
@@ -751,7 +751,7 @@ class ChildConfigSet:
 
         self.standard_table.bind('<Button-1>', self.bind_treeview)
 
-    def add_tips(self):
+    def add_tips(self) -> None:
         """
         Метод добавления подсказок к элементам интерфейса.
         """
@@ -862,7 +862,7 @@ class ChildConfigSet:
         BalloonTips(self.btn_delete_element,
                     text=f'Для удаления выделите строку в таблице.')
 
-    def bind_treeview(self, event=None):
+    def bind_treeview(self, event=None) -> None:
         """
         Метод, реализующий заполнение полей ввода названия работы и ее
         стоимости при выделении строки в таблице (считывание строки из
@@ -882,7 +882,7 @@ class ChildConfigSet:
             self.add_bind_entry()
         self.not_use = event
 
-    def grab_focus(self):
+    def grab_focus(self) -> None:
         """
         Метод сохранения фокуса на дочернем окне.
         """
@@ -890,7 +890,7 @@ class ChildConfigSet:
         self.child_root.focus_set()
         self.child_root.wait_window()
 
-    def destroy_child(self):
+    def destroy_child(self) -> None:
         """
         Метод разрушения (закрытия) дочернего окна
         """
@@ -898,7 +898,7 @@ class ChildConfigSet:
 
 
 class ConfigSet:
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Класс, реализующий работу с файлом конфигурации предварительной
         настройки программы.
@@ -909,7 +909,7 @@ class ConfigSet:
         self.config.read(
             PathName.resource_path('settings\\settings.ini'), encoding='utf-8')
 
-    def update_settings(self, some_new=None):
+    def update_settings(self, some_new=None) -> None:
         """
         Обновления файла конфигурации и внесение в него изменений (при их
         наличии)
@@ -928,7 +928,7 @@ class ConfigSet:
                 self.config.write(configfile)
 
     @staticmethod
-    def default_settings():
+    def default_settings() -> None:
         """
         Метод сброса настроек программы (файла конфигурации) до базовых
         (Сброс "По-умолчанию")
@@ -942,7 +942,7 @@ class ConfigSet:
 
 class RatioArea:
     def __init__(self, area_min: int | float, area_max: int | float,
-                 ratio_max: int | float, ratio_min: int | float = 1):
+                 ratio_max: int | float, ratio_min: int | float = 1) -> None:
         """
         Класс реализующий линейную и квадратичную зависимость для расчета
         коэффициента увеличения стоимости в зависимости от размеров

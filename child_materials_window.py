@@ -220,7 +220,7 @@ class ChildMaterials:
         self.btn_destroy.grid(
             row=5, column=4, padx=(0, 10), pady=15, sticky='nsew')
 
-    def add_bind_child(self):
+    def add_bind_child(self) -> None:
         """
         Метод добавления фонового текста в поля ввода, а также добавление
         подсказок к элементам интерфейса.
@@ -250,7 +250,7 @@ class ChildMaterials:
         BalloonTips(self.btn_get_default, text='Сброс настроек '
                                                '"по-умолчанию".')
 
-    def material_table_bind(self, event=None):
+    def material_table_bind(self, event=None) -> None:
         """
         Метод, реализующий заполнение полей ввода названия материала и его
         параметров (ширина, высота, стоимость) при выделении строки в таблице
@@ -277,7 +277,7 @@ class ChildMaterials:
             self.reset_entries_data()
         self.not_use_child = event
 
-    def reset_entries_data(self):
+    def reset_entries_data(self) -> None:
         """
         Метод удаления текста из полей ввода и установка фонового текста.
         """
@@ -288,7 +288,7 @@ class ChildMaterials:
         self.ent_price_mat.delete(0, tk.END)
         self.add_bind_child()
 
-    def get_data_child(self):
+    def get_data_child(self) -> None:
         """
         Метод обновления данных в таблице.
         """
@@ -303,7 +303,7 @@ class ChildMaterials:
 
         del temp_data, temp
 
-    def click_add_data(self):
+    def click_add_data(self) -> None:
         """
         Метод, реализующий добавление в таблицу элемента из
         пользовательского интерфейса.
@@ -366,7 +366,7 @@ class ChildMaterials:
 
             self.child_root.update()
 
-    def click_del_data(self):
+    def click_del_data(self) -> None:
         """
         Метод удаления выделенного в таблице материала (выделенной
         пользователем строки).
@@ -411,7 +411,7 @@ class ChildMaterials:
 
         del deleted_data_config
 
-    def get_default_materials(self):
+    def get_default_materials(self) -> None:
         """
         Метод сброса базы материала до настроек "по-умолчанию". После сброса
         реализуется обновление данных в таблице.
@@ -434,7 +434,7 @@ class ChildMaterials:
         # Сбрасываем поля ввода
         self.reset_entries_data()
 
-    def grab_focus(self):
+    def grab_focus(self) -> None:
         """
         Метод захвата фокуса на дочернем окне.
         """
@@ -442,13 +442,13 @@ class ChildMaterials:
         self.child_root.focus_set()
         self.child_root.wait_window()
 
-    def destroy_child(self):
+    def destroy_child(self) -> None:
         """
         Метод, реализующий разрушение (закрытие) окна.
         """
         self.child_root.destroy()
 
-    def run_matrix_window(self):
+    def run_matrix_window(self) -> None:
         """
         Метод открытия дочернего окна с редактированием стоимостей изделий
         для выбранного в таблице материала.
@@ -481,12 +481,12 @@ class ChildMatrixMaterial:
                  resizable: tuple = (False, False), icon: str | None = None):
         """
         Дочернее окно с таблицей стоимостей изделий из выбранного материала.
+
         :param parent: Родительское окно (Листовой материал);
         :param width: Ширина окна;
         :param height: Высота окна;
         :param theme: Тема окна;
-        :param material_name: Наименование материала для которого
-        заполняется матрица;
+        :param material_name: Наименование материала;
         :param title: Название окна;
         :param resizable: Возможность растягивания окна;
         :param icon: Иконка окна;
@@ -662,7 +662,7 @@ class ChildMatrixMaterial:
         # Запись данных в поля ввода
         self.add_entries_data()
 
-    def draw_widgets(self):
+    def draw_widgets(self) -> None:
         """
         Метод прорисовки основных виджетов окна с учетом типа оборудования.
         """
@@ -743,7 +743,7 @@ class ChildMatrixMaterial:
 
         BalloonTips(self.btn_reset, text='Сброс настроек "по-умолчанию".')
 
-    def draw_solid_widget(self):
+    def draw_solid_widget(self) -> None:
         """
         Метод прорисовки виджетов для твердотельного лазера.
         """
@@ -767,7 +767,7 @@ class ChildMatrixMaterial:
             row=6, column=0, padx=10, pady=10, sticky='nsew', columnspan=1
         )
 
-    def draw_gas_widget(self):
+    def draw_gas_widget(self) -> None:
         """
         Метод прорисовки виджетов для газового лазера.
         """
@@ -806,7 +806,7 @@ class ChildMatrixMaterial:
             row=7, column=0, padx=10, pady=10, sticky='nsew', columnspan=1
         )
 
-    def add_entries_data(self):
+    def add_entries_data(self) -> None:
         """
         Метод записи данных в поля ввода. Данные берутся из
         соответствующего файла конфигурации.
@@ -827,7 +827,7 @@ class ChildMatrixMaterial:
                 self.matrix_entries[i][j].delete(0, tk.END)
                 self.matrix_entries[i][j].insert(0, f'{temp_string[j]:.0f}')
 
-    def click_save_data(self):
+    def click_save_data(self) -> None:
         """
         Метод сохранения изменений в файл конфигурации.
         """
@@ -851,7 +851,7 @@ class ChildMatrixMaterial:
         except ValueError:
             pass
 
-    def click_reset_data(self):
+    def click_reset_data(self) -> None:
         """
         Метод сброса настроек "по-умолчанию"
         """
@@ -867,7 +867,7 @@ class ChildMatrixMaterial:
         else:
             pass
 
-    def grab_focus(self):
+    def grab_focus(self) -> None:
         """
         Метод сохранения фокуса на дочернем окне.
         """
@@ -875,7 +875,7 @@ class ChildMatrixMaterial:
         self.matrix_root.focus_set()
         self.matrix_root.wait_window()
 
-    def destroy_child(self):
+    def destroy_child(self) -> None:
         """
         Метод закрытия (разрушения) дочернего окна.
         """

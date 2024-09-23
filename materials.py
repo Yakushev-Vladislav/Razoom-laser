@@ -62,7 +62,7 @@ class Materials:
             mat_type_of_laser[k] = [x for x in v.split(',')][-1]
         return mat_type_of_laser
 
-    def update_materials(self, some_new=None):
+    def update_materials(self, some_new=None) -> None:
         """
         Метод обновления файла конфигурации.
         :param some_new: Переменная конфигурации с новыми данными
@@ -77,7 +77,7 @@ class Materials:
                 self.material_config.write(configfile)
 
     @staticmethod
-    def del_matrix_file(material_name: str):
+    def del_matrix_file(material_name: str) -> None:
         """
         Метод удаления файла конфигурации с матрицей стоимости материала.
         :param material_name: Название материала/файла конфигурации.
@@ -88,7 +88,7 @@ class Materials:
             os.remove(file_path)
 
     @staticmethod
-    def add_matrix_file(material_name: str, laser_type: str):
+    def add_matrix_file(material_name: str, laser_type: str) -> None:
         """
         Метод добавления файла конфигурации с матрицей стоимости материала.
         :param material_name: Название материала
@@ -126,7 +126,7 @@ class Materials:
             os.rename(file_old_name, file_new_name)
 
     @staticmethod
-    def get_default():
+    def get_default() -> None:
         """
         Метод сброса файла конфигурации и стоимостей "по-умолчанию"
         """
@@ -439,7 +439,7 @@ class Interpolation:
 
         return result
 
-    def update_matrix(self, some_new=None):
+    def update_matrix(self, some_new=None) -> None:
         """
         Метод обновления файла конфигурации.
         :param some_new: Переменная конфигурации с новыми данными
@@ -455,7 +455,7 @@ class Interpolation:
                        encoding='utf-8') as configfile):
                 self.matrix_config.write(configfile)
 
-    def get_default(self):
+    def get_default(self) -> None:
         """
         Метод сброса матрицы стоимости до настроек "по-умолчанию".
         """

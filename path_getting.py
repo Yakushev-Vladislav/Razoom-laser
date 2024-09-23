@@ -11,7 +11,7 @@ class PathName:
         pass
 
     @staticmethod
-    def resource_path(relative_path: str):
+    def resource_path(relative_path: str) -> str:
         """
         Get absolute path to resource, works for dev and for PyInstaller
         :param relative_path: relative path
