@@ -80,6 +80,10 @@ class App(tk.Tk):
         # Упаковка вкладок
         self.tabs_control.pack(fill='both', expand=True)
 
+        # Создание ползунка изменения размера
+        self.sizegrip = ttk.Sizegrip(self)
+        self.sizegrip.place(relx=0.972, rely=0.965)
+
     def draw_menu(self) -> None:
         """
         Метод прорисовки строки и вкладок меню.
@@ -304,6 +308,9 @@ class PersonalCalculateTab(ttk.Frame):
         self.ratio_taxation = 1
         self.ratio_size = 1
 
+        # Переменная для добавления событий
+        self.not_use = None
+
         # Размерность блоков ввода градационных сложностей
         self.gradation_difficult_max = len(
             self.main_settings['GRADATION']['difficult'].split(','))
@@ -346,6 +353,8 @@ class PersonalCalculateTab(ttk.Frame):
         self.panel_1.rowconfigure(index=5, weight=1)
         self.panel_1.rowconfigure(index=6, weight=1)
         self.panel_1.rowconfigure(index=7, weight=1)
+        self.panel_1.rowconfigure(index=8, weight=1)
+        self.panel_1.rowconfigure(index=9, weight=1)
 
         self.panel_2.columnconfigure(index=0, weight=1)
         self.panel_2.columnconfigure(index=1, weight=1)
@@ -369,7 +378,7 @@ class PersonalCalculateTab(ttk.Frame):
 
         # Создание выпадающего списка стандартных изделий
         ttk.Label(self.panel_1, text="Стандартное изделие:").grid(
-            row=0, column=0, padx=10, pady=0, sticky='ns')
+            row=0, column=0, padx=15, pady=0, sticky='ew')
         self.combo_list = list()
         self.combo_list.append('Нет')
         for k, v in self.main_settings['STANDARD'].items():
@@ -382,7 +391,7 @@ class PersonalCalculateTab(ttk.Frame):
             takefocus=False
         )
         self.combo_products.current(0)
-        self.combo_products.grid(row=0, column=1, padx=5, pady=0,
+        self.combo_products.grid(row=0, column=1, padx=10, pady=0,
                                  sticky="nsew", columnspan=1)
 
         # Создание переключателей выбора оборудования
@@ -392,7 +401,7 @@ class PersonalCalculateTab(ttk.Frame):
             variable=self.rb_type_of_laser,
             value=1
         )
-        self.rbt_solid.grid(row=1, column=0, padx=5, pady=0,
+        self.rbt_solid.grid(row=1, column=0, padx=15, pady=0,
                             sticky="ns")
         self.rbt_co2 = ttk.Radiobutton(
             self.panel_1,
@@ -400,17 +409,23 @@ class PersonalCalculateTab(ttk.Frame):
             variable=self.rb_type_of_laser,
             value=2
         )
-        self.rbt_co2.grid(row=1, column=1, padx=5, pady=0,
+        self.rbt_co2.grid(row=1, column=1, padx=15, pady=0,
                           sticky="ns")
 
         # Поля ввода габаритов изделия
-        self.ent_width_grav = ttk.Entry(self.panel_1, width=30)
-        self.ent_width_grav.grid(
-            row=3, column=0, padx=10, pady=0, sticky='nsew'
+        ttk.Label(self.panel_1, text='Ширина гравировки, мм:').grid(
+            row=3, column=0, padx=15, pady=5, sticky='ew'
         )
-        self.ent_height_grav = ttk.Entry(self.panel_1, width=30)
+        self.ent_width_grav = ttk.Entry(self.panel_1, width=20)
+        self.ent_width_grav.grid(
+            row=3, column=1, padx=10, pady=5, sticky='nsew'
+        )
+        ttk.Label(self.panel_1, text='Высота гравировки, мм:').grid(
+            row=4, column=0, padx=15, pady=5, sticky='ew'
+        )
+        self.ent_height_grav = ttk.Entry(self.panel_1, width=20)
         self.ent_height_grav.grid(
-            row=3, column=1, padx=10, pady=0, sticky='nsew'
+            row=4, column=1, padx=10, pady=5, sticky='nsew'
         )
 
         # Переключатель вращателя/плоскости
@@ -421,7 +436,7 @@ class PersonalCalculateTab(ttk.Frame):
             style="Switch"
         )
         self.switch_rotation.grid(
-            row=4, column=0, padx=5, pady=5, sticky="ns")
+            row=5, column=0, padx=5, pady=5, sticky="ns")
 
         # Переключатель -Разные макеты-
         self.chk_different = ttk.Checkbutton(
@@ -430,27 +445,38 @@ class PersonalCalculateTab(ttk.Frame):
             variable=self.bool_different,
             style="Switch"
         )
-        self.chk_different.grid(row=4, column=1, padx=5, pady=5, sticky="ns")
+        self.chk_different.grid(row=5, column=1, padx=5, pady=5, sticky="ns")
 
         # Переключатель количества изделий
         ttk.Label(self.panel_1, text='Количество изделий:').grid(
-            row=5, column=0, padx=0, pady=5, sticky='ns'
+            row=6, column=0, padx=15, pady=5, sticky='ew'
         )
         self.spin_number = ttk.Spinbox(self.panel_1, from_=1, to=10000,
                                        width=25)
         self.spin_number.insert(0, '1')
         self.spin_number.grid(
-            row=5, column=1, padx=10, pady=5, sticky='ns'
+            row=6, column=1, padx=5, pady=5, sticky='ns'
         )
 
         # Переключатель количества прицелов
         ttk.Label(self.panel_1, text='Количество прицелов:').grid(
-            row=6, column=0, padx=0, pady=5, sticky='ns'
+            row=7, column=0, padx=15, pady=5, sticky='ew'
         )
         self.spin_aim = ttk.Spinbox(self.panel_1, from_=1, to=10000, width=25)
         self.spin_aim.insert(0, '1')
         self.spin_aim.grid(
-            row=6, column=1, padx=10, pady=5, sticky='ns'
+            row=7, column=1, padx=5, pady=5, sticky='ns'
+        )
+
+        # Переключатель количества изделий в одной установке
+        ttk.Label(self.panel_1, text='Количество в установке:').grid(
+            row=8, column=0, padx=15, pady=5, sticky='ew'
+        )
+        self.spin_group = ttk.Spinbox(
+            self.panel_1, from_=1, to=1, width=25)
+        self.spin_group.insert(0, '1')
+        self.spin_group.grid(
+            row=8, column=1, padx=5, pady=5, sticky='ns'
         )
 
         # Кнопка запуска расчетов
@@ -461,7 +487,7 @@ class PersonalCalculateTab(ttk.Frame):
             style='my.TButton'
         )
         self.btn_calculate.grid(
-            row=7, column=0, padx=10, pady=10, sticky='nsew', columnspan=2
+            row=9, column=0, padx=10, pady=10, sticky='nsew', columnspan=2
         )
 
         # Создание переключателей в форме углубленного расчета
@@ -588,10 +614,6 @@ class PersonalCalculateTab(ttk.Frame):
             row=8, column=1, padx=0, pady=5, sticky='nsew'
         )
 
-        # Создание ползунка изменения размера
-        self.sizegrip = ttk.Sizegrip(self)
-        self.sizegrip.place(relx=0.972, rely=0.965)
-
         # Виджеты вывода результатов расчета
         self.lbl_result_grav = ttk.Label(
             self.panel_4,
@@ -690,10 +712,12 @@ class PersonalCalculateTab(ttk.Frame):
         elif not self.bool_ratio_taxation_ip.get():
             self.chk_ratio_taxation_ooo.config(state='enabled')
 
-    def settings_update(self) -> None:
+    def settings_update(self, event=None) -> None:
         """
         Метод обновления окна. Здесь осуществляется обновление переменной
         конфигурации программы. Реализуется после изменения настроек.
+        :param event: Возвращение фокуса на вкладку после закрытия окна
+        предварительной настройки
         """
         # Обновление переменной конфигурации
         self.main_settings = ConfigSet().config
@@ -712,7 +736,7 @@ class PersonalCalculateTab(ttk.Frame):
             self.main_settings['GRADATION']['depth'].split(','))
         self.spin_difficult.config(to=self.gradation_difficult_max)
         self.spin_depth.config(to=self.gradation_depth_max)
-
+        self.not_use = event
         self.update()
 
     def get_calc(self) -> None:
@@ -1053,6 +1077,11 @@ class PersonalCalculateTab(ttk.Frame):
         self.spin_discount.insert(0, '0')
         self.spin_discount.configure(state='readonly')
 
+        self.spin_group.configure(state='normal')
+        self.spin_group.delete(0, tk.END)
+        self.spin_group.insert(0, '1')
+        self.spin_group.configure(state='readonly', to=1)
+
     def get_reset_results(self) -> None:
         """
         Метод обнуления результатов расчета, а также обнуление виджетов окна
@@ -1159,6 +1188,19 @@ class PersonalCalculateTab(ttk.Frame):
         BindEntry(self.ent_height_grav, text='Высота гравировки, мм')
         BindEntry(self.ent_design)
 
+        self.spin_group.bind('<Enter>', self.bind_spins)
+        self.bind('<Enter>', self.settings_update)
+
+    def bind_spins(self, event=None) -> None:
+        """
+        Ограничение максимального количества изделий в одной установке
+        :param event: Возвращение фокуса (курсора) на виджет
+        """
+        self.spin_group.config(
+            to=int(self.spin_number.get())
+        )
+        self.not_use = event
+
 
 class SheetMaterialsTab(ttk.Frame):
     def __init__(self, parent, round_method):
@@ -1171,11 +1213,14 @@ class SheetMaterialsTab(ttk.Frame):
         # Инициализация и конфигурация отзывчивости вкладки
         super().__init__(parent)
         self.columnconfigure(index=0, weight=1)
-        self.rowconfigure(index=0, weight=1)
-        self.rowconfigure(index=1, weight=2)
+        self.rowconfigure(index=0, weight=2)
+        self.rowconfigure(index=1, weight=1)
 
         # Создание метода округления (наследование от класса App)
         self.round_method = round_method
+
+        # Создание переменной для событий
+        self.not_use_sheet_tab = None
 
         # Конфигурация виджетов вкладки "Листовой материал"
         # Создание формы для виджетов
@@ -1186,16 +1231,18 @@ class SheetMaterialsTab(ttk.Frame):
         # Конфигурация формы виджетов
         self.panel_sheet_materials_widgets.columnconfigure(index=0, weight=1)
         self.panel_sheet_materials_widgets.columnconfigure(index=1, weight=1)
-        self.panel_sheet_materials_widgets.columnconfigure(index=2, weight=1)
         self.panel_sheet_materials_widgets.rowconfigure(index=0, weight=1)
         self.panel_sheet_materials_widgets.rowconfigure(index=1, weight=1)
         self.panel_sheet_materials_widgets.rowconfigure(index=2, weight=1)
+        self.panel_sheet_materials_widgets.rowconfigure(index=3, weight=1)
+        self.panel_sheet_materials_widgets.rowconfigure(index=4, weight=1)
+        self.panel_sheet_materials_widgets.rowconfigure(index=5, weight=1)
 
         # Создание формы для вывода результатов
         self.panel_sheet_materials_result = ttk.LabelFrame(
             self, text='Результаты')
         self.panel_sheet_materials_result.grid(
-            row=1, column=0, padx=20, pady=30, sticky="nsew")
+            row=1, column=0, padx=20, pady=(0, 30), sticky="nsew")
 
         # Конфигурация формы для вывода результатов
         self.panel_sheet_materials_result.columnconfigure(index=0, weight=1)
@@ -1206,17 +1253,12 @@ class SheetMaterialsTab(ttk.Frame):
         self.panel_sheet_materials_result.rowconfigure(index=3, weight=1)
         self.panel_sheet_materials_result.rowconfigure(index=4, weight=1)
 
-        # Виджеты ввода количества изделий
-        self.ent_num = ttk.Entry(self.panel_sheet_materials_widgets,
-                                 width=20, takefocus=False)
-        self.ent_num.grid(row=1, column=0, padx=10, pady=20, sticky='nsew')
-
+        # Виджеты выбора материала
         # Получение материалов
         self.material_list = list()
         for n in Materials().get_mat_price():
             self.material_list.append(n)
 
-        # Виджеты выбора материала
         self.combo_mat = ttk.Combobox(
             self.panel_sheet_materials_widgets,
             values=self.material_list,
@@ -1224,27 +1266,54 @@ class SheetMaterialsTab(ttk.Frame):
         )
         self.combo_mat.current(0)
         self.combo_mat.grid(
-            row=0, column=0, padx=10, pady=20, columnspan=2, sticky='nsew'
+            row=0, column=0, padx=10, pady=5, columnspan=2, sticky='nsew'
         )
+
+        # Виджеты ввода количества изделий
+        ttk.Label(self.panel_sheet_materials_widgets,
+                  text="Количество изделий, шт:").grid(
+            row=1, column=0, padx=15, pady=0, sticky='ew')
+        self.ent_num = ttk.Entry(self.panel_sheet_materials_widgets,
+                                 width=100, takefocus=False)
+        self.ent_num.grid(
+            row=1, column=1, padx=10, pady=5, columnspan=1, sticky='nsew')
 
         # Поля ввода габаритов изделия
+        ttk.Label(self.panel_sheet_materials_widgets,
+                  text="Ширина изделий, мм:").grid(
+            row=2, column=0, padx=15, pady=0, sticky='ew')
         self.ent_width = ttk.Entry(
-            self.panel_sheet_materials_widgets, width=20, takefocus=False)
-        self.ent_width.grid(row=1, column=1, padx=10, pady=20, sticky='nsew')
+            self.panel_sheet_materials_widgets, width=100, takefocus=False)
+        self.ent_width.grid(
+            row=2, column=1, padx=10, pady=5, columnspan=1, sticky='nsew')
+        ttk.Label(self.panel_sheet_materials_widgets,
+                  text="Высота изделий, мм:").grid(
+            row=3, column=0, padx=15, pady=0, sticky='ew')
         self.ent_height = ttk.Entry(
-            self.panel_sheet_materials_widgets, width=20, takefocus=False)
-        self.ent_height.grid(row=1, column=2, padx=10, pady=20, sticky='nsew')
+            self.panel_sheet_materials_widgets, width=100, takefocus=False)
+        self.ent_height.grid(
+            row=3, column=1, padx=10, pady=5, columnspan=1, sticky='nsew')
 
-        # Кнопка обновления списка материалов
-        self.btn_update = ttk.Button(
-            self.panel_sheet_materials_widgets,
-            width=20,
-            text="Обновить список",
-            command=self.update_base
-        )
-        self.btn_update.grid(
-            row=0, column=2, padx=10, pady=20, columnspan=1, sticky='nsew'
-        )
+        # Поле ввода доплаты (макетирование и другое)
+        ttk.Label(self.panel_sheet_materials_widgets,
+                  text="Доп. плата / Макетирование, руб:").grid(
+            row=4, column=0, padx=15, pady=0, sticky='ew')
+        self.ent_draw_overprice = ttk.Entry(
+            self.panel_sheet_materials_widgets, width=100)
+        self.ent_draw_overprice.grid(
+            row=4, column=1, padx=10, pady=5, columnspan=1, sticky='nsew')
+
+        # Переключатель скидки
+        ttk.Label(self.panel_sheet_materials_widgets,
+                  text="Скидка оператора, %:").grid(
+            row=5, column=0, padx=15, pady=0, sticky='ew')
+        self.spin_discount_material = ttk.Spinbox(
+            self.panel_sheet_materials_widgets, from_=0, to=30, width=100)
+        self.spin_discount_material.insert(0, '0')
+        self.spin_discount_material.configure(state='readonly')
+        self.spin_discount_material.grid(
+            row=5, column=1, padx=10, pady=(5, 10), columnspan=1,
+            sticky='nsew')
 
         # Кнопка запуска расчетов
         self.btn_get_cost_materials = ttk.Button(
@@ -1254,22 +1323,8 @@ class SheetMaterialsTab(ttk.Frame):
             command=self.get_calc_mat
         )
         self.btn_get_cost_materials.grid(
-            row=2, column=2, padx=10, pady=20, columnspan=1, sticky='nsew'
+            row=6, column=0, padx=10, pady=0, columnspan=2, sticky='nsew'
         )
-
-        # Поле ввода доплаты (макетирование и другое)
-        self.ent_draw_overprice = ttk.Entry(
-            self.panel_sheet_materials_widgets, width=20)
-        self.ent_draw_overprice.grid(
-            row=2, column=0, padx=10, pady=20, sticky='nsew')
-
-        # Переключатель скидки
-        self.spin_discount_material = ttk.Spinbox(
-            self.panel_sheet_materials_widgets, from_=0, to=30, width=20)
-        self.spin_discount_material.insert(0, '0')
-        self.spin_discount_material.configure(state='readonly')
-        self.spin_discount_material.grid(
-            row=2, column=1, padx=10, pady=20, sticky='nsew')
 
         # Виджеты результатов расчета
         # Виджет -Себестоимость одного изделия-
@@ -1495,6 +1550,19 @@ class SheetMaterialsTab(ttk.Frame):
         BindEntry(self.ent_num, text='Количество изделий, шт')
         BindEntry(self.ent_width, text='Ширина изделия, мм')
         BindEntry(self.ent_height, text='Высота изделия, мм')
+
+        # Обновление списка материалов после редактирования базы
+        self.bind("<Enter>", self.bind_update_base)
+
+    def bind_update_base(self, event=None) -> None:
+        """
+        Метод автономного обновления списка материалов после редактирования
+        базы.
+        :param event: Возвращение фокуса на вкладку после закрытия окна
+        предварительной настройки материала
+        """
+        self.update_base()
+        self.not_use_sheet_tab = event
 
 
 class IndustrialCalculateTab(ttk.Frame):
