@@ -1237,6 +1237,7 @@ class SheetMaterialsTab(ttk.Frame):
         self.panel_sheet_materials_widgets.rowconfigure(index=3, weight=1)
         self.panel_sheet_materials_widgets.rowconfigure(index=4, weight=1)
         self.panel_sheet_materials_widgets.rowconfigure(index=5, weight=1)
+        self.panel_sheet_materials_widgets.rowconfigure(index=6, weight=1)
 
         # Создание формы для вывода результатов
         self.panel_sheet_materials_result = ttk.LabelFrame(
