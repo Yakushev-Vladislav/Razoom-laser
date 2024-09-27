@@ -10,7 +10,7 @@ from binds import BalloonTips
 from path_getting import PathName
 
 
-class ChildMaterials:
+class ChildMaterials(tk.Toplevel):
     def __init__(self, parent, width: int, height: int, theme: str,
                  title: str = 'Листовой материал',
                  resizable: tuple = (False, False), icon: str | None = None):
@@ -25,18 +25,18 @@ class ChildMaterials:
         :param icon: Иконка окна. По умолчанию: None
         """
         # Создание дочернего окна поверх основного
-        self.child_root = tk.Toplevel(parent)
-        self.child_root.title(title)
-        self.child_root.geometry(f"{width}x{height}+20+20")
-        self.child_root.resizable(resizable[0], resizable[1])
+        super().__init__(parent)
+        self.title(title)
+        self.geometry(f"{width}x{height}+20+20")
+        self.resizable(resizable[0], resizable[1])
         if icon:
-            self.child_root.iconbitmap(PathName.resource_path(icon))
+            self.iconbitmap(PathName.resource_path(icon))
 
         # Создание переменной - ссылки на родителя
         self.parent = parent
 
         # Установка стиля окна
-        self.style_child = ttk.Style(self.child_root)
+        self.style_child = ttk.Style(self)
         self.style_child.theme_use(theme)
 
         # Создание переменной, хранящей массив данных для таблицы
@@ -49,14 +49,14 @@ class ChildMaterials:
         self.not_use_child = None
 
         # Конфигурация отзывчивости окна
-        self.child_root.columnconfigure(index=0, weight=1)
-        self.child_root.columnconfigure(index=1, weight=50)
-        self.child_root.columnconfigure(index=2, weight=1)
-        self.child_root.rowconfigure(index=0, weight=1)
-        self.child_root.rowconfigure(index=1, weight=2)
+        self.columnconfigure(index=0, weight=1)
+        self.columnconfigure(index=1, weight=50)
+        self.columnconfigure(index=2, weight=1)
+        self.rowconfigure(index=0, weight=1)
+        self.rowconfigure(index=1, weight=2)
 
         # Создание формы для основных виджетов
-        self.panel_settings = ttk.Frame(self.child_root, padding=(0, 0, 0, 0))
+        self.panel_settings = ttk.Frame(self, padding=(0, 0, 0, 0))
         self.panel_settings.grid(row=1, column=0, padx=0, pady=(0, 0),
                                  sticky="nsew", columnspan=3)
         # Конфигурация формы виджетов
@@ -74,11 +74,11 @@ class ChildMaterials:
         self.panel_settings.rowconfigure(index=5, weight=1)
 
         # Создание и конфигурация таблицы
-        tree_scroll = ttk.Scrollbar(self.child_root)
+        tree_scroll = ttk.Scrollbar(self)
         tree_scroll.grid(row=0, column=2, padx=0, pady=0,
                          sticky="nsew")
         self.material_table = ttk.Treeview(
-            self.child_root,
+            self,
             selectmode="extended",
             yscrollcommand=tree_scroll.set,
             height=8,
@@ -364,7 +364,7 @@ class ChildMaterials:
             BindEntry(
                 self.ent_price_mat, text='Цена, руб').to_add_entry_child()
 
-            self.child_root.update()
+            self.update()
 
     def click_del_data(self) -> None:
         """
@@ -438,15 +438,15 @@ class ChildMaterials:
         """
         Метод захвата фокуса на дочернем окне.
         """
-        self.child_root.grab_set()
-        self.child_root.focus_set()
-        self.child_root.wait_window()
+        self.grab_set()
+        self.focus_set()
+        self.wait_window()
 
     def destroy_child(self) -> None:
         """
         Метод, реализующий разрушение (закрытие) окна.
         """
-        self.child_root.destroy()
+        self.destroy()
 
     def run_matrix_window(self) -> None:
         """
@@ -457,15 +457,15 @@ class ChildMaterials:
         try:
             matrix_material_name = self.material_table.item(
                     self.material_table.focus())['values'][0]
-            self.child_root.CHILD = ChildMatrixMaterial(
-                self.child_root,
+            matrix_child = ChildMatrixMaterial(
+                self,
                 830,
                 310,
                 theme='forest-light',
                 icon=PathName.resource_path("resources\\Company_logo.ico"),
                 material_name=matrix_material_name
             )
-            self.child_root.CHILD.grab_focus()
+            matrix_child.grab_focus()
 
         except (ValueError, KeyboardInterrupt, IndexError):
             tk.messagebox.showerror(
@@ -474,7 +474,7 @@ class ChildMaterials:
             )
 
 
-class ChildMatrixMaterial:
+class ChildMatrixMaterial(tk.Toplevel):
     def __init__(self, parent, width: int, height: int, theme: str,
                  material_name: str | None = None,
                  title: str = f'Матрица стоимостей материала',
@@ -492,19 +492,19 @@ class ChildMatrixMaterial:
         :param icon: Иконка окна;
         """
         # Создание дочернего окна поверх основного
-        self.matrix_root = tk.Toplevel(parent)
+        super().__init__(parent)
         if material_name:
             title = f'Матрица стоимостей материала "{material_name}"'
-            self.matrix_root.title(title)
+            self.title(title)
         else:
-            self.matrix_root.title(title)
-        self.matrix_root.geometry(f"{width}x{height}+50+150")
-        self.matrix_root.resizable(resizable[0], resizable[1])
+            self.title(title)
+        self.geometry(f"{width}x{height}+50+150")
+        self.resizable(resizable[0], resizable[1])
         if icon:
-            self.matrix_root.iconbitmap(PathName.resource_path(icon))
+            self.iconbitmap(PathName.resource_path(icon))
 
         # Установка стиля окна
-        self.style_child = ttk.Style(self.matrix_root)
+        self.style_child = ttk.Style(self)
         self.style_child.theme_use(theme)
 
         # Создание основной переменной конфигурации для выбранного материала
@@ -519,13 +519,13 @@ class ChildMatrixMaterial:
         self.matrix_entries = list()
 
         # ___Нулевая строка "Мелкие"___
-        self.ent_tiny_one = ttk.Entry(self.matrix_root, width=10)
-        self.ent_tiny_five = ttk.Entry(self.matrix_root, width=10)
-        self.ent_tiny_fifteen = ttk.Entry(self.matrix_root, width=10)
-        self.ent_tiny_fifty = ttk.Entry(self.matrix_root, width=10)
-        self.ent_tiny_one_hundred_fifty = ttk.Entry(self.matrix_root, width=10)
-        self.ent_tiny_five_hundred = ttk.Entry(self.matrix_root, width=10)
-        self.ent_tiny_one_thousand = ttk.Entry(self.matrix_root, width=10)
+        self.ent_tiny_one = ttk.Entry(self, width=10)
+        self.ent_tiny_five = ttk.Entry(self, width=10)
+        self.ent_tiny_fifteen = ttk.Entry(self, width=10)
+        self.ent_tiny_fifty = ttk.Entry(self, width=10)
+        self.ent_tiny_one_hundred_fifty = ttk.Entry(self, width=10)
+        self.ent_tiny_five_hundred = ttk.Entry(self, width=10)
+        self.ent_tiny_one_thousand = ttk.Entry(self, width=10)
 
         # Добавляем поля в список для дальнейшего удобного пользования
         self.tiny_entries = [self.ent_tiny_one,
@@ -539,14 +539,14 @@ class ChildMatrixMaterial:
         self.matrix_entries.append(self.tiny_entries)
 
         # ___Первая строка "Маленькие"___
-        self.ent_little_one = ttk.Entry(self.matrix_root, width=10)
-        self.ent_little_five = ttk.Entry(self.matrix_root, width=10)
-        self.ent_little_fifteen = ttk.Entry(self.matrix_root, width=10)
-        self.ent_little_fifty = ttk.Entry(self.matrix_root, width=10)
-        self.ent_little_one_hundred_fifty = ttk.Entry(self.matrix_root,
+        self.ent_little_one = ttk.Entry(self, width=10)
+        self.ent_little_five = ttk.Entry(self, width=10)
+        self.ent_little_fifteen = ttk.Entry(self, width=10)
+        self.ent_little_fifty = ttk.Entry(self, width=10)
+        self.ent_little_one_hundred_fifty = ttk.Entry(self,
                                                       width=10)
-        self.ent_little_five_hundred = ttk.Entry(self.matrix_root, width=10)
-        self.ent_little_one_thousand = ttk.Entry(self.matrix_root, width=10)
+        self.ent_little_five_hundred = ttk.Entry(self, width=10)
+        self.ent_little_one_thousand = ttk.Entry(self, width=10)
 
         # Добавляем поля в список для дальнейшего удобного пользования
         self.little_entries = [self.ent_little_one,
@@ -560,14 +560,14 @@ class ChildMatrixMaterial:
         self.matrix_entries.append(self.little_entries)
 
         # ___Вторая строка "Средние"___
-        self.ent_middle_one = ttk.Entry(self.matrix_root, width=10)
-        self.ent_middle_five = ttk.Entry(self.matrix_root, width=10)
-        self.ent_middle_fifteen = ttk.Entry(self.matrix_root, width=10)
-        self.ent_middle_fifty = ttk.Entry(self.matrix_root, width=10)
-        self.ent_middle_one_hundred_fifty = ttk.Entry(self.matrix_root,
+        self.ent_middle_one = ttk.Entry(self, width=10)
+        self.ent_middle_five = ttk.Entry(self, width=10)
+        self.ent_middle_fifteen = ttk.Entry(self, width=10)
+        self.ent_middle_fifty = ttk.Entry(self, width=10)
+        self.ent_middle_one_hundred_fifty = ttk.Entry(self,
                                                       width=10)
-        self.ent_middle_five_hundred = ttk.Entry(self.matrix_root, width=10)
-        self.ent_middle_one_thousand = ttk.Entry(self.matrix_root, width=10)
+        self.ent_middle_five_hundred = ttk.Entry(self, width=10)
+        self.ent_middle_one_thousand = ttk.Entry(self, width=10)
 
         # Добавляем поля в список для дальнейшего удобного пользования
         self.middle_entries = [self.ent_middle_one,
@@ -581,13 +581,13 @@ class ChildMatrixMaterial:
         self.matrix_entries.append(self.middle_entries)
 
         # ___Третья строка "Большие"___
-        self.ent_big_one = ttk.Entry(self.matrix_root, width=10)
-        self.ent_big_five = ttk.Entry(self.matrix_root, width=10)
-        self.ent_big_fifteen = ttk.Entry(self.matrix_root, width=10)
-        self.ent_big_fifty = ttk.Entry(self.matrix_root, width=10)
-        self.ent_big_one_hundred_fifty = ttk.Entry(self.matrix_root, width=10)
-        self.ent_big_five_hundred = ttk.Entry(self.matrix_root, width=10)
-        self.ent_big_one_thousand = ttk.Entry(self.matrix_root, width=10)
+        self.ent_big_one = ttk.Entry(self, width=10)
+        self.ent_big_five = ttk.Entry(self, width=10)
+        self.ent_big_fifteen = ttk.Entry(self, width=10)
+        self.ent_big_fifty = ttk.Entry(self, width=10)
+        self.ent_big_one_hundred_fifty = ttk.Entry(self, width=10)
+        self.ent_big_five_hundred = ttk.Entry(self, width=10)
+        self.ent_big_one_thousand = ttk.Entry(self, width=10)
 
         # Добавляем поля в список для дальнейшего удобного пользования
         self.big_entries = [self.ent_big_one,
@@ -601,14 +601,14 @@ class ChildMatrixMaterial:
         self.matrix_entries.append(self.big_entries)
 
         # ___Четвертая (пятая для СО2) строка "Негабаритные (Огромные)"___
-        self.ent_oversize_one = ttk.Entry(self.matrix_root, width=10)
-        self.ent_oversize_five = ttk.Entry(self.matrix_root, width=10)
-        self.ent_oversize_fifteen = ttk.Entry(self.matrix_root, width=10)
-        self.ent_oversize_fifty = ttk.Entry(self.matrix_root, width=10)
-        self.ent_oversize_one_hundred_fifty = ttk.Entry(self.matrix_root,
+        self.ent_oversize_one = ttk.Entry(self, width=10)
+        self.ent_oversize_five = ttk.Entry(self, width=10)
+        self.ent_oversize_fifteen = ttk.Entry(self, width=10)
+        self.ent_oversize_fifty = ttk.Entry(self, width=10)
+        self.ent_oversize_one_hundred_fifty = ttk.Entry(self,
                                                         width=10)
-        self.ent_oversize_five_hundred = ttk.Entry(self.matrix_root, width=10)
-        self.ent_oversize_one_thousand = ttk.Entry(self.matrix_root, width=10)
+        self.ent_oversize_five_hundred = ttk.Entry(self, width=10)
+        self.ent_oversize_one_thousand = ttk.Entry(self, width=10)
 
         # Добавляем поля в список для дальнейшего удобного пользования
         self.oversize_entries = [self.ent_oversize_one,
@@ -622,14 +622,14 @@ class ChildMatrixMaterial:
         self.matrix_entries.append(self.oversize_entries)
 
         # ___Строка "Очень большие" для СО2___
-        self.ent_very_big_one = ttk.Entry(self.matrix_root, width=10)
-        self.ent_very_big_five = ttk.Entry(self.matrix_root, width=10)
-        self.ent_very_big_fifteen = ttk.Entry(self.matrix_root, width=10)
-        self.ent_very_big_fifty = ttk.Entry(self.matrix_root, width=10)
-        self.ent_very_big_one_hundred_fifty = ttk.Entry(self.matrix_root,
+        self.ent_very_big_one = ttk.Entry(self, width=10)
+        self.ent_very_big_five = ttk.Entry(self, width=10)
+        self.ent_very_big_fifteen = ttk.Entry(self, width=10)
+        self.ent_very_big_fifty = ttk.Entry(self, width=10)
+        self.ent_very_big_one_hundred_fifty = ttk.Entry(self,
                                                         width=10)
-        self.ent_very_big_five_hundred = ttk.Entry(self.matrix_root, width=10)
-        self.ent_very_big_one_thousand = ttk.Entry(self.matrix_root, width=10)
+        self.ent_very_big_five_hundred = ttk.Entry(self, width=10)
+        self.ent_very_big_one_thousand = ttk.Entry(self, width=10)
 
         # Добавляем поля в список для дальнейшего удобного пользования
         self.very_big_entries = [self.ent_very_big_one,
@@ -644,14 +644,14 @@ class ChildMatrixMaterial:
 
         # Кнопка сохранения результатов
         self.btn_save = ttk.Button(
-            self.matrix_root,
+            self,
             width=4,
             text="Сохранить",
             command=self.click_save_data
         )
         # Кнопка сброса изменений
         self.btn_reset = ttk.Button(
-            self.matrix_root,
+            self,
             width=4,
             text="Сброс",
             command=self.click_reset_data
@@ -672,26 +672,26 @@ class ChildMatrixMaterial:
             self.draw_gas_widget()
 
         # Упаковка формы
-        self.matrix_root.grid()
+        self.grid()
 
         # Упаковка виджетов
         # Подписи столбцов
         volume_list = [1, 5, 15, 50, 150, 500, 1000]
         for i in range(7):
-            ttk.Label(self.matrix_root, text=f'{volume_list[i]} шт').grid(
+            ttk.Label(self, text=f'{volume_list[i]} шт').grid(
                 row=0, column=(i+1), padx=0, pady=(15, 0), sticky='ns'
             )
         # Подписи строк
-        ttk.Label(self.matrix_root, text='Мелкие (10х10мм):').grid(
+        ttk.Label(self, text='Мелкие (10х10мм):').grid(
             row=1, column=0, padx=10, pady=0, sticky='nsew'
         )
-        ttk.Label(self.matrix_root, text='Маленькие (50х30мм):').grid(
+        ttk.Label(self, text='Маленькие (50х30мм):').grid(
             row=2, column=0, padx=10, pady=0, sticky='nsew'
         )
-        ttk.Label(self.matrix_root, text='Средние (100х50мм):').grid(
+        ttk.Label(self, text='Средние (100х50мм):').grid(
             row=3, column=0, padx=10, pady=0, sticky='nsew'
         )
-        ttk.Label(self.matrix_root, text='Большие (200х150мм):').grid(
+        ttk.Label(self, text='Большие (200х150мм):').grid(
             row=4, column=0, padx=10, pady=0, sticky='nsew'
         )
 
@@ -749,12 +749,12 @@ class ChildMatrixMaterial:
         """
         # Конфигурация формы
         for i in range(8):
-            self.matrix_root.columnconfigure(index=i, weight=1)
+            self.columnconfigure(index=i, weight=1)
         for j in range(7):
-            self.matrix_root.rowconfigure(index=j, weight=1)
+            self.rowconfigure(index=j, weight=1)
 
         # Подписи данных (строк)
-        ttk.Label(self.matrix_root, text='Негабаритные (300х200мм):').grid(
+        ttk.Label(self, text='Негабаритные (300х200мм):').grid(
             row=5, column=0, padx=10, pady=0, sticky='nsew'
         )
 
@@ -773,16 +773,16 @@ class ChildMatrixMaterial:
         """
         # Конфигурация формы
         for i in range(8):
-            self.matrix_root.columnconfigure(index=i, weight=1)
+            self.columnconfigure(index=i, weight=1)
         for j in range(8):
-            self.matrix_root.rowconfigure(index=j, weight=1)
+            self.rowconfigure(index=j, weight=1)
 
         # Подписи данных (строк)
-        ttk.Label(self.matrix_root,
+        ttk.Label(self,
                   text='Очень большие (300х250мм):').grid(
             row=5, column=0, padx=10, pady=0, sticky='nsew'
         )
-        ttk.Label(self.matrix_root,
+        ttk.Label(self,
                   text='Огромные (600х400мм):').grid(
             row=6, column=0, padx=10, pady=0, sticky='nsew'
         )
@@ -871,12 +871,12 @@ class ChildMatrixMaterial:
         """
         Метод сохранения фокуса на дочернем окне.
         """
-        self.matrix_root.grab_set()
-        self.matrix_root.focus_set()
-        self.matrix_root.wait_window()
+        self.grab_set()
+        self.focus_set()
+        self.wait_window()
 
     def destroy_child(self) -> None:
         """
         Метод закрытия (разрушения) дочернего окна.
         """
-        self.matrix_root.destroy()
+        self.destroy()

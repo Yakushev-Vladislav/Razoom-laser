@@ -4,7 +4,7 @@ from tkinter import ttk
 from path_getting import PathName
 
 
-class ChildPowerSet:
+class ChildPowerSet(tk.Toplevel):
     def __init__(self, parent, width: int, height: int, theme: str,
                  title: str = 'Подбор режимов',
                  resizable: tuple = (False, False), icon: str | None = None):
@@ -18,27 +18,27 @@ class ChildPowerSet:
         :param resizable: Изменяемость окна. По умолчанию: (False, False)
         :param icon: Иконка окна. По умолчанию: None
         """
-        self.child_root = tk.Toplevel(parent)
-        self.child_root.title(title)
-        self.child_root.geometry(f"{width}x{height}+20+20")
-        self.child_root.resizable(resizable[0], resizable[1])
+        super().__init__(parent)
+        self.title(title)
+        self.geometry(f"{width}x{height}+20+20")
+        self.resizable(resizable[0], resizable[1])
         if icon:
-            self.child_root.iconbitmap(PathName.resource_path(icon))
+            self.iconbitmap(PathName.resource_path(icon))
 
         # Установка стиля окна
-        self.style_child = ttk.Style(self.child_root)
+        self.style_child = ttk.Style(self)
         self.style_child.theme_use(theme)
 
     def grab_focus(self) -> None:
         """
         Метод сохранения фокуса на дочернем окне
         """
-        self.child_root.grab_set()
-        self.child_root.focus_set()
-        self.child_root.wait_window()
+        self.grab_set()
+        self.focus_set()
+        self.wait_window()
 
     def destroy_child(self) -> None:
         """
         Метод закрытия (разрушения) дочернего окна
         """
-        self.child_root.destroy()
+        self.destroy()

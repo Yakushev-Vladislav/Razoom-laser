@@ -10,7 +10,7 @@ from binds import BindEntry, BalloonTips
 from path_getting import PathName
 
 
-class ChildConfigSet:
+class ChildConfigSet(tk.Toplevel):
     def __init__(self, parent, width: int, height: int, theme: str,
                  title: str = 'Предварительная настройка программы',
                  resizable: tuple = (False, False), icon: str | None = None):
@@ -28,25 +28,24 @@ class ChildConfigSet:
         :param icon: Иконка окна. По умолчанию: None
         """
         # Создание дочернего окна поверх основного
-        self.child_root = tk.Toplevel(parent)
-        self.child_root.title(title)
-        self.child_root.geometry(f"{width}x{height}+20+20")
-        self.child_root.resizable(resizable[0], resizable[1])
+        super().__init__(parent)
+        self.title(title)
+        self.geometry(f"{width}x{height}+20+20")
+        self.resizable(resizable[0], resizable[1])
         if icon:
-            self.child_root.iconbitmap(PathName.resource_path(icon))
+            self.iconbitmap(PathName.resource_path(icon))
 
         # Установка стиля окна
-        self.style_child = ttk.Style(self.child_root)
+        self.style_child = ttk.Style(self)
         self.style_child.theme_use(theme)
 
         # Объявление переменных
         self.child_temp_config = ConfigSet()
         self.not_use = None
         # Создание вкладок окна
-        self.child_tabs_control = ttk.Notebook(self.child_root)
+        self.child_tabs_control = ttk.Notebook(self)
         self.tab_main_settings = ttk.Frame(self.child_tabs_control)
-        self.tab_sheet_materials = ttk.Frame(self.child_tabs_control)
-        self.tab_industrial_settings = ttk.Frame(self.child_tabs_control)
+        self.tab_standard_work = ttk.Frame(self.child_tabs_control)
 
         # Конфигурация отзывчивости вкладок окна
         self.tab_main_settings.columnconfigure(index=0, weight=1)
@@ -69,19 +68,19 @@ class ChildConfigSet:
         self.tab_main_settings.rowconfigure(index=13, weight=1)
         self.tab_main_settings.rowconfigure(index=14, weight=1)
 
-        self.tab_sheet_materials.columnconfigure(index=0, weight=1)
-        self.tab_sheet_materials.columnconfigure(index=1, weight=50)
-        self.tab_sheet_materials.columnconfigure(index=2, weight=1)
-        self.tab_sheet_materials.rowconfigure(index=0, weight=2)
-        self.tab_sheet_materials.rowconfigure(index=1, weight=1)
+        self.tab_standard_work.columnconfigure(index=0, weight=1)
+        self.tab_standard_work.columnconfigure(index=1, weight=50)
+        self.tab_standard_work.columnconfigure(index=2, weight=1)
+        self.tab_standard_work.rowconfigure(index=0, weight=2)
+        self.tab_standard_work.rowconfigure(index=1, weight=1)
 
         # Конфигурация форм вкладок
         self.tab_2_panel_table = ttk.Frame(
-            self.tab_sheet_materials, padding=(0, 0, 0, 0))
+            self.tab_standard_work, padding=(0, 0, 0, 0))
         self.tab_2_panel_table.grid(row=0, column=0, padx=0, pady=(0, 0),
                                     sticky="nsew")
         self.tab_2_panel_widgets = ttk.Frame(
-            self.tab_sheet_materials, padding=(0, 0, 0, 0))
+            self.tab_standard_work, padding=(0, 0, 0, 0))
         self.tab_2_panel_widgets.grid(row=1, column=0, padx=0, pady=(0, 0),
                                       sticky="nsew", columnspan=3)
 
@@ -97,9 +96,7 @@ class ChildConfigSet:
         self.child_tabs_control.add(
             self.tab_main_settings, text='Частные лица')
         self.child_tabs_control.add(
-            self.tab_sheet_materials, text='Стандартные изделия')
-        # Пока уберем: self.child_tabs_control.add(
-        # Пока уберем:     self.tab_industrial_settings, text='Оптовый расчет')
+            self.tab_standard_work, text='Стандартные изделия')
 
         # Упаковка вкладок
         self.child_tabs_control.pack(fill='both', expand=True)
@@ -373,11 +370,11 @@ class ChildConfigSet:
 
         # ___ Создание виджетов 2 вкладки ___
         # Создание и конфигурация таблицы
-        tree_scroll = ttk.Scrollbar(self.tab_sheet_materials)
+        tree_scroll = ttk.Scrollbar(self.tab_standard_work)
         tree_scroll.grid(row=0, column=2, padx=0, pady=0,
                          sticky="nsew")
         self.standard_table = ttk.Treeview(
-            self.tab_sheet_materials,
+            self.tab_standard_work,
             selectmode="extended",
             yscrollcommand=tree_scroll.set,
             height=4,
@@ -548,7 +545,7 @@ class ChildConfigSet:
         BindEntry(self.ent_cost, text='Стоимость, руб').to_add_entry_child()
         BindEntry(self.ent_name, text='Название').to_add_entry_child()
 
-        self.child_root.update()
+        self.update()
 
         del (update_config, ratio_from_config, main_from_config,
              gradation_from_config)
@@ -710,7 +707,7 @@ class ChildConfigSet:
 
         # Обновляем данные в полях ввода и таблице
         self.update_data_in_widgets()
-        self.child_root.update()
+        self.update()
 
     def click_delete_element(self) -> None:
         """
@@ -886,15 +883,15 @@ class ChildConfigSet:
         """
         Метод сохранения фокуса на дочернем окне.
         """
-        self.child_root.grab_set()
-        self.child_root.focus_set()
-        self.child_root.wait_window()
+        self.grab_set()
+        self.focus_set()
+        self.wait_window()
 
     def destroy_child(self) -> None:
         """
         Метод разрушения (закрытия) дочернего окна
         """
-        self.child_root.destroy()
+        self.destroy()
 
 
 class ConfigSet:

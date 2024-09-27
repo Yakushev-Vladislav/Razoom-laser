@@ -320,64 +320,64 @@ class PersonalCalculateTab(ttk.Frame):
         # Формирование интерфейса вкладки (создание виджетов)
 
         # Создание формы для виджетов основного расчета
-        self.panel_1 = ttk.Frame(self, padding=(0, 0, 0, 0))
-        self.panel_1.grid(row=0, column=0, padx=10, pady=(10, 0),
-                          sticky="nsew", rowspan=1)
+        self.panel_main_widgets = ttk.Frame(self, padding=(0, 0, 0, 0))
+        self.panel_main_widgets.grid(row=0, column=0, padx=10, pady=(10, 0),
+                                     sticky="nsew", rowspan=1)
 
         # Создание формы для переключателей
-        self.panel_2 = ttk.LabelFrame(
+        self.panel_deep_widgets = ttk.LabelFrame(
             self,
             text="Углубленный расчет",
             padding=10
         )
-        self.panel_2.grid(row=0, column=1, padx=(10, 20), pady=(10, 5),
-                          sticky="nsew", rowspan=1)
+        self.panel_deep_widgets.grid(row=0, column=1, padx=(10, 20),
+                                     pady=(10, 5), sticky="nsew", rowspan=1)
 
         # Создание формы для вывода результатов
-        self.panel_4 = ttk.LabelFrame(
+        self.panel_results = ttk.LabelFrame(
             self,
             text="Результаты расчета",
             padding=5
         )
-        self.panel_4.grid(row=2, column=0, padx=(10, 20), pady=(10, 20),
-                          sticky="nsew", columnspan=2)
+        self.panel_results.grid(row=2, column=0, padx=(10, 20), pady=(10, 20),
+                                sticky="nsew", columnspan=2)
 
         # Конфигурация форм
-        self.panel_1.columnconfigure(index=0, weight=1)
-        self.panel_1.columnconfigure(index=1, weight=2)
-        self.panel_1.rowconfigure(index=0, weight=1)
-        self.panel_1.rowconfigure(index=1, weight=1)
-        self.panel_1.rowconfigure(index=2, weight=1)
-        self.panel_1.rowconfigure(index=3, weight=1)
-        self.panel_1.rowconfigure(index=4, weight=1)
-        self.panel_1.rowconfigure(index=5, weight=1)
-        self.panel_1.rowconfigure(index=6, weight=1)
-        self.panel_1.rowconfigure(index=7, weight=1)
-        self.panel_1.rowconfigure(index=8, weight=1)
-        self.panel_1.rowconfigure(index=9, weight=1)
+        self.panel_main_widgets.columnconfigure(index=0, weight=1)
+        self.panel_main_widgets.columnconfigure(index=1, weight=2)
+        self.panel_main_widgets.rowconfigure(index=0, weight=1)
+        self.panel_main_widgets.rowconfigure(index=1, weight=1)
+        self.panel_main_widgets.rowconfigure(index=2, weight=1)
+        self.panel_main_widgets.rowconfigure(index=3, weight=1)
+        self.panel_main_widgets.rowconfigure(index=4, weight=1)
+        self.panel_main_widgets.rowconfigure(index=5, weight=1)
+        self.panel_main_widgets.rowconfigure(index=6, weight=1)
+        self.panel_main_widgets.rowconfigure(index=7, weight=1)
+        self.panel_main_widgets.rowconfigure(index=8, weight=1)
+        self.panel_main_widgets.rowconfigure(index=9, weight=1)
 
-        self.panel_2.columnconfigure(index=0, weight=1)
-        self.panel_2.columnconfigure(index=1, weight=1)
-        self.panel_2.rowconfigure(index=0, weight=2)
-        self.panel_2.rowconfigure(index=1, weight=2)
-        self.panel_2.rowconfigure(index=2, weight=2)
-        self.panel_2.rowconfigure(index=3, weight=2)
-        self.panel_2.rowconfigure(index=4, weight=2)
-        self.panel_2.rowconfigure(index=5, weight=1)
-        self.panel_2.rowconfigure(index=6, weight=1)
-        self.panel_2.rowconfigure(index=7, weight=1)
-        self.panel_2.rowconfigure(index=8, weight=1)
+        self.panel_deep_widgets.columnconfigure(index=0, weight=1)
+        self.panel_deep_widgets.columnconfigure(index=1, weight=1)
+        self.panel_deep_widgets.rowconfigure(index=0, weight=2)
+        self.panel_deep_widgets.rowconfigure(index=1, weight=2)
+        self.panel_deep_widgets.rowconfigure(index=2, weight=2)
+        self.panel_deep_widgets.rowconfigure(index=3, weight=2)
+        self.panel_deep_widgets.rowconfigure(index=4, weight=2)
+        self.panel_deep_widgets.rowconfigure(index=5, weight=1)
+        self.panel_deep_widgets.rowconfigure(index=6, weight=1)
+        self.panel_deep_widgets.rowconfigure(index=7, weight=1)
+        self.panel_deep_widgets.rowconfigure(index=8, weight=1)
 
-        self.panel_4.columnconfigure(index=0, weight=1)
-        self.panel_4.columnconfigure(index=1, weight=1)
-        self.panel_4.rowconfigure(index=0, weight=1)
-        self.panel_4.rowconfigure(index=1, weight=1)
-        self.panel_4.rowconfigure(index=2, weight=1)
-        self.panel_4.rowconfigure(index=3, weight=1)
-        self.panel_4.rowconfigure(index=4, weight=1)
+        self.panel_results.columnconfigure(index=0, weight=1)
+        self.panel_results.columnconfigure(index=1, weight=1)
+        self.panel_results.rowconfigure(index=0, weight=1)
+        self.panel_results.rowconfigure(index=1, weight=1)
+        self.panel_results.rowconfigure(index=2, weight=1)
+        self.panel_results.rowconfigure(index=3, weight=1)
+        self.panel_results.rowconfigure(index=4, weight=1)
 
         # Создание выпадающего списка стандартных изделий
-        ttk.Label(self.panel_1, text="Стандартное изделие:").grid(
+        ttk.Label(self.panel_main_widgets, text="Стандартное изделие:").grid(
             row=0, column=0, padx=15, pady=0, sticky='ew')
         self.combo_list = list()
         self.combo_list.append('Нет')
@@ -385,7 +385,7 @@ class PersonalCalculateTab(ttk.Frame):
             self.combo_list.append(k)
 
         self.combo_products = ttk.Combobox(
-            self.panel_1,
+            self.panel_main_widgets,
             values=self.combo_list,
             width=20,
             takefocus=False
@@ -396,7 +396,7 @@ class PersonalCalculateTab(ttk.Frame):
 
         # Создание переключателей выбора оборудования
         self.rbt_solid = ttk.Radiobutton(
-            self.panel_1,
+            self.panel_main_widgets,
             text="Твердотельный лазер",
             variable=self.rb_type_of_laser,
             value=1
@@ -404,7 +404,7 @@ class PersonalCalculateTab(ttk.Frame):
         self.rbt_solid.grid(row=1, column=0, padx=15, pady=0,
                             sticky="ns")
         self.rbt_co2 = ttk.Radiobutton(
-            self.panel_1,
+            self.panel_main_widgets,
             text="СО2 лазер",
             variable=self.rb_type_of_laser,
             value=2
@@ -413,24 +413,24 @@ class PersonalCalculateTab(ttk.Frame):
                           sticky="ns")
 
         # Поля ввода габаритов изделия
-        ttk.Label(self.panel_1, text='Ширина гравировки, мм:').grid(
+        ttk.Label(self.panel_main_widgets, text='Ширина гравировки, мм:').grid(
             row=3, column=0, padx=15, pady=5, sticky='ew'
         )
-        self.ent_width_grav = ttk.Entry(self.panel_1, width=20)
+        self.ent_width_grav = ttk.Entry(self.panel_main_widgets, width=20)
         self.ent_width_grav.grid(
             row=3, column=1, padx=10, pady=5, sticky='nsew'
         )
-        ttk.Label(self.panel_1, text='Высота гравировки, мм:').grid(
+        ttk.Label(self.panel_main_widgets, text='Высота гравировки, мм:').grid(
             row=4, column=0, padx=15, pady=5, sticky='ew'
         )
-        self.ent_height_grav = ttk.Entry(self.panel_1, width=20)
+        self.ent_height_grav = ttk.Entry(self.panel_main_widgets, width=20)
         self.ent_height_grav.grid(
             row=4, column=1, padx=10, pady=5, sticky='nsew'
         )
 
         # Переключатель вращателя/плоскости
         self.switch_rotation = ttk.Checkbutton(
-            self.panel_1,
+            self.panel_main_widgets,
             text="Гравировка на вращателе",
             variable=self.bool_rotation,
             style="Switch"
@@ -440,7 +440,7 @@ class PersonalCalculateTab(ttk.Frame):
 
         # Переключатель -Разные макеты-
         self.chk_different = ttk.Checkbutton(
-            self.panel_1,
+            self.panel_main_widgets,
             text='Гравировка разных макетов',
             variable=self.bool_different,
             style="Switch"
@@ -448,32 +448,33 @@ class PersonalCalculateTab(ttk.Frame):
         self.chk_different.grid(row=5, column=1, padx=5, pady=5, sticky="ns")
 
         # Переключатель количества изделий
-        ttk.Label(self.panel_1, text='Количество изделий:').grid(
+        ttk.Label(self.panel_main_widgets, text='Количество изделий:').grid(
             row=6, column=0, padx=15, pady=5, sticky='ew'
         )
-        self.spin_number = ttk.Spinbox(self.panel_1, from_=1, to=10000,
-                                       width=25)
+        self.spin_number = ttk.Spinbox(self.panel_main_widgets, from_=1,
+                                       to=10000, width=25)
         self.spin_number.insert(0, '1')
         self.spin_number.grid(
             row=6, column=1, padx=5, pady=5, sticky='ns'
         )
 
         # Переключатель количества прицелов
-        ttk.Label(self.panel_1, text='Количество прицелов:').grid(
+        ttk.Label(self.panel_main_widgets, text='Количество прицелов:').grid(
             row=7, column=0, padx=15, pady=5, sticky='ew'
         )
-        self.spin_aim = ttk.Spinbox(self.panel_1, from_=1, to=10000, width=25)
+        self.spin_aim = ttk.Spinbox(self.panel_main_widgets, from_=1,
+                                    to=10000, width=25)
         self.spin_aim.insert(0, '1')
         self.spin_aim.grid(
             row=7, column=1, padx=5, pady=5, sticky='ns'
         )
 
         # Переключатель количества изделий в одной установке
-        ttk.Label(self.panel_1, text='Количество в установке:').grid(
-            row=8, column=0, padx=15, pady=5, sticky='ew'
-        )
+        ttk.Label(self.panel_main_widgets,
+                  text='Количество в установке:').grid(
+            row=8, column=0, padx=15, pady=5, sticky='ew')
         self.spin_group = ttk.Spinbox(
-            self.panel_1, from_=1, to=1, width=25)
+            self.panel_main_widgets, from_=1, to=1, width=25)
         self.spin_group.insert(0, '1')
         self.spin_group.grid(
             row=8, column=1, padx=5, pady=5, sticky='ns'
@@ -481,7 +482,7 @@ class PersonalCalculateTab(ttk.Frame):
 
         # Кнопка запуска расчетов
         self.btn_calculate = ttk.Button(
-            self.panel_1,
+            self.panel_main_widgets,
             text='Рассчитать стоимость',
             command=self.get_calc,
             style='my.TButton'
@@ -492,7 +493,7 @@ class PersonalCalculateTab(ttk.Frame):
 
         # Создание переключателей в форме углубленного расчета
         self.chk_ratio_timing = ttk.Checkbutton(
-            self.panel_2,
+            self.panel_deep_widgets,
             text='Срочность',
             variable=self.bool_ratio_timing
         )
@@ -500,7 +501,7 @@ class PersonalCalculateTab(ttk.Frame):
                                    sticky="nsew")
 
         self.chk_ratio_packing = ttk.Checkbutton(
-            self.panel_2,
+            self.panel_deep_widgets,
             text='Распаковка/Запаковка',
             variable=self.bool_ratio_packing
         )
@@ -508,7 +509,7 @@ class PersonalCalculateTab(ttk.Frame):
                                     sticky="nsew")
 
         self.chk_ratio_thermal_graving = ttk.Checkbutton(
-            self.panel_2,
+            self.panel_deep_widgets,
             text='Гравировка термовлиянием',
             variable=self.bool_ratio_thermal_graving
         )
@@ -516,7 +517,7 @@ class PersonalCalculateTab(ttk.Frame):
                                             sticky="nsew")
 
         self.chk_ratio_oversize = ttk.Checkbutton(
-            self.panel_2,
+            self.panel_deep_widgets,
             text='Негабаритное изделие',
             variable=self.bool_ratio_oversize
         )
@@ -524,7 +525,7 @@ class PersonalCalculateTab(ttk.Frame):
                                      sticky="nsew")
 
         self.chk_ratio_numbering = ttk.Checkbutton(
-            self.panel_2,
+            self.panel_deep_widgets,
             text='Счетчик',
             variable=self.bool_ratio_numbering
         )
@@ -532,7 +533,7 @@ class PersonalCalculateTab(ttk.Frame):
                                       sticky="nsew")
 
         self.chk_ratio_taxation_ooo = ttk.Checkbutton(
-            self.panel_2,
+            self.panel_deep_widgets,
             text='Оплата по счету ООО',
             variable=self.bool_ratio_taxation_ao,
             command=self.disable_taxation
@@ -541,7 +542,7 @@ class PersonalCalculateTab(ttk.Frame):
                                          sticky="nsew")
 
         self.chk_ratio_attention = ttk.Checkbutton(
-            self.panel_2,
+            self.panel_deep_widgets,
             text='Повышенное внимание',
             variable=self.bool_ratio_attention
         )
@@ -549,7 +550,7 @@ class PersonalCalculateTab(ttk.Frame):
                                       sticky="nsew")
 
         self.chk_ratio_hand_job = ttk.Checkbutton(
-            self.panel_2,
+            self.panel_deep_widgets,
             text='Ручные работы',
             variable=self.bool_ratio_hand_job
         )
@@ -557,7 +558,7 @@ class PersonalCalculateTab(ttk.Frame):
                                      sticky="nsew")
 
         self.chk_ratio_docking = ttk.Checkbutton(
-            self.panel_2,
+            self.panel_deep_widgets,
             text='Стыковка элементов',
             variable=self.bool_ratio_docking
         )
@@ -565,7 +566,7 @@ class PersonalCalculateTab(ttk.Frame):
                                     sticky="nsew")
 
         self.chk_ratio_taxation_ip = ttk.Checkbutton(
-            self.panel_2,
+            self.panel_deep_widgets,
             text='Оплата по счету ИП',
             variable=self.bool_ratio_taxation_ip,
             command=self.disable_taxation
@@ -574,11 +575,11 @@ class PersonalCalculateTab(ttk.Frame):
                                         sticky="nsew")
 
         # Переключатель сложности установки
-        ttk.Label(self.panel_2, text='Сложность установки').grid(
+        ttk.Label(self.panel_deep_widgets, text='Сложность установки').grid(
             row=5, column=0, padx=(10, 0), pady=5, sticky='nsew'
         )
         self.spin_difficult = ttk.Spinbox(
-            self.panel_2, from_=1, to=self.gradation_difficult_max)
+            self.panel_deep_widgets, from_=1, to=self.gradation_difficult_max)
         self.spin_difficult.insert(0, '1')
         self.spin_difficult.configure(state='readonly')
         self.spin_difficult.grid(
@@ -586,11 +587,11 @@ class PersonalCalculateTab(ttk.Frame):
         )
 
         # Переключатель глубины гравировки
-        ttk.Label(self.panel_2, text='Глубина гравировки').grid(
+        ttk.Label(self.panel_deep_widgets, text='Глубина гравировки').grid(
             row=6, column=0, padx=(10, 0), pady=5, sticky='nsew'
         )
         self.spin_depth = ttk.Spinbox(
-            self.panel_2, from_=1, to=self.gradation_depth_max)
+            self.panel_deep_widgets, from_=1, to=self.gradation_depth_max)
         self.spin_depth.insert(0, '1')
         self.spin_depth.configure(state='readonly')
         self.spin_depth.grid(
@@ -598,16 +599,17 @@ class PersonalCalculateTab(ttk.Frame):
         )
 
         # Окно ввода доплаты за макетирование
-        ttk.Label(self.panel_2, text='Макетирование, руб.').grid(
+        ttk.Label(self.panel_deep_widgets, text='Макетирование, руб.').grid(
             row=7, column=0, padx=(10, 0), pady=0, sticky='nsew')
-        self.ent_design = ttk.Entry(self.panel_2, width=5)
+        self.ent_design = ttk.Entry(self.panel_deep_widgets, width=5)
         self.ent_design.grid(row=7, column=1, padx=0, pady=5,
                              sticky='nsew')
 
         # Окно ввода скидки оператора
-        ttk.Label(self.panel_2, text='Скидка оператора, %').grid(
+        ttk.Label(self.panel_deep_widgets, text='Скидка оператора, %').grid(
             row=8, column=0, padx=(10, 0), pady=0, sticky='nsew')
-        self.spin_discount = ttk.Spinbox(self.panel_2, from_=0, to=30)
+        self.spin_discount = ttk.Spinbox(self.panel_deep_widgets,
+                                         from_=0, to=30)
         self.spin_discount.insert(0, '0')
         self.spin_discount.configure(state='readonly')
         self.spin_discount.grid(
@@ -616,7 +618,7 @@ class PersonalCalculateTab(ttk.Frame):
 
         # Виджеты вывода результатов расчета
         self.lbl_result_grav = ttk.Label(
-            self.panel_4,
+            self.panel_results,
             text=f"Стоимость гравировки:"
             f"  {0:.0f}  руб/шт.",
             font='Arial 14',
@@ -625,7 +627,7 @@ class PersonalCalculateTab(ttk.Frame):
         self.lbl_result_grav.grid(row=0, column=0, padx=(10, 10), pady=(10, 0),
                                   sticky="nsew")
         self.lbl_result_design = ttk.Label(
-            self.panel_4,
+            self.panel_results,
             text=f"Стоимость макетирования:"
                  f"  {0:.0f}  руб.",
             font='Arial 14',
@@ -634,11 +636,11 @@ class PersonalCalculateTab(ttk.Frame):
         self.lbl_result_design.grid(
             row=1, column=0, padx=(10, 10), pady=(2, 10), sticky="nsew")
 
-        ttk.Separator(self.panel_4).grid(row=3, column=0, columnspan=2,
-                                         pady=5, sticky='ew')
+        ttk.Separator(self.panel_results).grid(row=3, column=0, columnspan=2,
+                                               pady=5, sticky='ew')
 
         self.lbl_result_cost = ttk.Label(
-            self.panel_4,
+            self.panel_results,
             text=f"ИТОГОВАЯ СТОИМОСТЬ:"
                  f"  {0:.0f}  руб.",
             font='Arial 15 bold',
@@ -649,7 +651,7 @@ class PersonalCalculateTab(ttk.Frame):
 
         # Кнопка добавления нового расчета
         self.btn_add_calculate = ttk.Button(
-            self.panel_4,
+            self.panel_results,
             text='Добавить расчет',
             command=self.add_new_calc
         )
@@ -658,7 +660,7 @@ class PersonalCalculateTab(ttk.Frame):
 
         # Кнопка обнуления расчета
         self.btn_reset = ttk.Button(
-            self.panel_4,
+            self.panel_results,
             text='Сброс',
             command=self.get_reset_results
         )
@@ -667,7 +669,7 @@ class PersonalCalculateTab(ttk.Frame):
 
         # Кнопка выхода
         self.btn_close_window = ttk.Button(
-            self.panel_4,
+            self.panel_results,
             text='Выход',
             command=self.destroy_method
         )
@@ -676,7 +678,7 @@ class PersonalCalculateTab(ttk.Frame):
 
         # Вывод результатов прошлого и текущего расчета
         self.lbl_present_results = ttk.Label(
-            self.panel_4,
+            self.panel_results,
             text=f"Текущий расчет = {0:.0f} руб.",
             font='Arial 12',
             foreground='#217346'
@@ -685,7 +687,7 @@ class PersonalCalculateTab(ttk.Frame):
                                       sticky="nsew", columnspan=1)
 
         self.lbl_past_results = ttk.Label(
-            self.panel_4,
+            self.panel_results,
             text=f"",
             font='Arial 12',
             foreground='#217346'
@@ -1189,7 +1191,7 @@ class PersonalCalculateTab(ttk.Frame):
         BindEntry(self.ent_design)
 
         self.spin_group.bind('<Enter>', self.bind_spins)
-        self.bind('<Enter>', self.settings_update)
+        self.bind('<FocusIn>', self.settings_update)
 
     def bind_spins(self, event=None) -> None:
         """
@@ -1579,11 +1581,8 @@ class IndustrialCalculateTab(ttk.Frame):
         super().__init__(parent)
 
         self.columnconfigure(index=0, weight=1)
-        self.columnconfigure(index=1, weight=1)
-        self.columnconfigure(index=2, weight=1)
         self.rowconfigure(index=0, weight=1)
         self.rowconfigure(index=1, weight=1)
-        self.rowconfigure(index=2, weight=1)
 
         # Создание переменной-метода округления результатов
         self.round_method = round_method
@@ -1591,61 +1590,30 @@ class IndustrialCalculateTab(ttk.Frame):
         self.main_settings = settings
 
         # Создание форм вкладки
-        self.panel_1_industrial = ttk.LabelFrame(
+        self.panel_time_industrial = ttk.LabelFrame(
             self,
-            text='Углубленный расчет')
-        self.panel_1_industrial.grid(row=0, column=0, padx=20, pady=30,
-                                     sticky="nsew", columnspan=3)
-
-        self.panel_2_industrial = ttk.LabelFrame(
-            self,
-            text="Время работы оборудования",
+            text="Расчет времени работы оборудования",
             padding=5
         )
-        self.panel_2_industrial.grid(row=1, column=0, padx=(10, 20),
-                                     pady=(10, 20),
-                                     sticky="nsew", columnspan=1)
-
-        self.panel_3_industrial = ttk.LabelFrame(
-            self,
-            text="Приближенный расчет времени",
-            padding=5
-        )
-        self.panel_3_industrial.grid(row=1, column=1, padx=(10, 20),
-                                     pady=(10, 20), sticky="nsew",
-                                     columnspan=2)
-
-        self.panel_4_industrial = ttk.LabelFrame(
-            self,
-            text="Учет установок в партии",
-            padding=5
-        )
-        self.panel_4_industrial.grid(row=2, column=0, padx=(10, 20),
-                                     pady=(5, 5),
-                                     sticky="nsew")
+        self.panel_time_industrial.grid(row=0, column=0, padx=(10, 20),
+                                        pady=(10, 20), sticky="nsew")
 
         # Конфигурация форм вкладки
-
-        self.panel_2_industrial.columnconfigure(index=0, weight=1)
-        self.panel_2_industrial.columnconfigure(index=1, weight=1)
-        self.panel_2_industrial.rowconfigure(index=0, weight=1)
-        self.panel_2_industrial.rowconfigure(index=1, weight=1)
-        self.panel_2_industrial.rowconfigure(index=2, weight=1)
-
-        self.panel_4_industrial.columnconfigure(index=0, weight=1)
-        self.panel_4_industrial.columnconfigure(index=1, weight=1)
-        self.panel_4_industrial.rowconfigure(index=0, weight=1)
-        self.panel_4_industrial.rowconfigure(index=1, weight=1)
-        self.panel_4_industrial.rowconfigure(index=2, weight=1)
+        self.panel_time_industrial.columnconfigure(index=0, weight=1)
+        self.panel_time_industrial.columnconfigure(index=1, weight=1)
+        self.panel_time_industrial.rowconfigure(index=0, weight=1)
+        self.panel_time_industrial.rowconfigure(index=1, weight=1)
+        self.panel_time_industrial.rowconfigure(index=2, weight=1)
 
         # Виджеты времени работы оборудования
-        ttk.Label(self.panel_2_industrial, text='Время работы, мин.').grid(
+        ttk.Label(self.panel_time_industrial, text='Время работы, мин.').grid(
             row=0, column=0, padx=0, pady=0, sticky='ns')
-        self.ent_time_of_work = ttk.Entry(self.panel_2_industrial, width=5)
+        self.ent_time_of_work = ttk.Entry(self.panel_time_industrial, width=5,
+                                          takefocus=False)
         self.ent_time_of_work.grid(row=1, column=0, padx=10, pady=10,
                                    sticky='nsew')
         self.btn_time_calculate = ttk.Button(
-            self.panel_2_industrial,
+            self.panel_time_industrial,
             text='Расчёт',
             command=self.get_time_calc
         )
@@ -1653,36 +1621,12 @@ class IndustrialCalculateTab(ttk.Frame):
             row=1, column=1, padx=10, pady=10, sticky='nsew')
 
         self.lbl_result_time = ttk.Label(
-            self.panel_2_industrial,
+            self.panel_time_industrial,
             text=f"Стоимость работы: "
                  f" {0:.0f}  руб/шт."
         )
         self.lbl_result_time.grid(row=3, column=0, padx=(10, 10), pady=(0, 10),
                                   sticky="ns", columnspan=2)
-
-        # Виджеты расчета партии с количеством изделий в установке
-        ttk.Label(self.panel_4_industrial,
-                  text='Количество изделий за 1 установку, шт.').grid(
-            row=0, column=0, padx=0, pady=0, sticky='ns')
-        self.ent_items_in_one = ttk.Entry(self.panel_4_industrial, width=5)
-        self.ent_items_in_one.grid(row=1, column=0, padx=10, pady=10,
-                                   sticky='nsew')
-        self.btn_items_calculate = ttk.Button(
-            self.panel_4_industrial,
-            text='Расчёт',
-            command=self.get_calculate_items
-        )
-        self.btn_items_calculate.grid(
-            row=1, column=1, padx=10, pady=10, sticky='nsew')
-
-        self.lbl_result_items = ttk.Label(
-            self.panel_4_industrial,
-            text=f"Стоимость работы: "
-                 f" {0:.0f}  руб."
-        )
-        self.lbl_result_items.grid(
-            row=3, column=0, padx=(10, 10), pady=(0, 10), sticky="ns",
-            columnspan=2)
 
     def get_time_calc(self) -> None:
         """
@@ -1707,32 +1651,12 @@ class IndustrialCalculateTab(ttk.Frame):
                      f"  {0:.0f}  руб/шт."
             )
 
-    def get_calculate_items(self) -> None:
-        """
-        Метод расчета стоимости партии с учетом установки изделий группой.
-        Например, партия 1000 штук, но работы выполняется по 20 штук за одну
-        установку в рабочее поле оборудования.
-        """
-        try:
-            result = float(self.ent_items_in_one.get())
-
-            self.lbl_result_items.config(
-                text=f"Стоимость работы: "
-                     f" {result:.0f}  руб."
-            )
-        except ValueError:
-            self.lbl_result_items.config(
-                text=f"Стоимость работы: "
-                     f" {0:.0f}  руб."
-            )
-
     def add_binds(self) -> None:
         """
-        Метод установки фонового текста в поля ввода класса вкладки
+        Метод установки фонового текста в поля ввода вкладки
         'ПРОМЫШЛЕННЫЙ РАСЧЕТ'
         """
-        BindEntry(self.ent_time_of_work)
-        BindEntry(self.ent_items_in_one)
+        BindEntry(self.ent_time_of_work, text='Время работы, мин.')
 
     def add_tips(self) -> None:
         """

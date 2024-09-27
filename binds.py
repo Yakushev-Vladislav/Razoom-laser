@@ -2,10 +2,11 @@ from custom_hovertip import CustomTooltipLabel
 
 
 class BindEntry:
-    def __init__(self, widget, text='-'):
+    def __init__(self, widget, text: str = '-') -> None:
         """
         Класс, реализующий установку фонового текста в поля ввода.
         :param widget: Виджет, на который устанавливается фоновый текст.
+        :param text: Передаваемый в виджет текст (по умолчанию '-').
         """
         self.text = text
         self.widget = widget
@@ -38,11 +39,13 @@ class BindEntry:
 
 
 class BalloonTips:
-    def __init__(self, widget, text=None, delay: int = 400):
+    def __init__(self, widget, text: str | None = None, delay: int = 350) -> \
+            None:
         """
         Класс реализующий подсказки к элементам интерфейса
         :param widget: Виджет, на который устанавливается подсказка.
         :param text: Текст, который выводится при наведении на виджет.
+        :param delay: Задержка до появления подсказки (по умолчанию 0.35 сек.)
         """
         # A80000 - Яркий контрастный цвет
         # eeeeee - Серенький
