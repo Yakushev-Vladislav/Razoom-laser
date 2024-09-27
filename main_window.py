@@ -1306,7 +1306,7 @@ class SheetMaterialsTab(ttk.Frame):
                   text="Доп. плата / Макетирование, руб:").grid(
             row=4, column=0, padx=15, pady=0, sticky='ew')
         self.ent_draw_overprice = ttk.Entry(
-            self.panel_sheet_materials_widgets, width=100)
+            self.panel_sheet_materials_widgets, width=100, takefocus=False)
         self.ent_draw_overprice.grid(
             row=4, column=1, padx=10, pady=5, columnspan=1, sticky='nsew')
 
@@ -1315,7 +1315,8 @@ class SheetMaterialsTab(ttk.Frame):
                   text="Скидка оператора, %:").grid(
             row=5, column=0, padx=15, pady=0, sticky='ew')
         self.spin_discount_material = ttk.Spinbox(
-            self.panel_sheet_materials_widgets, from_=0, to=30, width=100)
+            self.panel_sheet_materials_widgets, from_=0, to=30, width=100,
+            takefocus=False)
         self.spin_discount_material.insert(0, '0')
         self.spin_discount_material.configure(state='readonly')
         self.spin_discount_material.grid(
@@ -1602,6 +1603,15 @@ class IndustrialCalculateTab(ttk.Frame):
         self.panel_time_industrial.grid(row=0, column=0, padx=(10, 20),
                                         pady=(10, 20), sticky="nsew")
 
+        # Создание форм вкладки
+        self.panel_big_plate = ttk.LabelFrame(
+            self,
+            text="Расчет больших табличек",
+            padding=0
+        )
+        self.panel_big_plate.grid(row=1, column=0, padx=(10, 20),
+                                  pady=(10, 20), sticky="nsew")
+
         # Конфигурация форм вкладки
         self.panel_time_industrial.columnconfigure(index=0, weight=1)
         self.panel_time_industrial.columnconfigure(index=1, weight=2)
@@ -1613,33 +1623,36 @@ class IndustrialCalculateTab(ttk.Frame):
         self.panel_time_industrial.rowconfigure(index=3, weight=1)
         self.panel_time_industrial.rowconfigure(index=4, weight=1)
         self.panel_time_industrial.rowconfigure(index=5, weight=1)
+        self.panel_time_industrial.rowconfigure(index=6, weight=1)
+        self.panel_time_industrial.rowconfigure(index=7, weight=1)
 
         # Виджеты времени работы оборудования
         # Поле ввода времени работы оборудования
         ttk.Label(self.panel_time_industrial, text='Время работы, мин.').grid(
             row=0, column=0, padx=(15, 0), pady=(10, 0), sticky='ew')
-        self.ent_time_of_work = ttk.Entry(self.panel_time_industrial, width=25,
+        self.ent_time_of_work = ttk.Entry(self.panel_time_industrial, width=35,
                                           takefocus=False)
         self.ent_time_of_work.grid(row=0, column=1, padx=5, pady=(10, 0),
                                    sticky='nsew')
 
         # Кнопка расчета стоимости работы оборудования
-        self.btn_time_calculate = ttk.Button(
+        self.btn_cost_calculate = ttk.Button(
             self.panel_time_industrial,
             text='Расчёт стоимости работы',
             command=self.get_cost_calc
         )
-        self.btn_time_calculate.grid(
-            row=0, column=2, padx=10, pady=(10, 0), sticky='nsew',
+        self.btn_cost_calculate.grid(
+            row=0, column=2, padx=(10, 15), pady=(10, 0), sticky='nsew',
             columnspan=2)
+
         # Результат расчета стоимости работы оборудования
-        self.lbl_result_time = ttk.Label(
+        self.lbl_result_cost = ttk.Label(
             self.panel_time_industrial,
             text=f"Итого: {0:.0f}  руб/шт.",
             font='Arial 14',
             foreground='#217346'
         )
-        self.lbl_result_time.grid(row=1, column=0, padx=(15, 0), pady=(5, 0),
+        self.lbl_result_cost.grid(row=1, column=0, padx=(15, 0), pady=(5, 0),
                                   columnspan=4, sticky="ew")
 
         # Разделительная черта
@@ -1651,7 +1664,7 @@ class IndustrialCalculateTab(ttk.Frame):
         ttk.Label(self.panel_time_industrial,
                   text='Ширина макета, мм.').grid(
             row=3, column=0, padx=(15, 0), pady=0, sticky='ew')
-        self.ent_width_grav = ttk.Entry(self.panel_time_industrial, width=25,
+        self.ent_width_grav = ttk.Entry(self.panel_time_industrial, width=35,
                                         takefocus=False)
         self.ent_width_grav.grid(
             row=3, column=1, padx=10, pady=10, sticky='nsew')
@@ -1660,7 +1673,7 @@ class IndustrialCalculateTab(ttk.Frame):
         ttk.Label(self.panel_time_industrial,
                   text='Высота макета, мм.').grid(
             row=4, column=0, padx=(15, 0), pady=0, sticky='ew')
-        self.ent_height_grav = ttk.Entry(self.panel_time_industrial, width=25,
+        self.ent_height_grav = ttk.Entry(self.panel_time_industrial, width=35,
                                          takefocus=False)
         self.ent_height_grav.grid(
             row=4, column=1, padx=10, pady=10, sticky='nsew')
@@ -1669,7 +1682,7 @@ class IndustrialCalculateTab(ttk.Frame):
         ttk.Label(self.panel_time_industrial,
                   text='Разрешение макета, лин/мм.').grid(
             row=5, column=0, padx=(15, 0), pady=0, sticky='ew')
-        self.ent_dpi_grav = ttk.Entry(self.panel_time_industrial, width=25,
+        self.ent_dpi_grav = ttk.Entry(self.panel_time_industrial, width=35,
                                       takefocus=False)
         self.ent_dpi_grav.grid(
             row=5, column=1, padx=10, pady=10, sticky='nsew')
@@ -1679,18 +1692,57 @@ class IndustrialCalculateTab(ttk.Frame):
                   text='Скорость гравировки, мм/сек.').grid(
             row=3, column=2, padx=(15, 0), pady=0, sticky='ew')
         self.ent_speed_grav = ttk.Entry(self.panel_time_industrial,
-                                        width=25, takefocus=False)
+                                        width=35, takefocus=False)
         self.ent_speed_grav.grid(
-            row=3, column=3, padx=10, pady=10, sticky='nsew')
+            row=3, column=3, padx=(10, 15), pady=10, sticky='nsew')
 
         # Поле ввода количества проходов
         ttk.Label(self.panel_time_industrial,
                   text='Количество проходов, шт.').grid(
             row=4, column=2, padx=(15, 0), pady=0, sticky='ew')
         self.ent_number_grav = ttk.Entry(self.panel_time_industrial,
-                                         width=25, takefocus=False)
+                                         width=35, takefocus=False)
         self.ent_number_grav.grid(
-            row=4, column=3, padx=10, pady=10, sticky='nsew')
+            row=4, column=3, padx=(10, 15), pady=10, sticky='nsew')
+
+        # Поле ввода количества проходов
+        ttk.Label(self.panel_time_industrial,
+                  text='Поправочный коэффициент').grid(
+            row=5, column=2, padx=(15, 0), pady=0, sticky='ew')
+        self.ent_ratio = ttk.Entry(self.panel_time_industrial,
+                                   width=35, takefocus=False)
+        self.ent_ratio.grid(
+            row=5, column=3, padx=(10, 15), pady=10, sticky='nsew')
+
+        # Кнопка расчета времени работы оборудования
+        self.btn_time_calculate = ttk.Button(
+            self.panel_time_industrial,
+            text='Расчёт времени работы оборудования',
+            command=self.time_calc
+        )
+        self.btn_time_calculate.grid(
+            row=6, column=0, padx=(10, 15), pady=(10, 0), sticky='nsew',
+            columnspan=3)
+
+        # Кнопка расчета времени работы оборудования
+        self.btn_ratio_info = ttk.Button(
+            self.panel_time_industrial,
+            text='Подобрать коэффициент',
+            command=self.get_ratio_info
+        )
+        self.btn_ratio_info.grid(
+            row=6, column=3, padx=(10, 15), pady=(10, 0), sticky='nsew',
+            columnspan=3)
+
+        # Виджеты вывода результатов расчета времени
+        self.lbl_result_time = ttk.Label(
+            self.panel_time_industrial,
+            text=f"Ориентировочное время работы оборудования: {0:.0f}  мин.",
+            font='Arial 14',
+            foreground='#217346'
+        )
+        self.lbl_result_time.grid(row=7, column=0, padx=(15, 0), pady=(5, 10),
+                                  columnspan=4, sticky="ew")
 
     def get_cost_calc(self) -> None:
         """
@@ -1704,37 +1756,86 @@ class IndustrialCalculateTab(ttk.Frame):
 
             )
 
-            self.lbl_result_time.config(
+            self.lbl_result_cost.config(
                 text=f"Итого:"
                      f"  {self.round_method(cost):_.0f}  руб/шт.".replace(
                           '_', ' ')
             )
 
         except ValueError:  # Если число некорректно
-            self.lbl_result_time.config(
+            self.lbl_result_cost.config(
                 text=f"Итого:"
                      f" {0:.0f}  руб/шт."
             )
+
+    def time_calc(self) -> None:
+        """
+        Метод предварительного расчета времени работы оборудования.
+        Формула имеет вид:
+
+        Результат = (ширина * высота * плотность * коэффициент) / (скорость*60)
+        """
+        try:
+            # Формирование переменных (считывание данных с интерфейса)
+            width_grav = float(self.ent_width_grav.get())
+            height_grav = float(self.ent_height_grav.get())
+            dpi_grav = float(self.ent_dpi_grav.get())
+            speed_grav = float(self.ent_speed_grav.get())
+            num_grav = float(self.ent_number_grav.get())
+            ratio_grav = float(self.ent_ratio.get())
+
+            result = (
+                    (width_grav * height_grav * dpi_grav * num_grav
+                     * ratio_grav / speed_grav) / 60
+            )
+
+            self.lbl_result_time.config(
+                text=f"Ориентировочное время работы оборудования:"
+                     f" {result:.0f}  мин."
+            )
+            self.ent_time_of_work.delete(0, tk.END)
+            BindEntry(self.ent_time_of_work, text=f"{result:.0f}")
+
+        except (ValueError, TypeError):
+            tk.messagebox.showerror(
+                'Ошибка ввода данных!',
+                'Данные не введены или введены некорректно.'
+            )
+            self.lbl_result_time.config(
+                text=f"Ориентировочное время работы оборудования:"
+                     f" {0:.0f}  мин."
+            )
+            self.ent_time_of_work.delete(0, tk.END)
+            BindEntry(self.ent_time_of_work, text='Время работы, мин')
+
+    def get_ratio_info(self) -> None:
+        """
+        Метод открытия информации о подборе коэффициента визуального
+        заполнения гравировки.
+        """
+        pass
 
     def add_binds(self) -> None:
         """
         Метод установки фонового текста в поля ввода вкладки
         'ПРОМЫШЛЕННЫЙ РАСЧЕТ'
         """
-        BindEntry(self.ent_time_of_work, text='Время работы, мин.')
+        BindEntry(self.ent_time_of_work, text='Время работы, мин')
+        BindEntry(self.ent_width_grav, text='Ширина макета, мм')
+        BindEntry(self.ent_height_grav, text='Высота макета, мм')
+        BindEntry(self.ent_dpi_grav, text='Разрешение макета, лин/мм')
+        BindEntry(self.ent_speed_grav, text='Скорость гравировки, мм/сек')
+        BindEntry(self.ent_number_grav, text='Количество проходов, шт')
+        BindEntry(self.ent_ratio, text='0.44')
 
     def add_tips(self) -> None:
         """
         Метод добавления подсказок к элементам интерфейса вкладки 'ПРОМЫШЛЕННЫЙ
         РАСЧЕТ'
         """
-        pass
-
-    def time_calc(self) -> None:
-        """
-        Метод предварительного расчета времени работы оборудования
-        """
-        pass
+        BalloonTips(self.ent_ratio,
+                    text=f'Визуальный коэффициент плотности\n'
+                         f'заполнения гравировки.')
 
 
 if __name__ == "__main__":  # Запуск программы
