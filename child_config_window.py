@@ -340,7 +340,7 @@ class ChildConfigSet(tk.Toplevel):
             self.tab_main_settings,
             width=10,
             text="Сохранить настройки",
-            command=self.click_update_settings
+            command=self.click_update_and_save_settings
         )
         self.btn_update_settings.grid(
             row=14, column=0, padx=5, pady=10, sticky='nsew', columnspan=2
@@ -456,7 +456,7 @@ class ChildConfigSet(tk.Toplevel):
 
         # Запись данных в окна ввода
         self.update_data_in_widgets()
-        self.add_bind_entry()
+        self.add_binds()
         self.add_tips()
 
     def update_data_in_widgets(self) -> None:
@@ -596,7 +596,7 @@ class ChildConfigSet(tk.Toplevel):
 
         del add_config
 
-    def click_update_settings(self) -> None:
+    def click_update_and_save_settings(self) -> None:
         """
         Метод сохранения введенных пользователем изменений в основных
         настройках программы.
@@ -691,8 +691,12 @@ class ChildConfigSet(tk.Toplevel):
             )
             self.update_data_in_widgets()
 
-        # Запись в файл конфигурации
-        self.child_temp_config.update_settings(some_new=new_config)
+        if askokcancel('Сохранение настроек',
+                       'Вы действительно хотите сохранить изменения?'):
+            # Запись в файл конфигурации
+            self.child_temp_config.update_settings(some_new=new_config)
+        else:
+            pass
 
     def click_default_settings(self) -> None:
         """
@@ -739,7 +743,7 @@ class ChildConfigSet(tk.Toplevel):
 
         del config_with_deleted_item
 
-    def add_bind_entry(self) -> None:
+    def add_binds(self) -> None:
         """
         Установка фонового текста в полях ввода.
         """
@@ -747,6 +751,7 @@ class ChildConfigSet(tk.Toplevel):
         BindEntry(self.ent_name, text='Название')
 
         self.standard_table.bind('<Button-1>', self.bind_treeview)
+        self.bind('<Return>', self.bind_btn_save)
 
     def add_tips(self) -> None:
         """
@@ -859,6 +864,10 @@ class ChildConfigSet(tk.Toplevel):
         BalloonTips(self.btn_delete_element,
                     text=f'Для удаления выделите строку в таблице.')
 
+        BalloonTips(self.btn_update_settings,
+                    text=f'Для сохранения настроек можно использовать\n'
+                         f'клавишу <Enter>.')
+
     def bind_treeview(self, event=None) -> None:
         """
         Метод, реализующий заполнение полей ввода названия работы и ее
@@ -876,7 +885,15 @@ class ChildConfigSet(tk.Toplevel):
         except (ValueError, KeyboardInterrupt, IndexError):
             self.ent_name.delete(0, tk.END)
             self.ent_cost.delete(0, tk.END)
-            self.add_bind_entry()
+            self.add_binds()
+        self.not_use = event
+
+    def bind_btn_save(self, event=None) -> None:
+        """
+        Сохранение настроек при нажатии на клавишу Enter/Return на клавиатуре
+        :param event: Нажатие пользователем на клавишу Enter/Return
+        """
+        self.click_update_and_save_settings()
         self.not_use = event
 
     def grab_focus(self) -> None:
