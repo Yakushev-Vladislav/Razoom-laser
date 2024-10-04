@@ -1587,7 +1587,6 @@ class IndustrialCalculateTab(ttk.Frame):
 
         self.columnconfigure(index=0, weight=1)
         self.rowconfigure(index=0, weight=1)
-        self.rowconfigure(index=1, weight=1)
 
         # Создание переменной-метода округления результатов
         self.round_method = round_method
@@ -1602,16 +1601,6 @@ class IndustrialCalculateTab(ttk.Frame):
         )
         self.panel_time_industrial.grid(row=0, column=0, padx=(10, 20),
                                         pady=(10, 20), sticky="nsew")
-
-        # Создание форм вкладки
-        self.panel_big_plate = ttk.LabelFrame(
-            self,
-            text="Расчет больших табличек",
-            padding=0
-        )
-        self.panel_big_plate.grid(row=1, column=0, padx=(10, 20),
-                                  pady=(10, 20), sticky="nsew")
-
         # Конфигурация форм вкладки
         self.panel_time_industrial.columnconfigure(index=0, weight=1)
         self.panel_time_industrial.columnconfigure(index=1, weight=2)
@@ -1639,7 +1628,7 @@ class IndustrialCalculateTab(ttk.Frame):
         self.btn_cost_calculate = ttk.Button(
             self.panel_time_industrial,
             text='Расчёт стоимости работы',
-            command=self.get_cost_calc
+            command=self.cost_calc
         )
         self.btn_cost_calculate.grid(
             row=0, column=2, padx=(10, 15), pady=(10, 0), sticky='nsew',
@@ -1744,7 +1733,7 @@ class IndustrialCalculateTab(ttk.Frame):
         self.lbl_result_time.grid(row=7, column=0, padx=(15, 0), pady=(5, 10),
                                   columnspan=4, sticky="ew")
 
-    def get_cost_calc(self) -> None:
+    def cost_calc(self) -> None:
         """
         Метод, реализующий расчет стоимости от времени работы оборудования.
         """
@@ -1784,7 +1773,7 @@ class IndustrialCalculateTab(ttk.Frame):
             num_grav = float(self.ent_number_grav.get())
             ratio_grav = float(self.ent_ratio.get())
 
-            result = (
+            result = ceil(
                     (width_grav * height_grav * dpi_grav * num_grav
                      * ratio_grav / speed_grav) / 60
             )
@@ -1793,20 +1782,33 @@ class IndustrialCalculateTab(ttk.Frame):
                 text=f"Ориентировочное время работы оборудования:"
                      f" {result:.0f}  мин."
             )
+
             self.ent_time_of_work.delete(0, tk.END)
             BindEntry(self.ent_time_of_work, text=f"{result:.0f}")
 
-        except (ValueError, TypeError):
+            self.lbl_result_cost.config(
+                text=f"Итого:"
+                     f" {0:.0f}  руб/шт."
+            )
+
+        except (ValueError, TypeError, ZeroDivisionError):
             tk.messagebox.showerror(
                 'Ошибка ввода данных!',
                 'Данные не введены или введены некорректно.'
             )
+
             self.lbl_result_time.config(
                 text=f"Ориентировочное время работы оборудования:"
                      f" {0:.0f}  мин."
             )
+
             self.ent_time_of_work.delete(0, tk.END)
             BindEntry(self.ent_time_of_work, text='Время работы, мин')
+
+            self.lbl_result_cost.config(
+                text=f"Итого:"
+                     f" {0:.0f}  руб/шт."
+            )
 
     def get_ratio_info(self) -> None:
         """
@@ -1826,7 +1828,7 @@ class IndustrialCalculateTab(ttk.Frame):
         BindEntry(self.ent_dpi_grav, text='Разрешение макета, лин/мм')
         BindEntry(self.ent_speed_grav, text='Скорость гравировки, мм/сек')
         BindEntry(self.ent_number_grav, text='Количество проходов, шт')
-        BindEntry(self.ent_ratio, text='0.44')
+        BindEntry(self.ent_ratio, text='0.5')
 
     def add_tips(self) -> None:
         """
