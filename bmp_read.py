@@ -76,14 +76,3 @@ class MonochromeBMP:
             black_pixels += row.count(0)
 
         return white_pixels, black_pixels
-
-
-# Пример использования:
-bmp_image = MonochromeBMP('imagines\\7.bmp')
-white, black = bmp_image.count_pixels()
-print('new_method')
-print(f"Белых пикселей: {white}")
-print(f"Черных пикселей: {black}")
-print(f"Всего пикселей: {black + white}")
-print(f'{white/(white+black):.2f}',
-      f'{black/(white+black):.2f}', sep='    ')

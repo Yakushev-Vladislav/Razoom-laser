@@ -8,6 +8,7 @@ from textwrap import wrap
 
 import tkinter as tk
 from tkinter import ttk
+from tkinter import filedialog as fd
 from tkinter.messagebox import askokcancel
 
 from child_materials_window import ChildMaterials
@@ -17,6 +18,7 @@ from child_config_window import ChildConfigSet, ConfigSet, RatioArea
 from binds import BindEntry
 from binds import BalloonTips
 from path_getting import PathName
+from bmp_read import MonochromeBMP
 
 
 class App(tk.Tk):
@@ -1614,6 +1616,7 @@ class IndustrialCalculateTab(ttk.Frame):
         self.panel_time_industrial.rowconfigure(index=5, weight=1)
         self.panel_time_industrial.rowconfigure(index=6, weight=1)
         self.panel_time_industrial.rowconfigure(index=7, weight=1)
+        self.panel_time_industrial.rowconfigure(index=8, weight=1)
 
         # Виджеты времени работы оборудования
         # Поле ввода времени работы оборудования
@@ -1696,11 +1699,11 @@ class IndustrialCalculateTab(ttk.Frame):
 
         # Поле ввода количества проходов
         ttk.Label(self.panel_time_industrial,
-                  text='Поправочный коэффициент').grid(
+                  text='Черных пикселей, шт.').grid(
             row=5, column=2, padx=(15, 0), pady=0, sticky='ew')
-        self.ent_ratio = ttk.Entry(self.panel_time_industrial,
-                                   width=35, takefocus=False)
-        self.ent_ratio.grid(
+        self.ent_black_pixel = ttk.Entry(self.panel_time_industrial,
+                                         width=35, takefocus=False)
+        self.ent_black_pixel.grid(
             row=5, column=3, padx=(10, 15), pady=10, sticky='nsew')
 
         # Кнопка расчета времени работы оборудования
@@ -1716,22 +1719,32 @@ class IndustrialCalculateTab(ttk.Frame):
         # Кнопка расчета времени работы оборудования
         self.btn_ratio_info = ttk.Button(
             self.panel_time_industrial,
-            text='Подобрать коэффициент',
-            command=self.get_ratio_info
+            text='Открыть .bmp файл',
+            command=self.bmp_calculation
         )
         self.btn_ratio_info.grid(
             row=6, column=3, padx=(10, 15), pady=(10, 0), sticky='nsew',
             columnspan=3)
 
         # Виджеты вывода результатов расчета времени
-        self.lbl_result_time = ttk.Label(
+        self.lbl_result_time_text = ttk.Label(
             self.panel_time_industrial,
-            text=f"Ориентировочное время работы оборудования: {0:.0f}  мин.",
+            text=f"Ориентировочное время гравировки текста: {0:.0f}  мин.",
             font='Arial 14',
             foreground='#217346'
         )
-        self.lbl_result_time.grid(row=7, column=0, padx=(15, 0), pady=(5, 10),
-                                  columnspan=4, sticky="ew")
+        self.lbl_result_time_text.grid(row=7, column=0, padx=(15, 0),
+                                       pady=(5, 0), columnspan=4, sticky="ew")
+
+        self.lbl_result_time_imagine = ttk.Label(
+            self.panel_time_industrial,
+            text=f"Ориентировочное время гравировки рисунка: {0:.0f}  мин.",
+            font='Arial 14',
+            foreground='#217346'
+        )
+        self.lbl_result_time_imagine.grid(row=8, column=0, padx=(15, 0),
+                                          pady=(0, 10),
+                                          columnspan=4, sticky="ew")
 
     def cost_calc(self) -> None:
         """
@@ -1760,9 +1773,26 @@ class IndustrialCalculateTab(ttk.Frame):
     def time_calc(self) -> None:
         """
         Метод предварительного расчета времени работы оборудования.
-        Формула имеет вид:
+        Формулы имеют вид:
 
-        Результат = (ширина * высота * плотность * коэффициент) / (скорость*60)
+        Результат = (ширина * высота * плотность * относительное количество
+        черных пикселей в макете) / (скорость*60) +
+        (ширина * высота * плотность * относительное количество
+        белых пикселей в макете) / (скорость холостого хода*60), где:
+
+            Относительное количество черных пикселей в макете = количество
+            черных пикселей в макете / общее количество пикселей;
+            Относительное количество белых пикселей в макете = количество
+            белых пикселей в макете / общее количество пикселей;
+            Скорость холостого хода = 4 000 мм/сек для стандартных настроек
+            динамики.
+
+        При этом время гравировки рисунка и текста будет разным:
+        Время гравировки = Результат / поправочный коэффициент, где
+
+            Поправочный коэффициент = 0.75 для текста;
+            Поправочный коэффициент = 0.65 для рисунка.
+
         """
         try:
             # Формирование переменных (считывание данных с интерфейса)
@@ -1771,24 +1801,41 @@ class IndustrialCalculateTab(ttk.Frame):
             dpi_grav = float(self.ent_dpi_grav.get())
             speed_grav = float(self.ent_speed_grav.get())
             num_grav = float(self.ent_number_grav.get())
-            ratio_grav = float(self.ent_ratio.get())
+            black_pixels = float(self.ent_black_pixel.get())
 
-            result = ceil(
-                    (width_grav * height_grav * dpi_grav * num_grav
-                     * ratio_grav / speed_grav) / 60
+            # Если пользователь не ввел количество пикселей, то считаем,
+            # что планируется гравировать прямоугольник
+            if black_pixels == 0:
+                black_pixels = width_grav * height_grav * dpi_grav * dpi_grav
+                white_pixels = 0
+                flag_rectangle_grav = True
+            else:
+                flag_rectangle_grav = False
+                white_pixels = (width_grav * dpi_grav * height_grav *
+                                dpi_grav - black_pixels)
+            result = (
+                    ((width_grav * height_grav * dpi_grav * num_grav * (
+                            black_pixels / (black_pixels + white_pixels)) /
+                     speed_grav) / 60) + (
+                        (width_grav * height_grav * dpi_grav * num_grav * (
+                                white_pixels / (black_pixels +
+                                                white_pixels)) / 4000) / 60
+                    )
+            )
+            if flag_rectangle_grav:
+                result_text = result_imagine = ceil(result)
+            else:
+                result_text = ceil(result / 0.75)
+                result_imagine = ceil(result / 0.65)
+
+            self.lbl_result_time_text.config(
+                text=f"Ориентировочное время гравировки текста:"
+                     f" {result_text:.0f}  мин."
             )
 
-            self.lbl_result_time.config(
-                text=f"Ориентировочное время работы оборудования:"
-                     f" {result:.0f}  мин."
-            )
-
-            self.ent_time_of_work.delete(0, tk.END)
-            BindEntry(self.ent_time_of_work, text=f"{result:.0f}")
-
-            self.lbl_result_cost.config(
-                text=f"Итого:"
-                     f" {0:.0f}  руб/шт."
+            self.lbl_result_time_imagine.config(
+                text=f"Ориентировочное время гравировки рисунка:"
+                     f" {result_imagine:.0f}  мин."
             )
 
         except (ValueError, TypeError, ZeroDivisionError):
@@ -1797,25 +1844,31 @@ class IndustrialCalculateTab(ttk.Frame):
                 'Данные не введены или введены некорректно.'
             )
 
-            self.lbl_result_time.config(
-                text=f"Ориентировочное время работы оборудования:"
+            self.lbl_result_time_text.config(
+                text=f"Ориентировочное время гравировки текста:"
                      f" {0:.0f}  мин."
             )
 
-            self.ent_time_of_work.delete(0, tk.END)
-            BindEntry(self.ent_time_of_work, text='Время работы, мин')
-
-            self.lbl_result_cost.config(
-                text=f"Итого:"
-                     f" {0:.0f}  руб/шт."
+            self.lbl_result_time_imagine.config(
+                text=f"Ориентировочное время гравировки рисунка:"
+                     f" {0:.0f}  мин."
             )
 
-    def get_ratio_info(self) -> None:
+    def bmp_calculation(self) -> None:
         """
-        Метод открытия информации о подборе коэффициента визуального
-        заполнения гравировки.
+        Метод открытия .bmp файла для подсчета в нем количества черных
+        пикселей.
         """
-        pass
+        file_type = [("BMP Files", "*.bmp"), ]
+        filename = fd.askopenfilename(filetypes=file_type)
+        try:
+            bmp_image = MonochromeBMP(filename)
+            _, black = bmp_image.count_pixels()
+            self.ent_black_pixel.delete(0, tk.END)
+            self.ent_black_pixel.insert(0, str(black))
+        except FileNotFoundError:
+            self.ent_black_pixel.delete(0, tk.END)
+            BindEntry(self.ent_black_pixel, text='0')
 
     def add_binds(self) -> None:
         """
@@ -1828,16 +1881,15 @@ class IndustrialCalculateTab(ttk.Frame):
         BindEntry(self.ent_dpi_grav, text='Разрешение макета, лин/мм')
         BindEntry(self.ent_speed_grav, text='Скорость гравировки, мм/сек')
         BindEntry(self.ent_number_grav, text='Количество проходов, шт')
-        BindEntry(self.ent_ratio, text='0.5')
+        BindEntry(self.ent_black_pixel, text='0')
 
     def add_tips(self) -> None:
         """
         Метод добавления подсказок к элементам интерфейса вкладки 'ПРОМЫШЛЕННЫЙ
         РАСЧЕТ'
         """
-        BalloonTips(self.ent_ratio,
-                    text=f'Визуальный коэффициент плотности\n'
-                         f'заполнения гравировки.')
+        BalloonTips(self.ent_black_pixel,
+                    text=f'Количество черных пикселей макета.')
 
 
 if __name__ == "__main__":  # Запуск программы
