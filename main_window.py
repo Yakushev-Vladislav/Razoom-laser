@@ -1892,11 +1892,29 @@ class IndustrialCalculateTab(ttk.Frame):
         try:
             bmp_image = MonochromeBMP(filename)
             _, black = bmp_image.count_pixels()
+            width_bmp, height_bmp, dpi_bmp = bmp_image.get_image_info_in_mm()
+
+            # Заполняем поля данными, полученными из БМП изображения
             self.ent_black_pixel.delete(0, tk.END)
-            self.ent_black_pixel.insert(0, str(black))
+            self.ent_width_grav.delete(0, tk.END)
+            self.ent_height_grav.delete(0, tk.END)
+            self.ent_dpi_grav.delete(0, tk.END)
+
+            self.ent_black_pixel.insert(0, f'{black:.0f}')
+            self.ent_width_grav.insert(0, f'{width_bmp:.1f}')
+            self.ent_height_grav.insert(0, f'{height_bmp:.1f}')
+            self.ent_dpi_grav.insert(0, f'{(dpi_bmp/25.4):.0f}')
+
         except FileNotFoundError:
             self.ent_black_pixel.delete(0, tk.END)
+            self.ent_width_grav.delete(0, tk.END)
+            self.ent_height_grav.delete(0, tk.END)
+            self.ent_dpi_grav.delete(0, tk.END)
+
             BindEntry(self.ent_black_pixel, text='0')
+            BindEntry(self.ent_width_grav, text='Ширина макета, мм')
+            BindEntry(self.ent_height_grav, text='Высота макета, мм')
+            BindEntry(self.ent_dpi_grav, text='Разрешение макета, лин/мм')
 
     def add_binds(self) -> None:
         """

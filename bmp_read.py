@@ -22,12 +22,20 @@ class MonochromeBMP:
 
         :raises: FileNotFoundError, если файл не может быть найден или прочитан
         """
-        with open(self.file_path, 'rb') as f:
+        with (open(self.file_path, 'rb') as f):
             # Чтение заголовка BMP файла
             f.seek(18)  # Смещение к полю ширины изображения
             self.width = int.from_bytes(f.read(4), byteorder='little')
             self.height = int.from_bytes(f.read(4), byteorder='little')
 
+            # Чтение разрешения (в пикселях на метр)
+            f.seek(38)  # Смещение к полям разрешения
+            self.x_pixels_per_meter = (
+                int.from_bytes(f.read(4), byteorder='little')
+            )
+            self.y_pixels_per_meter = (
+                int.from_bytes(f.read(4), byteorder='little')
+            )
             # Чтение начала массива пикселей
             f.seek(10)
             pixel_array_offset = int.from_bytes(f.read(4), byteorder='little')
@@ -76,3 +84,29 @@ class MonochromeBMP:
             black_pixels += row.count(0)
 
         return white_pixels, black_pixels
+
+    def get_image_info_in_mm(self) -> tuple:
+        """
+        Метод возвращает размеры изображения в миллиметрах
+         и разрешение в dpi (количество точек на дюйм).
+
+        Для этого рассчитывается:
+        - Ширина и высота в мм на основе разрешения изображения
+         в пикселях на метр.
+        - DPI (количество точек на дюйм), которое рассчитывается
+        на основе пикселей на метр.
+
+        :return: Кортеж (высота в мм, ширина в мм, dpi)
+        """
+        # Преобразуем разрешение из пикселей на метр в dpi
+        dpi_x = self.x_pixels_per_meter / 39.3701
+        dpi_y = self.y_pixels_per_meter / 39.3701
+
+        # Преобразуем размеры в мм
+        width_mm = (self.width / self.x_pixels_per_meter) * 1000
+        height_mm = (self.height / self.y_pixels_per_meter) * 1000
+
+        # Вернем средний dpi для обоих направлений (X и Y)
+        dpi = (dpi_x + dpi_y) / 2
+
+        return height_mm, width_mm, dpi
