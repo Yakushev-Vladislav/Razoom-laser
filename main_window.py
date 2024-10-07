@@ -154,7 +154,7 @@ class App(tk.Tk):
         """
         child = ChildConfigSet(
             self,
-            700,
+            900,
             450,
             theme=self.theme,
             icon=PathName.resource_path("resources\\Company_logo.ico")
@@ -967,7 +967,8 @@ class PersonalCalculateTab(ttk.Frame):
         if int(self.spin_group.get()) == 1:
             self.ratio_one_set = 1
         else:
-            self.ratio_one_set = int(self.spin_group.get()) ** (- 0.2)
+            self.ratio_one_set = int(self.spin_group.get()) ** (
+                -float(self.main_settings["MAIN"]["one_set"]))
 
         # Коэффициент сложности установки
         difficult_list = (
