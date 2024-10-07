@@ -309,6 +309,7 @@ class PersonalCalculateTab(ttk.Frame):
         self.ratio_discount = 1
         self.ratio_taxation = 1
         self.ratio_size = 1
+        self.ratio_one_set = 1
 
         # Переменная для добавления событий
         self.not_use = None
@@ -764,7 +765,7 @@ class PersonalCalculateTab(ttk.Frame):
         Формула имеет следующий вид:
         Итоговая цена = (дополнительные прицелы + 
         + минимальная стоимость * коэффициенты) * учет НДС * учет скидки * 
-        * учет количества изделий
+        * учет количества изделий * учет количества в одной установке
         """
 
         main_cost = ((self.additional_cost + (cost * (
@@ -776,7 +777,7 @@ class PersonalCalculateTab(ttk.Frame):
                 self.ratio_docking * self.ratio_difficult *
                 self.ratio_depth * self.ratio_size)))
                      * self.ratio_taxation_ao * self.ratio_taxation_ip *
-                     self.ratio_many_items *
+                     self.ratio_many_items * self.ratio_one_set *
                      self.ratio_discount)
 
         self.lbl_result_grav.config(
@@ -961,6 +962,12 @@ class PersonalCalculateTab(ttk.Frame):
         else:
             self.ratio_many_items = 0.85 * (int(self.spin_number.get()) ** (
                 -float(self.main_settings["MAIN"]["many_items"])))
+
+        # Коэффициент зависимости от количества изделий в установке
+        if int(self.spin_group.get()) == 1:
+            self.ratio_one_set = 1
+        else:
+            self.ratio_one_set = int(self.spin_group.get()) ** (- 0.2)
 
         # Коэффициент сложности установки
         difficult_list = (
@@ -1617,6 +1624,7 @@ class IndustrialCalculateTab(ttk.Frame):
         self.panel_time_industrial.rowconfigure(index=6, weight=1)
         self.panel_time_industrial.rowconfigure(index=7, weight=1)
         self.panel_time_industrial.rowconfigure(index=8, weight=1)
+        self.panel_time_industrial.rowconfigure(index=9, weight=1)
 
         # Виджеты времени работы оборудования
         # Поле ввода времени работы оборудования
@@ -1727,14 +1735,23 @@ class IndustrialCalculateTab(ttk.Frame):
             columnspan=3)
 
         # Виджеты вывода результатов расчета времени
+        self.lbl_result_time_minimum = ttk.Label(
+            self.panel_time_industrial,
+            text=f"Минимальное время гравировки макета: {0:.0f}  мин.",
+            font='Arial 12',
+            foreground='#217346'
+        )
+        self.lbl_result_time_minimum.grid(row=7, column=0, padx=(15, 0),
+                                          pady=0, columnspan=4, sticky="ew")
+
         self.lbl_result_time_text = ttk.Label(
             self.panel_time_industrial,
             text=f"Ориентировочное время гравировки текста: {0:.0f}  мин.",
             font='Arial 14',
             foreground='#217346'
         )
-        self.lbl_result_time_text.grid(row=7, column=0, padx=(15, 0),
-                                       pady=(5, 0), columnspan=4, sticky="ew")
+        self.lbl_result_time_text.grid(row=8, column=0, padx=(15, 0),
+                                       pady=0, columnspan=4, sticky="ew")
 
         self.lbl_result_time_imagine = ttk.Label(
             self.panel_time_industrial,
@@ -1742,7 +1759,7 @@ class IndustrialCalculateTab(ttk.Frame):
             font='Arial 14',
             foreground='#217346'
         )
-        self.lbl_result_time_imagine.grid(row=8, column=0, padx=(15, 0),
+        self.lbl_result_time_imagine.grid(row=9, column=0, padx=(15, 0),
                                           pady=(0, 10),
                                           columnspan=4, sticky="ew")
 
@@ -1823,25 +1840,35 @@ class IndustrialCalculateTab(ttk.Frame):
                     )
             )
             if flag_rectangle_grav:
-                result_text = result_imagine = ceil(result)
+                result_text = result_imagine = result
             else:
-                result_text = ceil(result / 0.75)
-                result_imagine = ceil(result / 0.65)
+                result_text = result / 0.75
+                result_imagine = result / 0.65
+
+            self.lbl_result_time_minimum.config(
+                text=f"Минимальное время гравировки макета:"
+                     f" {result:.1f}  мин."
+            )
 
             self.lbl_result_time_text.config(
                 text=f"Ориентировочное время гравировки текста:"
-                     f" {result_text:.0f}  мин."
+                     f" {result_text:.1f}  мин."
             )
 
             self.lbl_result_time_imagine.config(
                 text=f"Ориентировочное время гравировки рисунка:"
-                     f" {result_imagine:.0f}  мин."
+                     f" {result_imagine:.1f}  мин."
             )
 
         except (ValueError, TypeError, ZeroDivisionError):
             tk.messagebox.showerror(
                 'Ошибка ввода данных!',
                 'Данные не введены или введены некорректно.'
+            )
+
+            self.lbl_result_time_minimum.config(
+                text=f"Минимальное время гравировки макета:"
+                     f" {0:.0f}  мин."
             )
 
             self.lbl_result_time_text.config(
