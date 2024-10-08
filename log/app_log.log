@@ -1,0 +1,14 @@
+2024-10-08 16:37:06,059 | __main__ | <INFO> | Запуск программы.
+2024-10-08 16:37:09,773 | SheetMaterialsTab.get_calc_mat | <ERROR> | При попытке расчета на вкладке "Листовой материал"возникло исключение "invalid literal for int() with base 10: 'Количество изделий, шт'"
+Traceback (most recent call last):
+  File "C:\ForPython\Razoom-laser\main_window.py", line 1471, in get_calc_mat
+    number_of_products = int(number_of_products)
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: 'Количество изделий, шт'
+2024-10-08 16:37:15,854 | SheetMaterialsTab.get_calc_mat | <ERROR> | При попытке расчета на вкладке "Листовой материал"возникло исключение "invalid literal for int() with base 10: 'Количество изделий, шт'"
+Traceback (most recent call last):
+  File "C:\ForPython\Razoom-laser\main_window.py", line 1471, in get_calc_mat
+    number_of_products = int(number_of_products)
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: 'Количество изделий, шт'
+2024-10-08 16:37:16,890 | SheetMaterialsTab.get_calc_mat | <WARNING> | could not convert string to float: 'Доп. плата / Макетирование, руб': Поле ввода доплаты за макетирование не заполнено или заполнено неверно: Доп. плата / Макетирование, руб

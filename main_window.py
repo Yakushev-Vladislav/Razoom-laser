@@ -847,8 +847,15 @@ class PersonalCalculateTab(ttk.Frame):
                     size_min, size_max, ratio_size_max).get_linear_ratio(
                     temp_area)
 
-        except ValueError:
+        except ValueError as e:
             self.ratio_size = 1
+            AppLogger(
+                'PersonalCalculateTab.get_ratio_for_calculation',
+                'warning',
+                f'При считывании габаритов гравировки возникло исключение'
+                f' "{e}", размеры указаны неверно, или не указаны вовсе -('
+                f'{self.ent_width_grav.get()}, {self.ent_height_grav.get()})'
+            )
 
         # Коэффициент ratio_laser __Тип лазера__
         if self.rb_type_of_laser.get() == 2:  # Если газовый лазер
@@ -986,14 +993,29 @@ class PersonalCalculateTab(ttk.Frame):
         # Доплата за макетирование
         try:
             self.cost_design = float(self.ent_design.get())
-        except ValueError:
+        except ValueError as e:
+            AppLogger(
+                'PersonalCalculateTab.get_ratio_for_calculation',
+                'warning',
+                f'При считывании доплаты за макетирование возникло '
+                f'исключение "{e}": Данные не введены, или введены '
+                f'некорректно - {self.ent_design.get()}.',
+                exc=True
+            )
             self.cost_design = 0
 
         # Скидка оператора
         try:
             self.ratio_discount = 1 - float(self.spin_discount.get()) / 100
-        except ValueError:
+        except ValueError as e:
             self.ratio_discount = 1
+            AppLogger(
+                'PersonalCalculateTab.get_ratio_for_calculation',
+                'warning',
+                f'При считывании скидки оператора возникло '
+                f'исключение "{e}": Данные не введены, или введены '
+                f'некорректно - {self.spin_discount.get()}.'
+            )
 
     def add_new_calc(self) -> None:
         """
@@ -1452,7 +1474,13 @@ class SheetMaterialsTab(ttk.Frame):
             discount = int(discount)
             try:
                 design_cost = int(float(design_cost))
-            except (ValueError, TypeError):
+            except (ValueError, TypeError) as e:
+                AppLogger(
+                    'SheetMaterialsTab.get_calc_mat',
+                    'warning',
+                    f'{e}: Поле ввода доплаты за макетирование не заполнено '
+                    f'или заполнено неверно: {design_cost}'
+                )
                 design_cost = 0
 
             # Подсчет результатов
@@ -1466,7 +1494,13 @@ class SheetMaterialsTab(ttk.Frame):
             try:
                 total_1 = Calculation(gab_width, gab_height,
                                       material_name).get_price() / total_3
-            except ZeroDivisionError:
+            except ZeroDivisionError as e:
+                AppLogger(
+                    'SheetMaterialsTab.get_calc_mat',
+                    'warning',
+                    f'При расчете себестоимости изделия возникло исключение '
+                    f'"{e}": Количество изделий с листа равно 0.'
+                )
                 total_1 = 0.0
 
             # Себестоимость партии
@@ -1475,7 +1509,14 @@ class SheetMaterialsTab(ttk.Frame):
             # Потребное количество листов на партию
             try:
                 total_4 = ceil(number_of_products / total_3)
-            except ZeroDivisionError:
+            except ZeroDivisionError as e:
+                AppLogger(
+                    'SheetMaterialsTab.get_calc_mat',
+                    'warning',
+                    f'При расчете потребного количества листов на партию '
+                    f'возникло исключение "{e}": Количество изделий '
+                    f'с листа равно 0.'
+                )
                 total_4 = 0.0
 
             try:
@@ -1488,7 +1529,14 @@ class SheetMaterialsTab(ttk.Frame):
 
                 total_6 = total_5 * number_of_products + design_cost
 
-            except (ValueError, ZeroDivisionError):
+            except (ValueError, ZeroDivisionError) as e:
+                AppLogger(
+                    'SheetMaterialsTab.get_calc_mat',
+                    'warning',
+                    f'При расчете стоимости изделия и стоимости партии '
+                    f'возникло исключение "{e}"',
+                    exc=True
+                )
                 total_5 = 0.0
                 total_6 = 0.0
 
@@ -1524,10 +1572,18 @@ class SheetMaterialsTab(ttk.Frame):
                      f"  {design_cost:_.0f}  руб.".replace('_', ' ')
             )
 
-        except ValueError:
+        except ValueError as e:
             tk.messagebox.showerror(
                 'Ошибка ввода данных!',
                 'Данные не введены или введены некорректно.'
+            )
+            AppLogger(
+                'SheetMaterialsTab.get_calc_mat',
+                'error',
+                f'При попытке расчета на вкладке "Листовой материал"'
+                f'возникло исключение "{e}": '
+                f'Данные не введены или введены некорректно.',
+                exc=True
             )
 
     def update_base(self) -> None:

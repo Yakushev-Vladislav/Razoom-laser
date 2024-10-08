@@ -499,6 +499,12 @@ class ChildMatrixMaterial(tk.Toplevel):
         """
         # Создание дочернего окна поверх основного
         super().__init__(parent)
+        AppLogger(
+            'ChildMatrixMaterial',
+            'info',
+            f'Открытие дочернего окна редактирования стоимости выбранного '
+            f'листового материала: {material_name}.'
+        )
         if material_name:
             title = f'Матрица стоимостей материала "{material_name}"'
             self.title(title)
