@@ -19,6 +19,7 @@ from binds import BindEntry
 from binds import BalloonTips
 from path_getting import PathName
 from bmp_read import MonochromeBMP
+from app_logger import AppLogger
 
 
 class App(tk.Tk):
@@ -1939,5 +1940,10 @@ class IndustrialCalculateTab(ttk.Frame):
 
 
 if __name__ == "__main__":  # Запуск программы
+    AppLogger(
+        __name__,
+        'info',
+        f'Запуск программы.'
+    )
     window = App()
     window.run()

@@ -8,7 +8,7 @@ import configparser
 
 from binds import BindEntry, BalloonTips
 from path_getting import PathName
-
+from app_logger import AppLogger
 
 class ChildConfigSet(tk.Toplevel):
     def __init__(self, parent, width: int, height: int, theme: str,
@@ -29,6 +29,11 @@ class ChildConfigSet(tk.Toplevel):
         """
         # Создание дочернего окна поверх основного
         super().__init__(parent)
+        AppLogger(
+            'ChildConfigSet',
+            'info',
+            f'Открытие дочернего окна предварительной настройки программы.'
+        )
         self.title(title)
         self.geometry(f"{width}x{height}+20+20")
         self.resizable(resizable[0], resizable[1])

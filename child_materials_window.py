@@ -8,6 +8,7 @@ from materials import Interpolation
 from binds import BindEntry
 from binds import BalloonTips
 from path_getting import PathName
+from app_logger import AppLogger
 
 
 class ChildMaterials(tk.Toplevel):
@@ -26,6 +27,11 @@ class ChildMaterials(tk.Toplevel):
         """
         # Создание дочернего окна поверх основного
         super().__init__(parent)
+        AppLogger(
+            'ChildMaterials',
+            'info',
+            f'Открытие дочернего окна редактирования базы листового материала.'
+        )
         self.title(title)
         self.geometry(f"{width}x{height}+20+20")
         self.resizable(resizable[0], resizable[1])
