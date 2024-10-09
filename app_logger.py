@@ -12,7 +12,8 @@ class AppLogger:
         Класс работы с логом приложения.
         :param name: Имя модуля, из которого происходит запись в лог;
         :param level: Уровень логирования (debug, info, warning, error,
-        critical);
+        critical) пользовательский уровень calc позволяет записать подробный
+        лог о расчете;
         :param message: Текстовое сообщение записи в лог;
         :param info: Переменная записи подробной информации об исключении
         (True - если требуется информация, False (по умолчанию) - если не
@@ -68,12 +69,12 @@ class AppLogger:
         logger = logging.getLogger(self.name)
         logger.setLevel(logging.DEBUG)
 
-        # Ротация лога при объеме файла больше 500 Кб
+        # Ротация лога при объеме файла больше 2 Мб
         handler = logging.handlers.RotatingFileHandler(
             PathName.resource_path(path),
             mode='w',
             encoding='utf-8',
-            maxBytes=500_000,
+            maxBytes=2_000_000,
             backupCount=5
         )
 
