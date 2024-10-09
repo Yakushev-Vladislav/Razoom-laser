@@ -26,23 +26,23 @@ class AppLogger:
         # Непосредственно запись информации в лог
         match level:
             case 'calc':
-                self.logger('log\\app_log.log').info(f'{message}\n')
+                self.logger('log\\app_log.log').info(f'{message}')
                 self.logger('log\\calculation\\calc_log.log').info(
-                    f'{message}\n')
+                    f'{message}')
             case 'info':
-                self.logger('log\\app_log.log').info(f'{message}\n')
+                self.logger('log\\app_log.log').info(f'{message}')
             case 'warning':
-                self.logger('log\\app_log.log').warning(f'{message}\n')
+                self.logger('log\\app_log.log').warning(f'{message}')
                 self.logger(
                     'log\\warnings\\app_log.log').warning(f'{message}',
                                                           exc_info=info)
             case 'error':
-                self.logger('log\\app_log.log').error(f'{message}\n')
+                self.logger('log\\app_log.log').error(f'{message}')
                 self.logger(
                     'log\\errors\\app_log.log').error(f'{message}',
                                                       exc_info=info)
             case _:
-                self.logger('log\\app_log.log').info(f'{level}:  {message}\n')
+                self.logger('log\\app_log.log').info(f'{level}:  {message}')
 
     def logger(self, path: str) -> logging.Logger:
         """

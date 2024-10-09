@@ -125,15 +125,25 @@ class App(tk.Tk):
         """
         Открытие дочернего окна редактирования листового материала.
         """
-        child = ChildMaterials(
-            self,
-            900,
-            450,
-            theme=self.theme,
-            icon=PathName.resource_path("resources\\Company_logo.ico")
-        )
-        child.add_bind_child()
-        child.grab_focus()
+        try:
+            child = ChildMaterials(
+                self,
+                900,
+                450,
+                theme=self.theme,
+                icon=PathName.resource_path("resources\\Company_logo.ico")
+            )
+            child.add_bind_child()
+            child.grab_focus()
+        except tk.TclError as e:
+            AppLogger(
+                'run_child_materials',
+                'warning',
+                f"При упаковке дочернего окна редактирования "
+                f"листового материала возникло исключение {e}: "
+                f"Окно было закрыто слишком быстро. Виджеты не успели "
+                f"прорисоваться / сформировать подсказки или фоновый текст."
+            )
 
     def run_child_power(self) -> None:
         """
@@ -153,14 +163,24 @@ class App(tk.Tk):
         """
         Открытие дочернего окна предварительной настройки программы.
         """
-        child = ChildConfigSet(
-            self,
-            900,
-            450,
-            theme=self.theme,
-            icon=PathName.resource_path("resources\\Company_logo.ico")
-        )
-        child.grab_focus()
+        try:
+            child = ChildConfigSet(
+                self,
+                900,
+                450,
+                theme=self.theme,
+                icon=PathName.resource_path("resources\\Company_logo.ico")
+            )
+            child.grab_focus()
+        except tk.TclError as e:
+            AppLogger(
+                'run_config_window',
+                'warning',
+                f"При упаковке дочернего окна предварительной настройки "
+                f"программы возникло исключение {e}: Окно было закрыто "
+                f"слишком быстро. Виджеты не успели прорисоваться / "
+                f"сформировать подсказки или фоновый текст."
+            )
 
     def base_of_materials(self) -> None:
         """
@@ -2001,3 +2021,9 @@ if __name__ == "__main__":  # Запуск программы
     )
     window = App()
     window.run()
+
+AppLogger(
+        __name__,
+        'info',
+        f'Закрытие программы.\n{"-"*100}'
+)

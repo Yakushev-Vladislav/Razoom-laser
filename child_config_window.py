@@ -473,7 +473,6 @@ class ChildConfigSet(tk.Toplevel):
         self.update_data_in_widgets()
         self.add_binds()
         self.add_tips()
-
     def update_data_in_widgets(self) -> None:
         """
         Метод записи (обновления) данных в полях ввода.
