@@ -1,14 +1,24 @@
-2024-10-08 16:37:06,059 | __main__ | <INFO> | Запуск программы.
-2024-10-08 16:37:09,773 | SheetMaterialsTab.get_calc_mat | <ERROR> | При попытке расчета на вкладке "Листовой материал"возникло исключение "invalid literal for int() with base 10: 'Количество изделий, шт'"
-Traceback (most recent call last):
-  File "C:\ForPython\Razoom-laser\main_window.py", line 1471, in get_calc_mat
-    number_of_products = int(number_of_products)
-                         ^^^^^^^^^^^^^^^^^^^^^^^
-ValueError: invalid literal for int() with base 10: 'Количество изделий, шт'
-2024-10-08 16:37:15,854 | SheetMaterialsTab.get_calc_mat | <ERROR> | При попытке расчета на вкладке "Листовой материал"возникло исключение "invalid literal for int() with base 10: 'Количество изделий, шт'"
-Traceback (most recent call last):
-  File "C:\ForPython\Razoom-laser\main_window.py", line 1471, in get_calc_mat
-    number_of_products = int(number_of_products)
-                         ^^^^^^^^^^^^^^^^^^^^^^^
-ValueError: invalid literal for int() with base 10: 'Количество изделий, шт'
-2024-10-08 16:37:16,890 | SheetMaterialsTab.get_calc_mat | <WARNING> | could not convert string to float: 'Доп. плата / Макетирование, руб': Поле ввода доплаты за макетирование не заполнено или заполнено неверно: Доп. плата / Макетирование, руб
+2024-10-09 13:45:36,444 | __main__ | <INFO> | Запуск программы.
+
+2024-10-09 13:45:38,758 | PersonalCalculateTab.get_ratio_for_calculation | <WARNING> | При считывании габаритов гравировки возникло исключение "could not convert string to float: 'Высота гравировки, мм'", размеры указаны неверно, или не указаны вовсе -(Ширина гравировки, мм, Высота гравировки, мм)
+
+2024-10-09 13:45:38,759 | PersonalCalculateTab.get_ratio_for_calculation | <WARNING> | При считывании доплаты за макетирование возникло исключение "could not convert string to float: '-'": Данные не введены, или введены некорректно - -.
+
+2024-10-09 13:45:42,753 | PersonalCalculateTab.get_ratio_for_calculation | <WARNING> | При считывании доплаты за макетирование возникло исключение "could not convert string to float: '-'": Данные не введены, или введены некорректно - -.
+
+2024-10-09 13:45:45,362 | SheetMaterialsTab.get_calc_mat | <ERROR> | При попытке расчета на вкладке "Листовой материал"возникло исключение "invalid literal for int() with base 10: 'Количество изделий, шт'": Данные не введены или введены некорректно.
+
+2024-10-09 13:45:47,921 | SheetMaterialsTab.get_calc_mat | <ERROR> | При попытке расчета на вкладке "Листовой материал"возникло исключение "could not convert string to float: 'Высота изделия, мм'": Данные не введены или введены некорректно.
+
+2024-10-09 13:45:49,350 | SheetMaterialsTab.get_calc_mat | <WARNING> | could not convert string to float: 'Доп. плата / Макетирование, руб': Поле ввода доплаты за макетирование не заполнено или заполнено неверно: Доп. плата / Макетирование, руб
+
+2024-10-09 13:45:53,856 | ChildConfigSet | <INFO> | Открытие дочернего окна предварительной настройки программы.
+
+2024-10-09 13:45:56,817 | ChildMaterials | <INFO> | Открытие дочернего окна редактирования базы листового материала.
+
+2024-10-09 13:46:00,016 | ChildMaterials | <INFO> | Открытие дочернего окна редактирования базы листового материала.
+
+2024-10-09 13:46:02,902 | PersonalCalculateTab.get_ratio_for_calculation | <WARNING> | При считывании доплаты за макетирование возникло исключение "could not convert string to float: '-'": Данные не введены, или введены некорректно - -.
+
+2024-10-09 13:46:04,614 | PersonalCalculateTab.get_ratio_for_calculation | <WARNING> | При считывании доплаты за макетирование возникло исключение "could not convert string to float: '-'": Данные не введены, или введены некорректно - -.
+

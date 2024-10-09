@@ -1,0 +1,12 @@
+2024-10-09 13:45:45,362 | SheetMaterialsTab.get_calc_mat | <ERROR> | При попытке расчета на вкладке "Листовой материал"возникло исключение "invalid literal for int() with base 10: 'Количество изделий, шт'": Данные не введены или введены некорректно.
+Traceback (most recent call last):
+  File "C:\ForPython\Razoom-laser\main_window.py", line 1470, in get_calc_mat
+    number_of_products = int(number_of_products)
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: 'Количество изделий, шт'
+2024-10-09 13:45:47,922 | SheetMaterialsTab.get_calc_mat | <ERROR> | При попытке расчета на вкладке "Листовой материал"возникло исключение "could not convert string to float: 'Высота изделия, мм'": Данные не введены или введены некорректно.
+Traceback (most recent call last):
+  File "C:\ForPython\Razoom-laser\main_window.py", line 1472, in get_calc_mat
+    gab_height = int(float(gab_height))
+                     ^^^^^^^^^^^^^^^^^
+ValueError: could not convert string to float: 'Высота изделия, мм'

@@ -999,8 +999,7 @@ class PersonalCalculateTab(ttk.Frame):
                 'warning',
                 f'При считывании доплаты за макетирование возникло '
                 f'исключение "{e}": Данные не введены, или введены '
-                f'некорректно - {self.ent_design.get()}.',
-                exc=True
+                f'некорректно - {self.ent_design.get()}.'
             )
             self.cost_design = 0
 
@@ -1534,8 +1533,7 @@ class SheetMaterialsTab(ttk.Frame):
                     'SheetMaterialsTab.get_calc_mat',
                     'warning',
                     f'При расчете стоимости изделия и стоимости партии '
-                    f'возникло исключение "{e}"',
-                    exc=True
+                    f'возникло исключение "{e}"'
                 )
                 total_5 = 0.0
                 total_6 = 0.0
@@ -1583,7 +1581,7 @@ class SheetMaterialsTab(ttk.Frame):
                 f'При попытке расчета на вкладке "Листовой материал"'
                 f'возникло исключение "{e}": '
                 f'Данные не введены или введены некорректно.',
-                exc=True
+                info=True
             )
 
     def update_base(self) -> None:
