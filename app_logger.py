@@ -7,16 +7,27 @@ from path_getting import PathName
 
 class AppLogger:
     def __init__(self, name: str, level: str, message: str, info: bool =
-                 False) -> None:
+                 False, *args, **kwargs) -> None:
         """
         Класс работы с логом приложения.
-        :param name: Имя модуля, из которого происходит запись в лог.
+        :param name: Имя модуля, из которого происходит запись в лог;
         :param level: Уровень логирования (debug, info, warning, error,
-        critical)
-        :param message: Текстовое сообщение записи в лог
+        critical);
+        :param message: Текстовое сообщение записи в лог;
+        :param info: Переменная записи подробной информации об исключении
+        (True - если требуется информация, False (по умолчанию) - если не
+        требуется).
+        :param args: Кортеж позиционных аргументов.
+        :param kwargs: Словарь именованных аргументов. В расчетных методах
+        передаются результаты.
         """
+
         # Создание переменных для передачи методам
         self.name = name
+
+        # Убираем ошибку
+        for _ in args:
+            pass
 
         # Настройка формата для лога
         self.formatter = logging.Formatter(
@@ -24,11 +35,14 @@ class AppLogger:
         )
 
         # Непосредственно запись информации в лог
-        match level:
+        match level.lower():
             case 'calc':
+                results = '\n'
+                for _, v in kwargs.items():
+                    results += f'{v}\n'
                 self.logger('log\\app_log.log').info(f'{message}')
                 self.logger('log\\calculation\\calc_log.log').info(
-                    f'{message}')
+                    f'{message}:{results}')
             case 'info':
                 self.logger('log\\app_log.log').info(f'{message}')
             case 'warning':

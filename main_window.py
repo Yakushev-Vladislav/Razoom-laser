@@ -769,58 +769,77 @@ class PersonalCalculateTab(ttk.Frame):
         """
         Метод основного и углубленного расчета.
         """
+        try:
+            # Формирование начальной стоимости
+            if self.combo_products.get() == "Нет":  # Если не выбрано изделие
+                cost = int(self.main_settings["MAIN"]["min_cost"])
+            else:  # Если выбрано стандартное изделие
+                cost = int(
+                    self.main_settings["STANDARD"][self.combo_products.get()]
+                )
 
-        # Формирование начальной стоимости
-        if self.combo_products.get() == "Нет":  # Если не выбрано изделие
-            cost = int(self.main_settings["MAIN"]["min_cost"])
-        else:  # Если выбрано стандартное изделие
-            cost = int(
-                self.main_settings["STANDARD"][self.combo_products.get()]
+            # Получение данных для коэффициентов
+            self.get_ratio_for_calculation()
+
+            # Расчет основной стоимости
+            """
+            Формула имеет следующий вид:
+            Итоговая цена = (дополнительные прицелы + 
+            + минимальная стоимость * коэффициенты) * учет НДС * учет скидки * 
+            * учет количества изделий * учет количества в одной установке
+            """
+
+            main_cost = ((self.additional_cost + (cost * (
+                    self.ratio_laser * self.ratio_rotation *
+                    self.ratio_different_layouts * self.ratio_timing *
+                    self.ratio_packing * self.ratio_thermal_graving *
+                    self.ratio_oversize * self.ratio_numbering *
+                    self.ratio_attention * self.ratio_hand_job *
+                    self.ratio_docking * self.ratio_difficult *
+                    self.ratio_depth * self.ratio_size)))
+                         * self.ratio_taxation_ao * self.ratio_taxation_ip *
+                         self.ratio_many_items * self.ratio_one_set *
+                         self.ratio_discount)
+
+            self.lbl_result_grav.config(
+                text=f"Стоимость гравировки:"
+                f"  {self.round_method(main_cost):_.0f}  руб/шт.".replace(
+                    '_', ' ')
+            )
+            all_cost = (self.round_method(main_cost) *
+                        int(self.spin_number.get()) + self.cost_design)
+            self.lbl_present_results.config(
+                text=f"Текущий расчет = {all_cost:_.0f} руб.".replace(
+                    '_', ' ')
+            )
+            self.present_cost = all_cost
+
+            self.lbl_result_cost.config(
+                text=f"ИТОГОВАЯ СТОИМОСТЬ:"
+                     f"  {self.total_cost + self.present_cost:_.0f}  "
+                     f"руб.".replace('_', ' ')
+            )
+            self.lbl_result_design.config(
+                text=f"Стоимость макетирования:"
+                     f"  {self.cost_design:_.0f}  руб.".replace('_', ' ')
             )
 
-        # Получение данных для коэффициентов
-        self.get_ratio_for_calculation()
-
-        # Расчет основной стоимости
-        """
-        Формула имеет следующий вид:
-        Итоговая цена = (дополнительные прицелы + 
-        + минимальная стоимость * коэффициенты) * учет НДС * учет скидки * 
-        * учет количества изделий * учет количества в одной установке
-        """
-
-        main_cost = ((self.additional_cost + (cost * (
-                self.ratio_laser * self.ratio_rotation *
-                self.ratio_different_layouts * self.ratio_timing *
-                self.ratio_packing * self.ratio_thermal_graving *
-                self.ratio_oversize * self.ratio_numbering *
-                self.ratio_attention * self.ratio_hand_job *
-                self.ratio_docking * self.ratio_difficult *
-                self.ratio_depth * self.ratio_size)))
-                     * self.ratio_taxation_ao * self.ratio_taxation_ip *
-                     self.ratio_many_items * self.ratio_one_set *
-                     self.ratio_discount)
-
-        self.lbl_result_grav.config(
-            text=f"Стоимость гравировки:"
-            f"  {self.round_method(main_cost):_.0f}  руб/шт.".replace('_', ' ')
-        )
-        all_cost = (self.round_method(main_cost) * int(self.spin_number.get())
-                    + self.cost_design)
-        self.lbl_present_results.config(
-            text=f"Текущий расчет = {all_cost:_.0f} руб.".replace('_', ' ')
-        )
-        self.present_cost = all_cost
-
-        self.lbl_result_cost.config(
-            text=f"ИТОГОВАЯ СТОИМОСТЬ:"
-                 f"  {self.total_cost + self.present_cost:_.0f}  руб.".replace(
-                    '_', ' ')
-        )
-        self.lbl_result_design.config(
-            text=f"Стоимость макетирования:"
-                 f"  {self.cost_design:_.0f}  руб.".replace('_', ' ')
-        )
+            AppLogger(
+                "PersonalCalculateTab.get_calc",
+                'calc',
+                f'Выполнен основной расчет на вкладке "Частные лица"',
+                _=self.lbl_result_grav.cget('text'),
+                __=self.lbl_present_results.cget('text'),
+                ___=self.lbl_result_cost.cget('text'),
+                ____=self.lbl_result_design.cget('text'),
+            )
+        except Exception as e:
+            AppLogger(
+                "PersonalCalculateTab.get_calc",
+                'error',
+                f'Во время основного расчета вызвано исключение: {e}',
+                True
+            )
 
     def get_ratio_for_calculation(self) -> None:
         """
@@ -1590,6 +1609,19 @@ class SheetMaterialsTab(ttk.Frame):
                      f"  {design_cost:_.0f}  руб.".replace('_', ' ')
             )
 
+            AppLogger(
+                'SheetMaterialsTab.get_calc_mat',
+                'calc',
+                f'Произведен расчет на вкладке "Листовой материал"',
+                _=self.lbl_result_1.cget("text"),
+                __=self.lbl_result_2.cget("text"),
+                ___=self.lbl_result_3.cget("text"),
+                ____=self.lbl_result_4.cget("text"),
+                _____=self.lbl_result_5.cget("text"),
+                ______=self.lbl_result_6.cget("text"),
+                _______=self.lbl_result_7.cget("text")
+            )
+
         except ValueError as e:
             tk.messagebox.showerror(
                 'Ошибка ввода данных!',
@@ -2019,8 +2051,16 @@ if __name__ == "__main__":  # Запуск программы
         'info',
         f'Запуск программы.'
     )
-    window = App()
-    window.run()
+    try:
+        window = App()
+        window.run()
+    except Exception as exc:
+        AppLogger(
+            __name__,
+            'error',
+            f'При запуске программы возникло исключение: {exc}',
+            info=True
+        )
 
 AppLogger(
         __name__,
