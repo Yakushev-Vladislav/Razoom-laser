@@ -298,16 +298,27 @@ class ChildMaterials(tk.Toplevel):
         """
         Метод обновления данных в таблице.
         """
-        self.data = list()
-        temp_data = self.config_material_data.material_config['MAIN']
-        for k, v in temp_data.items():
-            temp = [k]
-            temp.extend([x for x in v.split(',')])
-            self.data.append(temp)
-        for data in self.data:
-            self.material_table.insert('', index='end', values=data)
+        try:
+            self.data = list()
+            temp_data = self.config_material_data.material_config['MAIN']
+            for k, v in temp_data.items():
+                temp = [k]
+                temp.extend([x for x in v.split(',')])
+                self.data.append(temp)
+            for data in self.data:
+                self.material_table.insert('', index='end', values=data)
 
-        del temp_data, temp
+            del temp_data, temp
+        except KeyError as e:
+            AppLogger(
+                'ChildMaterials.get_data_child',
+                'error',
+                f'При добавлении данных в таблицу возникло исключение: "'
+                f'{e}": файл конфигурации пуст или отсутствуют данные '
+                f'раздела [MAIN]',
+                info=True
+            )
+            pass
 
     def click_add_data(self) -> None:
         """
@@ -326,6 +337,12 @@ class ChildMaterials(tk.Toplevel):
         if (new_name == '' or new_width == '' or new_height == '' or
                 new_price == ''):
             tk.messagebox.showerror('Ошибка записи', 'Данные пусты')
+            AppLogger(
+                'ChildMaterials.click_add_data',
+                'error',
+                f'Ошибка добавлении элемента в таблицу "Листовой материал": '
+                f'Данные не введены!'
+            )
 
         # Если введенные данные не подходят под формат
         elif (new_width.isdigit() is False) or (
@@ -336,6 +353,13 @@ class ChildMaterials(tk.Toplevel):
             tk.messagebox.showerror(
                 'Ошибка записи',
                 'Введите данные'
+            )
+            AppLogger(
+                'ChildMaterials.click_add_data',
+                'error',
+                f'Ошибка добавлении элемента в таблицу "Листовой материал": '
+                f'Данные введены некорректно: ('
+                f'{new_name, new_width, new_height, new_price}).'
             )
 
         # Иначе запись в файл
@@ -371,6 +395,12 @@ class ChildMaterials(tk.Toplevel):
                 self.ent_price_mat, text='Цена, руб').to_add_entry_child()
 
             self.update()
+            AppLogger(
+                'ChildMaterials.click_add_data',
+                'info',
+                f'Добавлен новый элемент в таблицу "Листовой материал":'
+                f' {new_name}.'
+            )
 
     def click_del_data(self) -> None:
         """
@@ -399,10 +429,24 @@ class ChildMaterials(tk.Toplevel):
                 # Удаление файла с матрицей стоимостей
                 self.config_material_data.del_matrix_file(material_name)
 
-        except (ValueError, KeyboardInterrupt, IndexError):
+                AppLogger(
+                    'ChildMaterials.click_del_data',
+                    'info',
+                    f'Удаление элемента "{material_name}" из списка '
+                    f'листового материала.'
+                )
+
+        except (ValueError, KeyboardInterrupt, IndexError) as e:
             tk.messagebox.showerror(
                 'Ошибка удаления!',
                 'Выберите в таблице удаляемую строку.'
+            )
+            AppLogger(
+                'ChildMaterials.click_del_data',
+                'error',
+                f'При удалении элемента из списка листового материала было '
+                f'вызвано исключение "{e}" - Элемент не выбран или '
+                f'отсутствует в списке.'
             )
         # Обновление данных в таблице
         # Очистка таблицы
@@ -425,6 +469,12 @@ class ChildMaterials(tk.Toplevel):
         if askokcancel('Сброс настроек', 'Вы действительно хотите сбросить '
                                          'настройки по умолчанию?'):
             self.config_material_data.get_default()
+            AppLogger(
+                'ChildMaterials.get_default_materials',
+                'info',
+                f'База листового материала была сброшена до настроек '
+                f'"По-умолчанию".'
+            )
 
         # Переопределение переменной конфигурации
         del self.config_material_data
@@ -853,15 +903,33 @@ class ChildMatrixMaterial(tk.Toplevel):
                 for i in range(len(self.string_name_list)):
                     temp_string = list()
                     for item in self.matrix_entries[i]:
-                        temp_string.append(item.get())
+                        temp_string.append(str(int(item.get())))
                     temp_config['COSTS'][self.string_name_list[i]] =\
                         ', '.join(temp_string)
+                AppLogger(
+                    'ChildMatrixMaterial.click_save_data',
+                    'info',
+                    f'Сохранение изменений в матрице стоимостей материала:'
+                    f' "{self.material_name}"'
+                )
 
             # Запись новых данных в файл
             self.config_matrix_cost.update_matrix(some_new=temp_config)
 
-        except ValueError:
-            pass
+        except (ValueError, TypeError) as e:
+            tk.messagebox.showerror(
+                'Ошибка сохранения',
+                'Данные введены некорректно.'
+            )
+            AppLogger(
+                'ChildMatrixMaterial.click_save_data',
+                'error',
+                f'При сохранении изменений в матрице стоимостей материала:'
+                f' "{self.material_name}" вызвано исключение "{e}"',
+                info=True
+            )
+            # Обновляем данные в полях ввода
+            self.add_entries_data()
 
     def click_reset_data(self) -> None:
         """
@@ -875,6 +943,12 @@ class ChildMatrixMaterial(tk.Toplevel):
 
             # Обновляем данные в полях ввода
             self.add_entries_data()
+            AppLogger(
+                'ChildMatrixMaterial.click_reset_data',
+                'info',
+                f'Сброс матрицы стоимостей материала:'
+                f' "{self.material_name}" до настроек "По-умолчанию".'
+            )
 
         else:
             pass
