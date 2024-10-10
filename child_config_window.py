@@ -478,7 +478,8 @@ class ChildConfigSet(tk.Toplevel):
 
     def update_data_in_widgets(self) -> None:
         """
-        Метод записи (обновления) данных в полях ввода.
+        Метод записи (обновления) данных в полях ввода и таблице
+        стандартных работ.
         """
         # Считывание данных в переменные
         update_config = ConfigSet().config
@@ -574,15 +575,25 @@ class ChildConfigSet(tk.Toplevel):
         полученными данными.
         """
         table_data = list()
-        # Считывание информации из конфига
-        costs = self.standard_works_config.standard_config["STANDARD"]
-        for k, v in costs.items():
-            temp = [k, v]
-            table_data.append(temp)
-        for data in table_data:
-            self.standard_table.insert('', index='end', values=data)
+        try:
+            # Считывание информации из конфига
+            costs = self.standard_works_config.standard_config["STANDARD"]
+            for k, v in costs.items():
+                temp = [k, v]
+                table_data.append(temp)
+            for data in table_data:
+                self.standard_table.insert('', index='end', values=data)
 
-        del costs
+            del costs
+        except Exception as e:
+            AppLogger(
+                'ChildConfigSet.get_standard_costs',
+                'error',
+                f'При получении данных из файла "standard.ini" '
+                f'для заполнения таблицы стандартных работ вызвано '
+                f'исключение {e}',
+                info=True
+            )
 
     def click_reset_standard(self) -> None:
         """
@@ -595,6 +606,13 @@ class ChildConfigSet(tk.Toplevel):
 
             # Переопределяем переменную конфигурации после сброса
             self.standard_works_config = StandardSet()
+
+            AppLogger(
+                'ChildConfigSet.click_reset_standard',
+                'info',
+                f'Список стандартных работ был сброшен до настроек '
+                f'"По-умолчанию"'
+            )
 
         # Обновляем данные в полях ввода и таблице
         self.update_data_in_widgets()
@@ -610,10 +628,23 @@ class ChildConfigSet(tk.Toplevel):
         try:
             add_config['STANDARD'][self.ent_name.get()] = (
                 str(int(self.ent_cost.get())))
-        except ValueError:
+            AppLogger(
+                'ChildConfigSet.click_add_standard',
+                'info',
+                f'Добавлена/изменена работа'
+                f' "{self.ent_name.get()}: {self.ent_cost.get()} руб".'
+            )
+        except ValueError as e:
             tk.messagebox.showerror(
                 'Ошибка добавления',
                 'Стоимость работы введена некорректно!'
+            )
+            AppLogger(
+                'ChildConfigSet.click_add_standard',
+                'error',
+                f'При добавлении/изменении стандартной работы '
+                f'стоимость была введена некорректно: {e}',
+                info=True
             )
 
         # Записываем данные в файл
@@ -739,6 +770,12 @@ class ChildConfigSet(tk.Toplevel):
             # Переопределяем переменную конфигурации после сброса
             self.child_temp_config = ConfigSet()
 
+            AppLogger(
+                'ChildConfigSet.click_default_settings',
+                'info',
+                f'Настройки программы были сброшены до настроек "По-умолчанию"'
+            )
+
         # Обновляем данные в полях ввода и таблице
         self.get_standard_costs()
         self.update()
@@ -763,10 +800,24 @@ class ChildConfigSet(tk.Toplevel):
                 # Обновление данных в файле
                 self.standard_works_config.update_settings(
                     some_new=config_with_deleted_item)
-        except (ValueError, KeyboardInterrupt, IndexError):
+                AppLogger(
+                    'ChildConfigSet.click_delete_element',
+                    'info',
+                    f'Элемент "{str(deleted_item["values"][0])}"'
+                    f' был удален из списка стандартных работ.'
+                )
+        except (ValueError, KeyboardInterrupt, IndexError) as e:
             tk.messagebox.showerror(
                 'Ошибка удаления!',
                 'Выберите в таблице удаляемую строку.'
+            )
+            AppLogger(
+                'ChildConfigSet.click_delete_element',
+                'error',
+                f'При удалении элемента из списка стандартных работ'
+                f'было вызвано исключение {e}: - Элемент не был выбран в '
+                f'таблице, или такого элемента не существует в списке.',
+                info=True
             )
         # Обновление данных в таблице
         self.update_data_in_widgets()

@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 
 from path_getting import PathName
+from app_logger import AppLogger
 
 
 class ChildPowerSet(tk.Toplevel):
@@ -9,7 +10,7 @@ class ChildPowerSet(tk.Toplevel):
                  title: str = 'Подбор режимов',
                  resizable: tuple = (False, False), icon: str | None = None):
         """
-        Конфигурация дочернего окна подбора режимов для гравировки / резки
+        Конфигурация дочернего окна подбора режимов для гравировки
         :param parent: Класс-родитель
         :param width: Ширина окна
         :param height: Высота окна
@@ -19,6 +20,12 @@ class ChildPowerSet(tk.Toplevel):
         :param icon: Иконка окна. По умолчанию: None
         """
         super().__init__(parent)
+        AppLogger(
+            'ChildPowerSet',
+            'info',
+            f'Открытие дочернего окна режимов для гравировки'
+        )
+
         self.title(title)
         self.geometry(f"{width}x{height}+20+20")
         self.resizable(resizable[0], resizable[1])

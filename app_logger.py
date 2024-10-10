@@ -76,7 +76,10 @@ class AppLogger:
         logger = logging.getLogger(self.name)
         logger.setLevel(logging.DEBUG)
 
-        # Ротация лога при объеме файла больше 2 Мб
+        # Не передаем записи журнала обработчикам (исключение дублирования)
+        logger.propagate = False
+
+        # Ротация лога при объеме файла больше 1,5 Мб
         handler = logging.handlers.RotatingFileHandler(
             PathName.resource_path(path),
             mode='w',
