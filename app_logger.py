@@ -37,26 +37,33 @@ class AppLogger:
 
         # Непосредственно запись информации в лог
         match level.lower():
-            case 'calc':
+            case 'calc':  # Запись результатов расчета стоимостей / времени
                 results = '\n'
                 for _, v in kwargs.items():
                     results += f'{v}\n'
                 self.logger('log\\app_log.log').info(f'{message}')
                 self.logger('log\\calculation\\calc_log.log').info(
                     f'{message}:{results}')
-            case 'info':
+            case 'bmp':  # Запись параметров считанного .bmp файла
+                results = '\n'
+                for _, v in kwargs.items():
+                    results += f'{v}\n'
                 self.logger('log\\app_log.log').info(f'{message}')
-            case 'warning':
+                self.logger('log\\calculation\\bmp_calc_log.log').info(
+                    f'{message}:{results}')
+            case 'info':  # Логирование информации
+                self.logger('log\\app_log.log').info(f'{message}')
+            case 'warning':  # Логирование предупреждений
                 self.logger('log\\app_log.log').warning(f'{message}')
                 self.logger(
                     'log\\warnings\\app_log.log').warning(f'{message}',
                                                           exc_info=info)
-            case 'error':
+            case 'error':  # Логирование ошибок
                 self.logger('log\\app_log.log').error(f'{message}')
                 self.logger(
                     'log\\errors\\app_log.log').error(f'{message}',
                                                       exc_info=info)
-            case _:
+            case _:  # Логирование любой дополнительной информации
                 self.logger('log\\app_log.log').info(f'{level}:  {message}')
 
     def logger(self, path: str) -> logging.Logger:

@@ -1093,6 +1093,12 @@ class PersonalCalculateTab(ttk.Frame):
         # Обнуление переключателей и окон ввода
         self.reset_tab_mian_calculate()
 
+        AppLogger(
+            "PersonalCalculateTab.add_new_calc",
+            'info',
+            f'Выполнено добавление расчета на вкладке "Частные лица"'
+        )
+
     def reset_tab_mian_calculate(self) -> None:
         """
         Обнуления переключателей и полей
@@ -1187,6 +1193,13 @@ class PersonalCalculateTab(ttk.Frame):
 
         # Обнуляем переключатели
         self.reset_tab_mian_calculate()
+
+        AppLogger(
+            "PersonalCalculateTab.get_reset_results",
+            'info',
+            f'Выполнено обнуления результатов расчета на вкладке "Частные '
+            f'лица"'
+        )
 
     def add_tips(self) -> None:
         """
@@ -1888,11 +1901,23 @@ class IndustrialCalculateTab(ttk.Frame):
                      f"  {self.round_method(cost):_.0f}  руб/шт.".replace(
                           '_', ' ')
             )
+            AppLogger(
+                "IndustrialCalculateTab.cost_calc",
+                'calc',
+                f'Выполнен расчет стоимости от времени работы оборудования:',
+                _=self.lbl_result_cost.cget('text')
+            )
 
-        except ValueError:  # Если число некорректно
+        except ValueError as e:  # Если число некорректно
             self.lbl_result_cost.config(
                 text=f"Итого:"
                      f" {0:.0f}  руб/шт."
+            )
+            AppLogger(
+                "IndustrialCalculateTab.cost_calc",
+                'warning',
+                f'При выполнении расчета стоимости от времени работы '
+                f'оборудования возникло исключение: {e}'
             )
 
     def time_calc(self) -> None:
@@ -1968,7 +1993,16 @@ class IndustrialCalculateTab(ttk.Frame):
                      f" {result_imagine:.1f}  мин."
             )
 
-        except (ValueError, TypeError, ZeroDivisionError):
+            AppLogger(
+                "IndustrialCalculateTab.time_calc",
+                'calc',
+                f'Выполнен расчет времени работы оборудования:',
+                _=self.lbl_result_time_minimum.cget('text'),
+                __=self.lbl_result_time_text.cget('text'),
+                ___=self.lbl_result_time_imagine.cget('text')
+            )
+
+        except (ValueError, TypeError, ZeroDivisionError) as e:
             tk.messagebox.showerror(
                 'Ошибка ввода данных!',
                 'Данные не введены или введены некорректно.'
@@ -1987,6 +2021,14 @@ class IndustrialCalculateTab(ttk.Frame):
             self.lbl_result_time_imagine.config(
                 text=f"Ориентировочное время гравировки рисунка:"
                      f" {0:.0f}  мин."
+            )
+
+            AppLogger(
+                "IndustrialCalculateTab.time_calc",
+                'error',
+                f'При выполнении расчета времени работы оборудования'
+                f' возникло исключение: {e}',
+                info=True
             )
 
     def bmp_calculation(self) -> None:
@@ -2012,7 +2054,18 @@ class IndustrialCalculateTab(ttk.Frame):
             self.ent_height_grav.insert(0, f'{height_bmp:.1f}')
             self.ent_dpi_grav.insert(0, f'{(dpi_bmp/25.4):.0f}')
 
-        except FileNotFoundError:
+            AppLogger(
+                'IndustrialCalculateTab.bmp_calculation',
+                'bmp',
+                f'Выполнен расчет параметров растрового .bmp изображения:'
+                f'{filename}:',
+                _=f'Черных пикселей: {self.ent_black_pixel.get()}',
+                __=f'Ширина макета: {self.ent_width_grav.get()}',
+                ___=f'Высота макета: {self.ent_height_grav.get()}',
+                ____=f'Разрешение макета: {self.ent_dpi_grav.get()}'
+            )
+
+        except FileNotFoundError as e:
             self.ent_black_pixel.delete(0, tk.END)
             self.ent_width_grav.delete(0, tk.END)
             self.ent_height_grav.delete(0, tk.END)
@@ -2022,6 +2075,14 @@ class IndustrialCalculateTab(ttk.Frame):
             BindEntry(self.ent_width_grav, text='Ширина макета, мм')
             BindEntry(self.ent_height_grav, text='Высота макета, мм')
             BindEntry(self.ent_dpi_grav, text='Разрешение макета, лин/мм')
+
+            AppLogger(
+                "IndustrialCalculateTab.time_calc",
+                'error',
+                f'При выполнении расчета параметров растрового'
+                f' .bmp изображения: "{filename}" возникло исключение: {e}',
+                info=True
+            )
 
     def add_binds(self) -> None:
         """

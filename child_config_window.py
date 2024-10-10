@@ -10,6 +10,7 @@ from binds import BindEntry, BalloonTips
 from path_getting import PathName
 from app_logger import AppLogger
 
+
 class ChildConfigSet(tk.Toplevel):
     def __init__(self, parent, width: int, height: int, theme: str,
                  title: str = 'Предварительная настройка программы',
@@ -147,7 +148,7 @@ class ChildConfigSet(tk.Toplevel):
                                sticky='nsew')
 
         # Окно ввода __ Степень градации __
-        ttk.Label(self.tab_main_settings, text='Степень градации').grid(
+        ttk.Label(self.tab_main_settings, text='Градация количества').grid(
             row=1, column=3, padx=0, pady=0, sticky='ns'
         )
         self.ent_many_items = ttk.Entry(
@@ -473,6 +474,7 @@ class ChildConfigSet(tk.Toplevel):
         self.update_data_in_widgets()
         self.add_binds()
         self.add_tips()
+
     def update_data_in_widgets(self) -> None:
         """
         Метод записи (обновления) данных в полях ввода.
