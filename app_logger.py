@@ -26,7 +26,7 @@ class AppLogger:
         # Создание переменных для передачи методам
         self.name = name
 
-        # Убираем ошибку
+        # Убираем предупреждение о неиспользованном параметре
         for _ in args:
             pass
 
@@ -81,7 +81,7 @@ class AppLogger:
             PathName.resource_path(path),
             mode='w',
             encoding='utf-8',
-            maxBytes=2_000_000,
+            maxBytes=1_500_000,
             backupCount=5
         )
 

@@ -47,6 +47,7 @@ class ChildConfigSet(tk.Toplevel):
 
         # Объявление переменных
         self.child_temp_config = ConfigSet()
+        self.standard_works_config = StandardSet()
         self.not_use = None
         # Создание вкладок окна
         self.child_tabs_control = ttk.Notebook(self)
@@ -460,14 +461,14 @@ class ChildConfigSet(tk.Toplevel):
             row=2, column=0, padx=5, pady=(10, 20), sticky='nsew',
             columnspan=2)
 
-        # Создание кнопки перехода на начальную вкладку
-        self.btn_back_to_tab_1 = ttk.Button(
+        # Создание кнопки сброса списка по-умолчанию
+        self.btn_reset_standard = ttk.Button(
             self.tab_2_panel_widgets,
             width=10,
-            text="Вернуться",
-            command=self.click_back
+            text="Сброс списка работ",
+            command=self.click_reset_standard
         )
-        self.btn_back_to_tab_1.grid(
+        self.btn_reset_standard.grid(
             row=2, column=2, padx=5, pady=(10, 20), sticky='nsew')
 
         # Запись данных в окна ввода
@@ -553,7 +554,6 @@ class ChildConfigSet(tk.Toplevel):
         # Обновление данных в таблице второй вкладки
         for item in self.standard_table.get_children():
             self.standard_table.delete(item)
-
         self.get_standard_costs()
 
         # Очистка полей ввода второй вкладки
@@ -575,7 +575,7 @@ class ChildConfigSet(tk.Toplevel):
         """
         table_data = list()
         # Считывание информации из конфига
-        costs = self.child_temp_config.config["STANDARD"]
+        costs = self.standard_works_config.standard_config["STANDARD"]
         for k, v in costs.items():
             temp = [k, v]
             table_data.append(temp)
@@ -584,17 +584,27 @@ class ChildConfigSet(tk.Toplevel):
 
         del costs
 
-    def click_back(self) -> None:
+    def click_reset_standard(self) -> None:
         """
-        Метод перехода на первую вкладку.
+        Метод сброса списка стандартных работ "По-умолчанию"
         """
-        self.child_tabs_control.select(self.tab_main_settings)
+        if askokcancel('Сброс списка работ',
+                       'Вы действительно хотите сбросить список работ'
+                       ' "По-умолчанию"?'):
+            self.standard_works_config.default_settings()
+
+            # Переопределяем переменную конфигурации после сброса
+            self.standard_works_config = StandardSet()
+
+        # Обновляем данные в полях ввода и таблице
+        self.update_data_in_widgets()
+        self.update()
 
     def click_add_standard(self) -> None:
         """
         Метод добавления новой стандартной работы.
         """
-        add_config = self.child_temp_config.config
+        add_config = self.standard_works_config.standard_config
 
         # Считываем с окон новые данные
         try:
@@ -607,7 +617,7 @@ class ChildConfigSet(tk.Toplevel):
             )
 
         # Записываем данные в файл
-        self.child_temp_config.update_settings(some_new=add_config)
+        self.standard_works_config.update_settings(some_new=add_config)
 
         # Обновление данных в таблице
         self.update_data_in_widgets()
@@ -730,7 +740,7 @@ class ChildConfigSet(tk.Toplevel):
             self.child_temp_config = ConfigSet()
 
         # Обновляем данные в полях ввода и таблице
-        self.update_data_in_widgets()
+        self.get_standard_costs()
         self.update()
 
     def click_delete_element(self) -> None:
@@ -738,7 +748,7 @@ class ChildConfigSet(tk.Toplevel):
         Метод удаления стандартной работы из списка стандартных работ.
         """
         # Создаем переменную конфигурации
-        config_with_deleted_item = self.child_temp_config.config
+        config_with_deleted_item = self.standard_works_config.standard_config
 
         try:
             # Считывание данных из окна ввода
@@ -751,7 +761,7 @@ class ChildConfigSet(tk.Toplevel):
                 config_with_deleted_item.remove_option(
                     'STANDARD', str(deleted_item['values'][0]))
                 # Обновление данных в файле
-                self.child_temp_config.update_settings(
+                self.standard_works_config.update_settings(
                     some_new=config_with_deleted_item)
         except (ValueError, KeyboardInterrupt, IndexError):
             tk.messagebox.showerror(
@@ -892,6 +902,8 @@ class ChildConfigSet(tk.Toplevel):
         BalloonTips(self.btn_update_settings,
                     text=f'Для сохранения настроек можно использовать\n'
                          f'клавишу <Enter>.')
+        BalloonTips(self.btn_reset_standard,
+                    text=f'Сброс списка стандартных работ\n "По-умолчанию".')
 
     def bind_treeview(self, event=None) -> None:
         """
@@ -974,6 +986,48 @@ class ConfigSet:
         """
         destination_path = PathName.resource_path('settings\\settings.ini')
         source_path = PathName.resource_path('settings\\default\\settings.ini')
+        if os.path.exists(destination_path):
+            os.remove(destination_path)
+        shutil.copy2(source_path, destination_path)
+
+
+class StandardSet:
+    def __init__(self) -> None:
+        """
+        Класс, реализующий работу с файлом конфигурации списка стандартных
+        работ.
+        """
+        # Чтение файла конфигурации
+        self.standard_config = configparser.ConfigParser()
+        self.standard_config.read(
+            PathName.resource_path('settings\\standard.ini'), encoding='utf-8')
+
+    def update_settings(self, some_new=None) -> None:
+        """
+        Обновления файла конфигурации и внесение в него изменений (при их
+        наличии)
+        :param some_new: Измененные данные для сохранения. При отсутствии
+        изменений, файл остается нетронутым.
+        """
+        if some_new:
+            with (open(PathName.resource_path('settings\\standard.ini'),
+                       'w', encoding='utf-8') as
+                  configfile):
+                some_new.write(configfile)
+        else:
+            with (open(PathName.resource_path('settings\\standard.ini'), 'w',
+                       encoding='utf-8') as
+                  configfile):
+                self.standard_config.write(configfile)
+
+    @staticmethod
+    def default_settings() -> None:
+        """
+        Метод сброса списка стандартных работ (файла конфигурации) до базовых
+        (Сброс "По-умолчанию")
+        """
+        destination_path = PathName.resource_path('settings\\standard.ini')
+        source_path = PathName.resource_path('settings\\default\\standard.ini')
         if os.path.exists(destination_path):
             os.remove(destination_path)
         shutil.copy2(source_path, destination_path)

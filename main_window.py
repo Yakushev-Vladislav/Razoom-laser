@@ -1,6 +1,6 @@
 """
 Программа создана для автоматизации многофункциональной работы операторов
-специально по заказу компании "Разум".
+для компании "Разум".
 
 """
 from math import ceil
@@ -14,7 +14,8 @@ from tkinter.messagebox import askokcancel
 from child_materials_window import ChildMaterials
 from child_power_set_window import ChildPowerSet
 from materials import Materials, Calculation, Interpolation
-from child_config_window import ChildConfigSet, ConfigSet, RatioArea
+from child_config_window import ChildConfigSet, RatioArea
+from child_config_window import ConfigSet, StandardSet
 from binds import BindEntry
 from binds import BalloonTips
 from path_getting import PathName
@@ -57,6 +58,7 @@ class App(tk.Tk):
 
         # Переменная основных настроек (конфигурации) программы
         self.main_settings = ConfigSet().config
+        self.standard_works = StandardSet().standard_config
 
         # Создание основных вкладок
         self.tabs_control = ttk.Notebook(self)
@@ -64,7 +66,7 @@ class App(tk.Tk):
             self.tabs_control,
             self.round_result,
             self.destroy_window,
-            self.main_settings)
+            (self.main_settings, self.standard_works))
         self.tab_sheet_material = SheetMaterialsTab(
             self.tabs_control,
             self.round_result)
@@ -262,14 +264,15 @@ class App(tk.Tk):
 
 
 class PersonalCalculateTab(ttk.Frame):
-    def __init__(self, parent, round_method, destroy_method, settings):
+    def __init__(self, parent, round_method, destroy_method, settings: tuple):
         """
         Класс конфигурации первой вкладки основного окна приложения
         "Частные лица"
         :param parent: Экземпляр-родитель Notebook
         :param round_method: Метод округления результата (из класса App)
         :param destroy_method: Метод закрытия приложения (из класса App)
-        :param settings: Переменная настроек (конфигурации) программы
+        :param settings: Кортеж: (Настройки программы, Список
+        стандартных работ)
         """
         # Инициализация и конфигурация отзывчивости вкладки
         super().__init__(parent)
@@ -285,7 +288,8 @@ class PersonalCalculateTab(ttk.Frame):
 
         # Формирование переменных
         # Переменная настроек (конфигурации) программы
-        self.main_settings = settings
+        self.main_settings = settings[0]
+        self.standard_works_costs = settings[1]
 
         # Переменные для переключателей выбора типа и сложности расчета
         self.bool_rotation = tk.BooleanVar(value=False)
@@ -405,7 +409,7 @@ class PersonalCalculateTab(ttk.Frame):
             row=0, column=0, padx=15, pady=0, sticky='ew')
         self.combo_list = list()
         self.combo_list.append('Нет')
-        for k, v in self.main_settings['STANDARD'].items():
+        for k, v in self.standard_works_costs['STANDARD'].items():
             self.combo_list.append(k)
 
         self.combo_products = ttk.Combobox(
@@ -747,11 +751,12 @@ class PersonalCalculateTab(ttk.Frame):
         """
         # Обновление переменной конфигурации
         self.main_settings = ConfigSet().config
+        self.standard_works_costs = StandardSet().standard_config
 
         # Обновление данных в таблице
         self.combo_list = list()
         self.combo_list.append('Нет')
-        for k, v in self.main_settings['STANDARD'].items():
+        for k, v in self.standard_works_costs['STANDARD'].items():
             self.combo_list.append(k)
         self.combo_products.configure(values=self.combo_list)
 
@@ -775,7 +780,8 @@ class PersonalCalculateTab(ttk.Frame):
                 cost = int(self.main_settings["MAIN"]["min_cost"])
             else:  # Если выбрано стандартное изделие
                 cost = int(
-                    self.main_settings["STANDARD"][self.combo_products.get()]
+                    self.standard_works_costs["STANDARD"][
+                        self.combo_products.get()]
                 )
 
             # Получение данных для коэффициентов
