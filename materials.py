@@ -4,6 +4,7 @@ import shutil
 import configparser
 
 from path_getting import PathName
+from app_logger import AppLogger
 
 
 class Materials:
@@ -24,43 +25,79 @@ class Materials:
         Метод, возвращающий словарь "Название-стоимость"
         :return: Словарь "название - стоимость листа"
         """
-        my_price = dict()
-        for k, v in self.material_config['MAIN'].items():
-            temp = [x for x in v.split(',')]
-            my_price[k] = [float(x) for x in temp[0:3:1]][-1]
-        return my_price
+        try:
+            my_price = dict()
+            for k, v in self.material_config['MAIN'].items():
+                temp = [x for x in v.split(',')]
+                my_price[k] = [float(x) for x in temp[0:3:1]][-1]
+            return my_price
+        except Exception as e:
+            AppLogger(
+                'Materials.get_mat_price',
+                'error',
+                f'При формировании словаря "Название-стоимость" для базы '
+                f'материалов возникло исключение: {e}',
+                info=True
+            )
 
     def get_gab_width(self) -> dict:
         """
         Метод, возвращающий словарь "название - ширина листа"
         :return: Словарь "название - ширина листа"
         """
-        mat_gab_width = dict()
-        for k, v in self.material_config['MAIN'].items():
-            temp = [x for x in v.split(',')]
-            mat_gab_width[k] = [float(x) for x in temp[0:3:1]][0]
-        return mat_gab_width
+        try:
+            mat_gab_width = dict()
+            for k, v in self.material_config['MAIN'].items():
+                temp = [x for x in v.split(',')]
+                mat_gab_width[k] = [float(x) for x in temp[0:3:1]][0]
+            return mat_gab_width
+        except Exception as e:
+            AppLogger(
+                'Materials.get_gab_width',
+                'error',
+                f'При формировании словаря "Название-ширина листа" для базы '
+                f'материалов возникло исключение: {e}',
+                info=True
+            )
 
     def get_gab_height(self) -> dict:
         """
         Метод, возвращающий словарь "название - высота листа"
         :return: Словарь "название - высота листа"
         """
-        mat_gab_height = dict()
-        for k, v in self.material_config['MAIN'].items():
-            temp = [x for x in v.split(',')]
-            mat_gab_height[k] = [float(x) for x in temp[0:3:1]][1]
-        return mat_gab_height
+        try:
+            mat_gab_height = dict()
+            for k, v in self.material_config['MAIN'].items():
+                temp = [x for x in v.split(',')]
+                mat_gab_height[k] = [float(x) for x in temp[0:3:1]][1]
+            return mat_gab_height
+        except Exception as e:
+            AppLogger(
+                'Materials.get_gab_height',
+                'error',
+                f'При формировании словаря "Название-высота листа" для базы '
+                f'материалов возникло исключение: {e}',
+                info=True
+            )
 
     def get_type_of_laser(self) -> dict:
         """
         Метод, возвращающий словарь "название - тип оборудования"
         :return: Словарь "название - тип оборудования"
         """
-        mat_type_of_laser = dict()
-        for k, v in self.material_config['MAIN'].items():
-            mat_type_of_laser[k] = [x for x in v.split(',')][-1]
-        return mat_type_of_laser
+        try:
+            mat_type_of_laser = dict()
+            for k, v in self.material_config['MAIN'].items():
+                mat_type_of_laser[k] = [x for x in v.split(',')][-1]
+            return mat_type_of_laser
+        except Exception as e:
+            AppLogger(
+                'Materials.get_type_of_laser',
+                'error',
+                f'При формировании словаря "Название-тип оборудования" '
+                f'для базы материалов возникло исключение: {e}',
+                info=True
+            )
 
     def update_materials(self, some_new=None) -> None:
         """
@@ -82,10 +119,19 @@ class Materials:
         Метод удаления файла конфигурации с матрицей стоимости материала.
         :param material_name: Название материала/файла конфигурации.
         """
-        file_path = PathName.resource_path(
-            f'settings/materials\\{material_name}.ini')
-        if os.path.isfile(file_path):
-            os.remove(file_path)
+        try:
+            file_path = PathName.resource_path(
+                f'settings/materials\\{material_name}.ini')
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+        except FileNotFoundError as e:
+            AppLogger(
+                'Materials.del_matrix_file',
+                'error',
+                f'При удалении файла с матрицей стоимости материала'
+                f' {material_name} возникло исключение: {e}',
+                info=True
+            )
 
     @staticmethod
     def add_matrix_file(material_name: str, laser_type: str) -> None:
@@ -94,74 +140,91 @@ class Materials:
         :param material_name: Название материала
         :param laser_type: Тип лазера
         """
-        destination_path = PathName.resource_path(f'settings\\materials')
-        file_new_name = PathName.resource_path(
-            f'settings\\materials\\{material_name}.ini')
+        try:
+            destination_path = PathName.resource_path(f'settings\\materials')
+            file_new_name = PathName.resource_path(
+                f'settings\\materials\\{material_name}.ini')
 
-        # Если редактируем имеющийся материал
-        if os.path.exists(PathName.resource_path(
-                f'settings\\materials\\{material_name}.ini')):
-            pass
+            # Если редактируем имеющийся материал
+            if os.path.exists(PathName.resource_path(
+                    f'settings\\materials\\{material_name}.ini')):
+                pass
 
-        # Если создаем новый материал
-        else:
-            if laser_type == 'gas':
-                source_path = PathName.resource_path(
-                    'settings\\default\\materials\\default_gas.ini')
-                file_old_name = PathName.resource_path(
-                    'settings\\materials\\default_gas.ini')
+            # Если создаем новый материал
             else:
-                source_path = PathName.resource_path(
-                    'settings\\default\\materials\\default_solid.ini')
-                file_old_name = PathName.resource_path(
-                    'settings\\materials\\default_solid.ini')
+                if laser_type == 'gas':
+                    source_path = PathName.resource_path(
+                        'settings\\default\\materials\\default_gas.ini')
+                    file_old_name = PathName.resource_path(
+                        'settings\\materials\\default_gas.ini')
+                else:
+                    source_path = PathName.resource_path(
+                        'settings\\default\\materials\\default_solid.ini')
+                    file_old_name = PathName.resource_path(
+                        'settings\\materials\\default_solid.ini')
 
-            # Копируем файл в папку назначения
-            shutil.copy(
-                source_path,
-                os.path.join(destination_path)
+                # Копируем файл в папку назначения
+                shutil.copy(
+                    source_path,
+                    os.path.join(destination_path)
+                )
+
+                # Переименовываем файл
+                os.rename(file_old_name, file_new_name)
+        except Exception as e:
+            AppLogger(
+                'Materials.add_matrix_file',
+                'error',
+                f'При создании файла с матрицей стоимостей для нового '
+                f'материала "{material_name}" возникло исключение: {e}'
             )
-
-            # Переименовываем файл
-            os.rename(file_old_name, file_new_name)
 
     @staticmethod
     def get_default() -> None:
         """
         Метод сброса файла конфигурации и стоимостей "по-умолчанию"
         """
+        try:
+            # Сброс основного файла конфигурации со списком материалов
+            destination_path = PathName.resource_path(
+                'settings\\material_data.ini')
+            source_path = PathName.resource_path(
+                'settings\\default\\material_data.ini')
+            if os.path.exists(destination_path):
+                os.remove(destination_path)
+            shutil.copy2(source_path, destination_path)
 
-        # Сброс основного файла конфигурации со списком материалов
-        destination_path = PathName.resource_path(
-            'settings\\material_data.ini')
-        source_path = PathName.resource_path(
-            'settings\\default\\material_data.ini')
-        if os.path.exists(destination_path):
-            os.remove(destination_path)
-        shutil.copy2(source_path, destination_path)
+            # Сброс файлов с матрицами стоимостей
+            destination_path = PathName.resource_path('settings\\materials\\')
+            source_path = PathName.resource_path(
+                'settings\\default\\materials\\')
+            deleted_files = os.listdir(destination_path)
+            new_files = os.listdir(source_path)
+            for file in deleted_files:
+                os.remove(PathName.resource_path(
+                    f'settings\\materials\\{file}'))
+            for filename in new_files:
+                shutil.copy(
+                    PathName.resource_path(
+                        f'settings\\default\\materials\\{filename}'),
+                    PathName.resource_path(
+                        f'settings\\materials\\{filename}')
+                )
 
-        # Сброс файлов с матрицами стоимостей
-        destination_path = PathName.resource_path('settings\\materials\\')
-        source_path = PathName.resource_path('settings\\default\\materials\\')
-        deleted_files = os.listdir(destination_path)
-        new_files = os.listdir(source_path)
-        for file in deleted_files:
-            os.remove(PathName.resource_path(f'settings\\materials\\{file}'))
-        for filename in new_files:
-            shutil.copy(
-                PathName.resource_path(
-                    f'settings\\default\\materials\\{filename}'),
-                PathName.resource_path(
-                    f'settings\\materials\\{filename}')
+            # Удаление дефолтных файлов стоимостей для типов лазера
+            laser_types = ['default_gas', 'default_solid']
+            for item in laser_types:
+                file_path = PathName.resource_path(
+                    f'settings\\materials\\{item}.ini')
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
+        except Exception as e:
+            AppLogger(
+                'Materials.get_default',
+                'error',
+                f'При сбросе файла конфигурации с базой листового материала '
+                f'возникло исключение: {e}'
             )
-
-        # Удаление дефолтных файлов стоимостей для типов лазера
-        laser_types = ['default_gas', 'default_solid']
-        for item in laser_types:
-            file_path = PathName.resource_path(
-                f'settings\\materials\\{item}.ini')
-            if os.path.isfile(file_path):
-                os.remove(file_path)
 
 
 class Calculation:
@@ -207,7 +270,14 @@ class Calculation:
                        - (self.figure_per_rows * self.width)) // self.height
                 y_2 = self.h_big // self.width
                 self.total_1 += int(x_2 * y_2)
-        except ZeroDivisionError:
+        except ZeroDivisionError as e:
+            AppLogger(
+                f'Calculation.figure_1',
+                'error',
+                f'При упаковке в контейнер первым методом, возникло '
+                f'исключение: {e} - возможно изделия не умещаются на листе '
+                f'вообще. Либо количество изделий равно нулю.'
+            )
             self.total_1 = 0
         # Возвращаем количество изделий с листа первым методом
         return self.total_1
@@ -233,7 +303,14 @@ class Calculation:
                 y_2 = self.h_big // self.height
                 self.total_2 += int(x_2 * y_2)
 
-        except ZeroDivisionError:
+        except ZeroDivisionError as e:
+            AppLogger(
+                f'Calculation.figure_2',
+                'error',
+                f'При упаковке в контейнер вторым методом, возникло '
+                f'исключение: {e} - возможно изделия не умещаются на листе '
+                f'вообще. Либо количество изделий равно нулю.'
+            )
             self.total_2 = 0
         # Возвращаем количество изделий с листа вторым методом
         return self.total_2
@@ -263,13 +340,22 @@ class Interpolation:
         Метод возвращает строковое значение типа лазера.
         :return: Тип лазера.
         """
-        name = self.name
-        laser_type_config = configparser.ConfigParser()
-        laser_type_config.read(PathName.resource_path(
-            'settings\\material_data.ini'), encoding='utf-8')
-        laser_type = laser_type_config['MAIN'][str(name)].split(', ')[-1]
-        del laser_type_config
-        return laser_type
+        try:
+            name = self.name
+            laser_type_config = configparser.ConfigParser()
+            laser_type_config.read(PathName.resource_path(
+                'settings\\material_data.ini'), encoding='utf-8')
+            laser_type = laser_type_config['MAIN'][str(name)].split(', ')[-1]
+            del laser_type_config
+            return laser_type
+        except Exception as e:
+            AppLogger(
+                'Interpolation.get_laser_type',
+                'error',
+                f'При получении типа лазера для материала "{self.name}" '
+                f'возникло исключение: {e}',
+                info=True
+            )
 
     def get_cost(self, height: int | float, width: int | float, num: int) ->\
             float:
@@ -396,6 +482,13 @@ class Interpolation:
 
         # Если за границами точек
         elif lower_key == bigger_key:
+            AppLogger(
+                'Interpolation.get_lower_and_bigger_key',
+                'info',
+                f'Изделие с габаритами: {(width, height)} вне расчетных '
+                f'габаритов, поэтому для расчета были приняты габариты: '
+                f'{(", ".join(lower_key[1::]))}.'
+            )
             return ', '.join(lower_key)
 
         # Если в границах точек
@@ -433,8 +526,15 @@ class Interpolation:
                 result = (
                     lower_diff * bigger_point[1] + bigger_diff * lower_point[1]
                 )
-        except ValueError:
-            print('Переданы неправильные значения!')
+        except ValueError as e:
+            AppLogger(
+                'Interpolation.get_interpolation',
+                'error',
+                f'При интерполяции значений возникло исключение: {e} - '
+                f'вероятно, переданы неправильные значения"'
+                f'\n{lower_point}\n{bigger_point}',
+                info=True
+            )
             result = 0
 
         return result
@@ -459,41 +559,52 @@ class Interpolation:
         """
         Метод сброса матрицы стоимости до настроек "по-умолчанию".
         """
-        # Сохраняем в переменные путь к файлам конфигурации
-        destination_path = PathName.resource_path(
-            f'settings\\materials\\{self.name}.ini')
-        source_path = PathName.resource_path(
-            f'settings\\default\\materials\\{self.name}.ini')
-
-        # Удаляем действующий файл конфигурации
-        if os.path.exists(destination_path):
-            os.remove(destination_path)
-
-        # Если изделие стандартное
-        if os.path.exists(source_path):
-            shutil.copy2(source_path, destination_path)
-
-        # Если изделие нестандартное, то меняем путь к файлу по-умолчанию
-        else:
-            destination_path = PathName.resource_path(f'settings\\materials')
-            file_new_name = PathName.resource_path(
+        try:
+            # Сохраняем в переменные путь к файлам конфигурации
+            destination_path = PathName.resource_path(
                 f'settings\\materials\\{self.name}.ini')
-            if self.get_laser_type() == 'gas':
-                source_path = PathName.resource_path(
-                    'settings\\default\\materials\\default_gas.ini')
-                file_old_name = PathName.resource_path(
-                    'settings\\materials\\default_gas.ini')
+            source_path = PathName.resource_path(
+                f'settings\\default\\materials\\{self.name}.ini')
+
+            # Удаляем действующий файл конфигурации
+            if os.path.exists(destination_path):
+                os.remove(destination_path)
+
+            # Если изделие стандартное
+            if os.path.exists(source_path):
+                shutil.copy2(source_path, destination_path)
+
+            # Если изделие нестандартное, то меняем путь к файлу по-умолчанию
             else:
-                source_path = PathName.resource_path(
-                    'settings\\default\\materials\\default_solid.ini')
-                file_old_name = PathName.resource_path(
-                    'settings\\materials\\default_solid.ini')
+                destination_path = PathName.resource_path(
+                    f'settings\\materials')
+                file_new_name = PathName.resource_path(
+                    f'settings\\materials\\{self.name}.ini')
+                if self.get_laser_type() == 'gas':
+                    source_path = PathName.resource_path(
+                        'settings\\default\\materials\\default_gas.ini')
+                    file_old_name = PathName.resource_path(
+                        'settings\\materials\\default_gas.ini')
+                else:
+                    source_path = PathName.resource_path(
+                        'settings\\default\\materials\\default_solid.ini')
+                    file_old_name = PathName.resource_path(
+                        'settings\\materials\\default_solid.ini')
 
-            # Копируем файл в папку назначения
-            shutil.copy(
-                source_path,
-                os.path.join(destination_path)
+                # Копируем файл в папку назначения
+                shutil.copy(
+                    source_path,
+                    os.path.join(destination_path)
+                )
+
+                # Переименовываем файл
+                os.rename(file_old_name, file_new_name)
+
+        except Exception as e:
+            AppLogger(
+                'Interpolation.get_default',
+                'error',
+                f'При сбросе матрицы стоимостей материала "{self.name}" до '
+                f'настроек "По-умолчанию" возникло исключение: {e}',
+                info=True
             )
-
-            # Переименовываем файл
-            os.rename(file_old_name, file_new_name)
