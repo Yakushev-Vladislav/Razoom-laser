@@ -1577,12 +1577,16 @@ class SheetMaterialsTab(ttk.Frame):
                 total_4 = 0.0
 
             try:
+                # Не забываем обнулять расчет при 0 штук изделий
                 total_5 = Interpolation(material_name).get_cost(
                     gab_height,
                     gab_width,
                     number_of_products)
-
-                total_5 = self.round_method(total_5 * ((100 - discount) / 100))
+                if number_of_products == 0:
+                    total_5 = 0
+                else:
+                    total_5 = self.round_method(
+                        total_5 * ((100 - discount) / 100))
 
                 total_6 = total_5 * number_of_products + design_cost
 

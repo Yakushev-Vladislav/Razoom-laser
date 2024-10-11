@@ -86,7 +86,7 @@ class AppLogger:
             mode='w',
             encoding='utf-8',
             maxBytes=1_500_000,
-            backupCount=5
+            backupCount=2
         )
 
         # Добавление формата к обработчику

@@ -1,0 +1,2 @@
+2024-10-11 17:21:18,425 | PersonalCalculateTab.get_ratio_for_calculation | <WARNING> | При считывании габаритов гравировки возникло исключение "could not convert string to float: 'Высота гравировки, мм'", размеры указаны неверно, или не указаны вовсе -(Ширина гравировки, мм, Высота гравировки, мм)
+2024-10-11 17:21:18,426 | PersonalCalculateTab.get_ratio_for_calculation | <WARNING> | При считывании доплаты за макетирование возникло исключение "could not convert string to float: '-'": Данные не введены, или введены некорректно - -.
