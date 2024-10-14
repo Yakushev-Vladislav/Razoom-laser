@@ -677,10 +677,16 @@ class ChildConfigSet(tk.Toplevel):
             new_config['MAIN']['one_set'] = str(
                 float(self.ent_one_set.get()))
 
-        except ValueError:
+        except ValueError as e:
             tk.messagebox.showerror(
                 'Ошибка добавления',
                 'Данные первого блока введены некорректно!'
+            )
+            AppLogger(
+                'ChildConfigSet.click_update_and_save_settings',
+                'error',
+                f'При сохранении настроек первого блока было вызвано '
+                f'исключение: {e} - Данные первого блока введены некорректно!'
             )
             self.update_data_in_widgets()
 
@@ -723,10 +729,16 @@ class ChildConfigSet(tk.Toplevel):
             new_config['GRADATION']['depth'] = (
                 self.ent_gradation_depth.get())
 
-        except ValueError:
+        except ValueError as e:
             tk.messagebox.showerror(
                 'Ошибка добавления',
                 'Данные второго блока введены некорректно!'
+            )
+            AppLogger(
+                'ChildConfigSet.click_update_and_save_settings',
+                'error',
+                f'При сохранении настроек второго блока было вызвано '
+                f'исключение: {e} - Данные второго блока введены некорректно!'
             )
             self.update_data_in_widgets()
 
@@ -745,10 +757,17 @@ class ChildConfigSet(tk.Toplevel):
                     '-> Второе для газового лазера.'
                 )
 
-        except ValueError:
+        except ValueError as e:
             tk.messagebox.showerror(
                 'Ошибка добавления',
                 'Данные габаритов гравировки введены некорректно!'
+            )
+            AppLogger(
+                'ChildConfigSet.click_update_and_save_settings',
+                'error',
+                f'При сохранении настроек второго блока было вызвано '
+                f'исключение: {e} - Данные габаритов гравировки введены'
+                f' некорректно!'
             )
             self.update_data_in_widgets()
 
@@ -756,6 +775,11 @@ class ChildConfigSet(tk.Toplevel):
                        'Вы действительно хотите сохранить изменения?'):
             # Запись в файл конфигурации
             self.child_temp_config.update_settings(some_new=new_config)
+            AppLogger(
+                'ChildConfigSet.click_update_and_save_settings',
+                'info',
+                f'Сохранение изменений в настройках программы.'
+            )
         else:
             pass
 
@@ -777,6 +801,7 @@ class ChildConfigSet(tk.Toplevel):
             )
 
         # Обновляем данные в полях ввода и таблице
+        self.update_data_in_widgets()
         self.get_standard_costs()
         self.update()
 
