@@ -1990,17 +1990,17 @@ class IndustrialCalculateTab(ttk.Frame):
 
             self.lbl_result_time_minimum.config(
                 text=f"Минимальное время гравировки макета:"
-                     f" {result:.1f}  мин."
+                     f" {result:.2f}  мин."
             )
 
             self.lbl_result_time_text.config(
                 text=f"Ориентировочное время гравировки текста:"
-                     f" {result_text:.1f}  мин."
+                     f" {result_text:.2f}  мин."
             )
 
             self.lbl_result_time_imagine.config(
                 text=f"Ориентировочное время гравировки рисунка:"
-                     f" {result_imagine:.1f}  мин."
+                     f" {result_imagine:.2f}  мин."
             )
 
             AppLogger(

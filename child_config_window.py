@@ -112,7 +112,7 @@ class ChildConfigSet(tk.Toplevel):
         ttk.Label(
             self.tab_main_settings, text='Блок настройки базовых цен, руб.',
             foreground='red').grid(
-            row=0, column=0, padx=0, pady=0, sticky='ns', columnspan=4
+            row=0, column=0, padx=0, pady=0, sticky='ns', columnspan=5
         )
 
         # Окно ввода __ Минимальная стоимость работы __
@@ -179,7 +179,7 @@ class ChildConfigSet(tk.Toplevel):
         ttk.Label(self.tab_main_settings,
                   text='Блок настройки весовых коэффициентов',
                   foreground='red').grid(
-            row=4, column=0, padx=0, pady=0, sticky='ns', columnspan=4
+            row=4, column=0, padx=0, pady=0, sticky='ns', columnspan=5
         )
 
         # Окно ввода ratio_laser_gas __Тип лазера__
